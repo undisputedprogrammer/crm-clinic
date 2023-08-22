@@ -2,7 +2,7 @@
 /node_modules
 
 /public/hot
-
+/tests
 /storage/*.key
 /vendor
 .env
