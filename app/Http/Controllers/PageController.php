@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Followup;
 use App\Models\Lead;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Ynotz\Metatags\Helpers\MetatagHelper;
@@ -20,14 +21,23 @@ class PageController extends SmartController
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Overview - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        return $this->buildResponse('pages.overview');
+        $now = Carbon::now();
+        $currentMonth = $now->format('m');
+        $currentYear = $now->format('Y');
+        $lpm = Lead::whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
+        $ftm = Lead::where('followup_created',true)->whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
+        $lcm = Lead::where('status','Converted')->whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
+        $pf = Followup::whereHas('lead', function ($query) {
+            $query->where('status','!=','Converted');
+        })->where('next_followup_date',null)->count();
+        return $this->buildResponse('pages.overview',compact('lpm','ftm','lcm','pf'));
     }
 
     public function leadIndex(){
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Fresh leads - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $leads = Lead::paginate(10);
+        $leads = Lead::where('status','!=','Converted')->paginate(10);
         return $this->buildResponse('pages.leads',compact('leads'));
     }
 
@@ -50,7 +60,7 @@ class PageController extends SmartController
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Follow ups - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $followups = Followup::with(['lead','remarks'])->where('scheduled_date','<=',date('Y-m-d'))->where('actual_date',null)->paginate(10);
+        $followups = Followup::with(['lead','remarks'])->where('scheduled_date','<=',date('Y-m-d'))->where('actual_date',null)->where('converted',null)->paginate(10);
         return $this->buildResponse('pages.followups', compact('followups'));
     }
 

@@ -22,7 +22,7 @@
                 <tr class="text-neutral-content hover:bg-base-100" :class=" fpname == '{{$followup->lead->name}}' ? 'bg-base-100 font-medium' : '' " @click.prevent.stop="
 
 
-                    $dispatch('fpupdate',{followup : {{json_encode($followup)}}, lead: '{{$followup->lead}}', remarks: {{json_encode($followup->remarks)}}, id: '{{$followup->id}}', lead_remarks: '{{$followup->lead->remarks}}'})"
+                    $dispatch('dataupdate',{followup : {{json_encode($followup)}}, lead: '{{$followup->lead}}', remarks: {{json_encode($followup->remarks)}}, id: '{{$followup->id}}', lead_remarks: '{{$followup->lead->remarks}}'})"
                     >
                     <th>{{$followup->id}}</th>
                     <td>{{$followup->lead->name}}</td>

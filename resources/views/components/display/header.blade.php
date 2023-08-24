@@ -83,26 +83,26 @@
         <button @click.prevent.stop="toggle()" type="button" class="flex mr-3 text-sm text-neutral-content space-x-1 bg-neutral-focus items-center rounded-2xl p-1 md:mr-0  " id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
           <span class="sr-only">Open user menu</span>
           <img class="w-8 h-8 rounded-full" src="{{asset('images/profile_3135715.png')}}" alt="user photo">
-          <span class="px-1.5">Administrator</span>
+          <span class="px-1.5 min-w-20">{{auth()->user()->name}}</span>
         </button>
         <!-- Dropdown menu -->
         <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none bg-neutral-focus divide-y divide-gray-100 rounded-lg shadow  " id="user-dropdown">
           <div class="px-4 py-3 text-neutral-content">
-            <span class="block text-sm  ">Marketing Agent</span>
-            <span class="block text-sm   truncate ">name@clinic.com</span>
+            {{-- <span class="block text-sm  ">Marketing Agent</span> --}}
+            <span class="block text-sm   truncate ">{{auth()->user()->email}}</span>
           </div>
           <ul class="py-2 text-neutral-content" aria-labelledby="user-menu-button">
             <li class="">
-              <a href="#" class="block px-4 py-2 text-sm  ">Overview</a>
+              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Overview</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 text-sm ">Pofile</a>
+              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary">Pofile</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 text-sm ">Earnings</a>
+              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Statistics</a>
             </li>
             <li>
-              <a href="/logout" class="block px-4 py-2 text-sm">Sign out</a>
+              <a href="/logout" class="block px-4 py-2 text-sm text-error">Sign out</a>
             </li>
           </ul>
         </div>

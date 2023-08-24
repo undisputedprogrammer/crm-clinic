@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\Remarkcontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,5 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/get/remarks',[Remarkcontroller::class, 'getRemarks']);
 
 Route::get('/followup',[Remarkcontroller::class, 'followup']);
+
+Route::post('/convert',[FollowupController::class, 'convert']);
 
 

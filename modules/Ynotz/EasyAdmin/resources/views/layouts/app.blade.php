@@ -35,6 +35,13 @@ currentroute=$event.detail.currentroute;"
             lead : [],
             remarks : [],
             followups : [],
+            showresults : false,
+            fromDate : null,
+            toDate : null,
+            searchtype : null,
+            searchResults : null,
+            pagination_data: null,
+            searchFormState: [],
 
 
         }" class="min-h-screen bg-base-200 flex flex-col">

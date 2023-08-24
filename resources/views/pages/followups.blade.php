@@ -10,8 +10,40 @@
             fpremarks : [],
             leadremarks: [],
             historyLoading: true,
-            history: []
+            history: [],
+
+            {{-- convert to customer function begins --}}
+            convert(){
+                if(this.history.length == 1){
+
+                    $dispatch('showtoast', {message: 'You have not completed a follow up yet', mode: 'error'});
+                }
+                else{
+                    axios.post('/api/convert',{
+
+                            followup_id : this.fp.id,
+                            lead_id : this.fp.lead.id,
+
+                    }).then((r)=>{
+                        console.log(r.data);
+                        this.fp.converted = true;
+                        $dispatch('showtoast', {message: r.data.message, mode: 'success'});
+                    }).catch((e)=>{
+                        $dispatch('showtoast', {message: 'Server error occured', mode: 'error'});
+                    });
+                }
+            }
+            {{-- convert to customer function ends --}}
         }"
+
+        {{-- pagination event handler --}}
+        @pageaction.window="
+        console.log($event.detail);
+        $dispatch('linkaction',{
+            link: $event.detail.link,
+            route: currentroute,
+            fragment: 'page-content',
+        })"
 
         >
     <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
@@ -103,6 +135,8 @@
                     </div>
 
                     <p class=" text-base font-medium">Lead Segment : <span class=" uppercase text-secondary" x-text="fp.lead != undefined ? fp.lead.customer_segment : '' "></span></p>
+
+                    <button @click.prevent.stop="convert();" class="btn btn-success btn-xs mt-1 self-start">Convert to customer</button>
 
                     <div class="mt-2.5">
                         <p class=" text-base font-medium text-secondary">Lead remarks</p>
@@ -219,13 +253,20 @@
                             <textarea name="remark" class="textarea bg-base-200 focus:ring-0" placeholder="Add new follow up remark"></textarea>
 
                             <div>
-                                <label x-show="fp.next_followup_date == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
+                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
 
-                                <input x-show="fp.next_followup_date == null" id="next-followup-date" name="next_followup_date" type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="next-followup-date" name="next_followup_date" type="date" class=" rounded-lg input-info bg-base-200 w-full">
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Save follow up</button>
+
+
                         </form>
+
+
+
+
+
 
                 </div>
             </div>

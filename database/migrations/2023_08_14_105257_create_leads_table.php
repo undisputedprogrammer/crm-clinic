@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('is_genuine');
             $table->text('history');
             $table->enum('customer_segment',['hot','warm','cold']);
-            $table->enum('status',['New','Qualified','Converted']);
+            $table->enum('status',['Created','Validated','Converted','Closed']);
             $table->boolean('followup_created')->nullable();
             $table->timestamps();
         });

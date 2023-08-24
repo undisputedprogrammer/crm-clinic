@@ -20,14 +20,14 @@ class LeadFactory extends Factory
     public function definition(): array
     {
          $customer_segment = ['hot','warm','cold'];
-         $status = ['New','Qualified','Converted'];
+         $status = ['Created'];
         return [
             'name'=>fake()->name(),
             'phone'=>fake()->phoneNumber(),
             'email'=>fake()->email(),
             'city'=>fake()->city(),
-            'is_valid'=>true,
-            'is_genuine'=>true,
+            'is_valid'=>false,
+            'is_genuine'=>false,
             'history'=>fake()->paragraph(),
             'customer_segment'=> $customer_segment[array_rand($customer_segment)],
             'status'=> $status[array_rand($status)],

@@ -88,4 +88,15 @@ class FollowupController extends SmartController
 
         // return response()->json(['success'=>true, 'message'=>'Follow up processed','followup_remark'=>$followup_remark]);
     }
+
+    public function convert(Request $request){
+
+        $followup = Followup::find($request->followup_id);
+        $followup->converted = true;
+        $followup->save();
+        $lead = Lead::find($request->lead_id);
+        $lead->status='Converted';
+        $lead->save();
+        return response()->json(['success'=>true,'message'=>'Lead converted to customer','followup'=>$followup,'lead'=>$lead]);
+    }
 }
