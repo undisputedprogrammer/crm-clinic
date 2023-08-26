@@ -18,18 +18,20 @@ export default () => ({
             this.$store.app.xpages = [];
         }
         if (this.$store.app.xpages[link] == undefined) {
-            this.$store.app.xpages[link] = {};
+            this.$store.app.xpages[link] = {data: {}};
         }
         setTimeout(() => {
-            this.$store.app.xpages[link].data = el.innerHTML;
+            this.$store.app.xpages[link].data.html = el.innerHTML;
         }, 500);
 
         // history.pushState({href: link}, '', link);
         history.pushState({href: link, route: route, target: this.panelId, fragment: 'main-panel'}, '', link);
     },
     historyAction(e) {
-        console.log('inside history action');
+        // console.log('inside history action');
         if (e.state != undefined && e.state != null) {
+            // console.log(e.state);
+
             let link = e.state.href;
             let route = e.state.route;
             let target = e.state.target;
@@ -42,13 +44,14 @@ export default () => ({
             if (this.$store.app.xpages[link] == undefined) {
                 this.$store.app.xpages[link] = {};
             }
+            // console.log(this.$store.app.xpages[link]);
             if (this.$store.app.xpages[link] != undefined) {
 
                 setTimeout(() => {
                     this.showPage = true;
                     // this.page = this.$store.app.xpages[link];
                     this.$dispatch('pagechanged', {currentpath: link, currentroute: route, target: target, fragment: fragment});
-                    this.$dispatch('contentupdate', {content: this.$store.app.xpages[link].data, target: target});
+                    this.$dispatch('contentupdate', {content: this.$store.app.xpages[link].data.html, target: target});
                     if (this.$store.app.xpages[link].meta != undefined) {
                         this.$dispatch('metachange', {data: this.$store.app.xpages[link].meta});
                     }
@@ -64,6 +67,8 @@ export default () => ({
                     100
                 );
             }
+        } else {
+            // console.log('e.state is null or undefined');
         }
     },
     getQueryString(params) {
@@ -112,7 +117,7 @@ export default () => ({
 
                 setTimeout(() => {
                     this.showPage = true;
-                    this.$dispatch('contentupdate', {content: this.$store.app.xpages[thelink].data, target: targetPanelId});
+                    this.$dispatch('contentupdate', {content: this.$store.app.xpages[thelink].data.html, target: targetPanelId});
                     if (this.$store.app.xpages[link].meta != undefined) {
                         this.$dispatch('metachange', {data: this.$store.app.xpages[link].meta});
                     }

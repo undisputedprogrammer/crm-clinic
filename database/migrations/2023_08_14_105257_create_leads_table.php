@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('customer_segment',['hot','warm','cold']);
             $table->enum('status',['Created','Validated','Converted','Closed']);
             $table->boolean('followup_created')->nullable();
+            $table->foreignId('assigned_to')->references('id')->on('users');
             $table->timestamps();
         });
     }

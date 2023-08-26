@@ -33,11 +33,16 @@ class PageController extends SmartController
         return $this->buildResponse('pages.overview',compact('lpm','ftm','lcm','pf'));
     }
 
-    public function leadIndex(){
+    public function leadIndex(Request $request){
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Fresh leads - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $leads = Lead::where('status','!=','Converted')->paginate(10);
+        if($request->user()->hasRole('agent')) {
+            $leads = Lead::where('status', '!=', 'Converted')->where('assigned_to', $request->user()->id)->with(['remarks','answers'])->paginate(10);
+        }
+        if($request->user()->hasRole('admin')){
+            $leads = Lead::where('status', '!=', 'Converted')->with(['remarks','answers'])->paginate(10);
+        }
         return $this->buildResponse('pages.leads',compact('leads'));
     }
 
@@ -60,7 +65,20 @@ class PageController extends SmartController
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Follow ups - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $followups = Followup::with(['lead','remarks'])->where('scheduled_date','<=',date('Y-m-d'))->where('actual_date',null)->where('converted',null)->paginate(10);
+        if($request->user()->hasRole('admin')) {
+            $followups = Followup::with(['lead','remarks'])->where('scheduled_date', '<=', date('Y-m-d'))->where('actual_date', null)->where('converted', null)->paginate(10);
+        }
+        if($request->user()->hasRole('agent')){
+            $followups = Followup::with(['lead', 'remarks'])
+            ->whereHas('lead', function ($query) {
+                $query->where('assigned_to', Auth::id());
+            })
+            ->where('scheduled_date', '<=', date('Y-m-d'))
+            ->where('actual_date', null)
+            ->where('converted', null)
+            ->paginate(10);
+        }
+
         return $this->buildResponse('pages.followups', compact('followups'));
     }
 

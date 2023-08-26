@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\FollowupController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Remarkcontroller;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TestController;
+use App\Models\Followup;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +35,8 @@ Route::middleware('auth')->group(function(){
     Route::post('/followup/store',[FollowupController::class, 'store'])->name('process-followup');
     Route::get('/search',[PageController::class, 'searchIndex'])->name('search-index');
     Route::post('/search',[SearchController::class, 'index'])->name('get-results');
+    Route::post('/followup/new',[FollowupController::class,'next'])->name('next-followup');
+    Route::post('/import/lead',[ImportController::class, 'importLead'])->name('import-leads');
 });
 
 Route::get('/',[PageController::class, 'home']);

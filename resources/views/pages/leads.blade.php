@@ -6,6 +6,9 @@
       <x-display.header/>
 
       {{-- page body --}}
+
+
+
       <div
 
         {{-- pagination event handler --}}
@@ -78,9 +81,14 @@
         })"
        class=" h-[calc(100vh-3.5rem)] mt-14 pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
 
+
+
+
         <x-tables.leads-table :leads="$leads"/>
 
-        <div class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-neutral-content rounded-xl p-3 xl:px-6 py-3">
+
+
+        <div class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <h2 class="text-lg font-semibold text-secondary ">Lead details</h2>
 
             <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
@@ -90,20 +98,31 @@
             selected = true;
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
-                lead = JSON.parse($event.detail.lead);
+                {{-- lead = JSON.parse($event.detail.lead);
                 remarks = JSON.parse($event.detail.remarks);
-                followups = JSON.parse($event.detail.followups);
+                followups = JSON.parse($event.detail.followups); --}}
+                lead = $event.detail.lead;
+                remarks = $event.detail.remarks;
+                followups = $event.detail.followups;
+                answers = $event.detail.answers;
                 name = lead.name;
                 leads[lead.id] = lead;
                 leads[lead.id].remarks = remarks;
                 leads[lead.id].followups = followups;
+                leads[lead.id].answers = answers;
+
             }
             else{
                 lead = leads[$event.detail.id];
                 remarks = leads[$event.detail.id].remarks;
                 followups = leads[$event.detail.id].followups;
                 name = lead.name;
+                answers = lead.answers;
+
+
             }
+
+
 
             {{-- lead = JSON.parse($event.detail.lead);
             remarks = JSON.parse($event.detail.remarks);
@@ -140,7 +159,7 @@
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.customer_segment" class=" text-secondary"></span><x-icons.down-arrow /></label>
 
-                        <ul tabindex="0" class="dropdown-content z-[1] mt-1 bg-neutral menu p-2 shadow rounded-box w-52">
+                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
                             <li><a @click.prevent.stop="
                                 $dispatch('changesegment',{
                                     link: '{{route('change-segment')}}',
@@ -220,6 +239,8 @@
                     </form>
 
                 </div>
+
+                <x-sections.qna />
 
                 <div>
                     <h1 class=" text-secondary text-base font-medium">Follow up details</h1>

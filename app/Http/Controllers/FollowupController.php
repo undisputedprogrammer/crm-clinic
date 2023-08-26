@@ -28,8 +28,6 @@ class FollowupController extends SmartController
 
     public function store(Request $request){
 
-        if($request->remark != null && $request->next_followup_date != null){
-
             $followup_remark = Remark::create([
                 'remarkable_type'=>Followup::class,
                 'remarkable_id'=>$request->followup_id,
@@ -38,38 +36,26 @@ class FollowupController extends SmartController
             ]);
 
 
+
+            if($request->convert == true){
                 $followup = Followup::find($request->followup_id);
+                $followup->converted = true;
                 $followup->actual_date = date('Y-m-d');
-                $followup->next_followup_date = $request->next_followup_date;
                 $followup->save();
-                $next_followup = Followup::create([
-                    'lead_id'=>$request->lead_id,
-                    'scheduled_date'=>$request->next_followup_date,
-                ]);
+                $lead = Lead::find($request->lead_id);
+                $lead->status='Converted';
+                $lead->save();
 
-                return response()->json(['success'=>true, 'message'=>'Follow up processed','followup'=>$followup,'next_followup'=>$next_followup,'remarks'=>$followup->remarks,'followup_remark'=>$followup_remark]);
+                return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead]);
+            }
 
-        }
-        elseif($request->remark != null && $request->next_followup_date == null){
-
-            $followup_remark = Remark::create([
-                'remarkable_type'=>Followup::class,
-                'remarkable_id'=>$request->followup_id,
-                'remark'=>$request->remark,
-                'user_id'=>$request->user()->id
-            ]);
 
             return response()->json(['success'=>true, 'message'=>'Follow up processed','followup_remark'=>$followup_remark]);
-        }
 
-        // $followup_remark = Remark::create([
-        //     'remarkable_type'=>Followup::class,
-        //     'remarkable_id'=>$request->followup_id,
-        //     'remark'=>$request->remark,
-        //     'user_id'=>$request->user()->id
-        // ]);
+    }
 
-        elseif($request->next_followup_date != null) {
+    public function next(Request $request){
+
             $followup = Followup::find($request->followup_id);
             $followup->actual_date = date('Y-m-d');
             $followup->next_followup_date = $request->next_followup_date;
@@ -79,14 +65,7 @@ class FollowupController extends SmartController
                 'scheduled_date'=>$request->next_followup_date,
             ]);
 
-            return response()->json(['success'=>true, 'message'=>'Follow up processed','followup'=>$followup,'next_followup'=>$next_followup,'remarks'=>$followup->remarks]);
-        }
-
-
-
-
-
-        // return response()->json(['success'=>true, 'message'=>'Follow up processed','followup_remark'=>$followup_remark]);
+            return response()->json(['success'=>true, 'message'=>'Next follow up scheduled','followup'=>$followup,'next_followup'=>$next_followup,'remarks'=>$followup->remarks]);
     }
 
     public function convert(Request $request){

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,7 @@ class LeadFactory extends Factory
     {
          $customer_segment = ['hot','warm','cold'];
          $status = ['Created'];
+
         return [
             'name'=>fake()->name(),
             'phone'=>fake()->phoneNumber(),
@@ -31,7 +33,18 @@ class LeadFactory extends Factory
             'history'=>fake()->paragraph(),
             'customer_segment'=> $customer_segment[array_rand($customer_segment)],
             'status'=> $status[array_rand($status)],
-            'followup_created'=>false
+            'followup_created'=>false,
+            'assigned_to'=>$this->getAgent(),
         ];
+    }
+
+    public function getAgent(){
+        $user = User::all()->random();
+        if($user->hasRole('agent')){
+            return $user->id;
+        }
+        else{
+            return $this->getAgent();
+        }
     }
 }

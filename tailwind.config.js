@@ -140,19 +140,23 @@ export default {
             {
                 light: {
                     // ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-                    "primary": "#18e244",
+                    "primary": "#c379ff",
 
-                    "secondary": "#d3f279",
+                    "secondary": "#1aa897",
 
                     "accent": "#ea9b67",
 
-                    "neutral": "#372e38",
+                    "neutral": "#18A594",
 
                     // "neutral-focus": "#bfd4ff",
 
                     "neutral-content": "#f5f5f4",
 
-                    "base-100": "#e4e5e7",
+                    "base-100": "#dfddee",
+
+                    "base-200": " #E7F5F5",
+
+                    "base-content": "#372464",
 
                     "info": "#5371f3",
 

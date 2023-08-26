@@ -23,7 +23,8 @@
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('fresh-leads')}}',
                 route: 'fresh-leads',
-                fragment: 'page-content'
+                fragment: 'page-content',
+
             })"
             class="tab text-neutral-content "
             :class="currentroute =='fresh-leads' ? ' border-b-[3px] border-primary opacity-100' : 'opacity-60 hover:opacity-100' " >Fresh leads</a>
@@ -32,7 +33,8 @@
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('followups')}}',
                 route: 'followups',
-                fragment: 'page-content'
+                fragment: 'page-content',
+
             })"
              class="tab  text-neutral-content "
              :class="currentroute =='followups' ? ' border-b-[3px] border-primary opacity-100' : 'opacity-60 hover:opacity-100' ">Follow ups</a>
@@ -86,12 +88,14 @@
           <span class="px-1.5 min-w-20">{{auth()->user()->name}}</span>
         </button>
         <!-- Dropdown menu -->
-        <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none bg-neutral-focus divide-y divide-gray-100 rounded-lg shadow  " id="user-dropdown">
-          <div class="px-4 py-3 text-neutral-content">
+        <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none divide-y   divide-gray-100 rounded-lg shadow "
+        :class="theme == 'light' ? 'bg-base-200' : 'bg-neutral-focus' "
+        id="user-dropdown">
+          <div class="px-4 py-3 text-base-content">
             {{-- <span class="block text-sm  ">Marketing Agent</span> --}}
             <span class="block text-sm   truncate ">{{auth()->user()->email}}</span>
           </div>
-          <ul class="py-2 text-neutral-content" aria-labelledby="user-menu-button">
+          <ul class="py-2 text-base-content" aria-labelledby="user-menu-button">
             <li class="">
               <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Overview</a>
             </li>

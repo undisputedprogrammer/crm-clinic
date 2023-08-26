@@ -34,6 +34,8 @@ currentroute=$event.detail.currentroute;"
             leads : [],
             lead : [],
             remarks : [],
+            answers: [],
+            questions : [],
             followups : [],
             showresults : false,
             fromDate : null,

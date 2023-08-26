@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
+
 return [
 
     /*
@@ -174,6 +175,7 @@ return [
          * */
          Ynotz\SmartPages\SmartPagesProvider::class,
          Ynotz\EasyAdmin\EasyAdminProvider::class,
+         Ynotz\AccessControl\AccessControlProvider::class,
     ])->toArray(),
 
     /*

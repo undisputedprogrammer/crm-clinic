@@ -80,10 +80,10 @@
                             }
                         }"
             id="search-form"
-             action="" class=" flex justify-start items-end flex-wrap  py-2 px-14">
+             action="" class=" flex justify-start  items-end flex-wrap  py-2 px-14">
 
                 <div class="w-1/4 px-1 mt-1.5">
-                    <select @change.prevent.stop="searchtype = $el.value;" class="select  select-bordered w-full max-w-xs bg-base-100 text-neutral-content">
+                    <select @change.prevent.stop="searchtype = $el.value;" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option disabled :selected="searchtype == null ? true : false ">--Search by--</option>
 
                         <option :selected="searchtype == 'scheduled_date' ? true : false " value="scheduled_date">Scheduled date</option>
@@ -95,17 +95,17 @@
 
                 <div class="w-1/4 px-1 mt-1.5">
                     <label for="from-date" class="text-sm text-primary font-medium">Select from date</label>
-                    <input id="from-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="from date" name="from_date" class="input input-bordered w-full max-w-xs text-neutral-content" x-model="fromDate" :value="fromDate"/>
+                    <input id="from-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="from date" name="from_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="fromDate" :value="fromDate"/>
                 </div>
 
                 <div class="w-1/4 px-1 mt-1.5">
                     <label for="to-date" class=" text-sm text-primary font-medium">Select to date</label>
-                    <input id="to-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="to date" name="to_date" class="input input-bordered w-full max-w-xs text-neutral-content" x-model="toDate" :value="toDate" />
+                    <input id="to-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="to date" name="to_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="toDate" :value="toDate" />
                 </div>
 
                 <div class="w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select valid status</label>
-                    <select class="select  select-bordered w-full max-w-xs bg-base-100 text-neutral-content" name="is_valid">
+                    <select class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content" name="is_valid">
                         <option value="null" :disabled="searchFormState.is_valid == null ? true : false"
                         :selected="searchFormState.is_valid == null ? true : false ">--Not selected--</option>
 
@@ -118,7 +118,7 @@
 
                 <div class="w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select genuine status</label>
-                    <select name="is_genuine" class="select  select-bordered w-full max-w-xs bg-base-100 text-neutral-content">
+                    <select name="is_genuine" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option value="null" :disabled="searchFormState.is_genuine == null ? true : false " :selected="searchFormState.is_genuine == null ? true : false ">--Not selected--</option>
 
                         <option :selected="searchFormState.is_genuine == 1 ? true : false " value="1">Genuine</option>
@@ -130,7 +130,7 @@
 
                 <div class="w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select lead status</label>
-                    <select name="lead_status" class="select  select-bordered w-full max-w-xs bg-base-100 text-neutral-content">
+                    <select name="lead_status" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option value="null" :disabled="searchFormState.lead_status == null ? true : false " :selected="searchFormState.lead_status == null ? true : false " >--Not selected--</option>
 
                         <option :selected="searchFormState.lead_status == 'Created' ? true : false " value="Created">Created</option>

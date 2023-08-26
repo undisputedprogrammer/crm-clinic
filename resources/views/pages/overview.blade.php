@@ -50,6 +50,46 @@
                 </div>
 
             </div>
+
+
+
+            {{-- import leads form --}}
+            @can('import-lead')
+            <div class="mt-2.5">
+            <h1 class="font-semibold mb-1 text-primary">Import leads from Excel</h1>
+            <form
+            x-data = "{ doSubmit() {
+                let form = document.getElementById('import-form');
+                let formdata = new FormData(form);
+
+                $dispatch('formsubmit',{url:'{{route('import-leads')}}', route: 'import-leads',fragment: 'page-content', formData: formdata, target: 'import-form'});
+            }}"
+            @submit.prevent.stop="doSubmit();"
+
+            @formresponse.window="
+                console.log($event.detail.content);
+                if ($event.detail.target == $el.id) {
+                    if ($event.detail.content.success) {
+                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+
+                            $dispatch('formerrors', {errors: []});
+                        } else if (typeof $event.detail.content.errors != undefined) {
+                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                        } else{
+                            $dispatch('formerrors', {errors: $event.detail.content.errors});
+                        }
+                }"
+
+            id="import-form" class="flex space-x-3">
+                <input type="file" name="sheet" class="file-input input-success file-input-bordered file-input-sm w-full max-w-xs" />
+                <button type="submit" class="btn btn-sm btn-success">Import</button>
+            </form>
+            </div>
+            @endcan
+
+
+
         </div>
 
 
