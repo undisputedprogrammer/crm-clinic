@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\Followup;
 use App\Models\Remark;
@@ -45,12 +46,16 @@ class FollowupController extends SmartController
                 $lead = Lead::find($request->lead_id);
                 $lead->status='Converted';
                 $lead->save();
-
-                return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead]);
+                $appointment = Appointment::create([
+                    'lead_id'=>$request->lead_id,
+                    'doctor_id'=>$request->doctor,
+                    'appointment_date'=>$request->appointment_date
+                ]);
+                return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead,'appointment'=>$appointment]);
             }
 
 
-            return response()->json(['success'=>true, 'message'=>'Follow up processed','followup_remark'=>$followup_remark]);
+            return response()->json(['success'=>true, 'message'=>'Remark added','followup_remark'=>$followup_remark]);
 
     }
 

@@ -12,6 +12,7 @@
             leadremarks: [],
             historyLoading: true,
             history: [],
+            convert: false,
 
             {{-- convert to customer function begins --}}
             {{-- convert(){
@@ -260,11 +261,30 @@
 
                             <label class="cursor-pointer label justify-start p-0 space-x-2">
 
-                                <input :disabled="fp.next_followup_date != null || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
-                                <span class="label-text">Save remark and convert to customer</span>
+                                <input @click="convert = $el.checked" :disabled="fp.next_followup_date != null || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
+                                <span class="label-text">Save remark and schedule appointment</span>
                             </label>
 
-                            <button type="submit" class="btn btn-primary btn-xs mt-2 self-start">Save remark</button>
+                            {{-- appointment detail section. Will be visible only if checkbox is toggled --}}
+                            <div x-show="convert" x-cloak x-transition class="my-2">
+                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium text-secondary">Schedule appointment</label>
+
+                                <select :required="convert == true ? true : false" name="doctor" class="select select-bordered w-full bg-base-200 text-base-content mt-1">
+                                    <option disabled>Choose Doctor</option>
+                                    @foreach ($doctors as $doctor)
+                                        <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                                    @endforeach
+
+                                </select>
+
+                                <input :required="convert == true ? true : false" id="next-followup-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                            </div>
+                            {{-- appointment detais section ends --}}
+
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-xs mt-2 self-start">Save remark</button>
+                                <button type="submit" class=""></button>
+                            </div>
 
 
                         </form>
@@ -339,7 +359,80 @@
 
 
 
+                        {{-- schedule appointment form --}}
+                        <form
+                        x-data ="
+                        { doSubmit() {
+                            let form = document.getElementById('next-followup-form');
+                            let formdata = new FormData(form);
+                            formdata.append('followup_id',fp.id);
+                            formdata.append('lead_id',fp.lead.id);
+                            $dispatch('formsubmit',{url:'{{route('next-followup')}}', route: 'next-followup',fragment: 'page-content', formData: formdata, target: 'next-followup-form'});
+                        }}"
+                        @submit.prevent.stop="doSubmit();"
 
+                        @formresponse.window="
+                        if ($event.detail.target == $el.id) {
+                            if ($event.detail.content.success) {
+                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                $el.reset();
+
+                                if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
+                                {
+
+                                fp.next_followup_date = $event.detail.content.followup.next_followup_date;
+                                fp.actual_date = $event.detail.content.followup.actual_date;
+
+                                }
+
+                                historyLoading = true;
+                                axios.get('/api/followup',{
+                                    params: {
+                                    id: fp.id,
+                                    lead_id: fp.lead.id
+
+                                    }
+                                  }).then(function (response) {
+                                    history = response.data.followup;
+                                    console.log(response.data.followup);
+                                    historyLoading = false;
+
+                                  }).catch(function (error){
+                                    console.log(error);
+                                    historyLoading = false;
+                                  });
+
+                                  $dispatch('formerrors', {errors: []});
+                            }
+
+                            else if (typeof $event.detail.content.errors != undefined) {
+                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                            } else{
+                                $dispatch('formerrors', {errors: $event.detail.content.errors});
+                            }
+                        }
+                        "
+                        id="appointment-form"
+                         x-show="lead.status != 'Converted' && fp.next_followup_date == null" action="" class=" mt-5 hidden">
+
+                            <div>
+                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium">Schedule appointment</label>
+
+                                <select class="select select-bordered w-full bg-base-200 text-base-content">
+                                    <option disabled selected>Choose Doctor</option>
+                                    @foreach ($doctors as $doctor)
+                                        <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                                    @endforeach
+
+                                </select>
+
+                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="next-followup-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                            </div>
+
+                            <button :disabled=" fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
+
+                        </form>
 
 
                 </div>

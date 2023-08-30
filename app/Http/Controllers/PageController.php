@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Doctor;
 use App\Models\Followup;
 use App\Models\Lead;
 use App\Models\Question;
@@ -79,8 +80,9 @@ class PageController extends SmartController
             ->where('converted', null)
             ->paginate(10);
         }
+        $doctors = Doctor::all();
 
-        return $this->buildResponse('pages.followups', compact('followups'));
+        return $this->buildResponse('pages.followups', compact('followups','doctors'));
     }
 
     public function searchIndex(Request $request){

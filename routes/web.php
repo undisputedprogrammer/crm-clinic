@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/import/lead',[ImportController::class, 'importLead'])->name('import-leads');
     Route::get('/questions',[PageController::class, 'questionIndex'])->name('manage-questions');
     Route::post('/questions/store',[QuestionController::class, 'store'])->name('add-question');
+    Route::post('/questions/update',[QuestionController::class, 'update'])->name('update-question');
     Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
 });
