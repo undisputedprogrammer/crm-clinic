@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/questions/store',[QuestionController::class, 'store'])->name('add-question');
     Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
+    Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
 });
 
 Route::get('/',[PageController::class, 'home']);

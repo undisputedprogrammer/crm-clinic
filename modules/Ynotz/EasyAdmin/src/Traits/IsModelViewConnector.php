@@ -652,6 +652,11 @@ trait IsModelViewConnector{
         return $this->storeValidationRules ?? [];
     }
 
+    public function getUpdateValidationRules($id): array
+    {
+        return $this->storeValidationRules ?? [];
+    }
+
     public function suggestList($search = null)
     {
         if (isset($search)) {
