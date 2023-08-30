@@ -26,7 +26,7 @@ class DoctorService implements ModelViewConnector
     {
         return [
             'name' => ['required', 'string'],
-            'department' => ['sometimes', 'string']
+            'department' => ['sometimes','nullable', 'string']
         ];
     }
 }

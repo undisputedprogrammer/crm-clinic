@@ -81,7 +81,13 @@
                 x-data="{
                     id: '',
                     name: '',
-                    department: ''
+                    department: '',
+                    reset() {
+                        this.id = '';
+                        this.name = '';
+                        this.department = '';
+                        mode = 'add';
+                    }
                 }"
                 x-show="mode=='edit'"
                 @doctoredit.window="
@@ -90,7 +96,7 @@
                     department = $event.detail.department;
                     mode='edit';
                 "  x-transition>
-                <h2 class="text-lg font-semibold text-secondary ">Edit Doctor</h2>
+                <h2 class="text-lg font-semibold text-primary ">Edit Doctor</h2>
                 <div class=" mt-2 flex flex-col space-y-2">
                     <form id="doctor-edit-form"
                         x-data="{
@@ -127,7 +133,8 @@
                             <input type="text" name="department" x-model="department" placeholder="Department" class="input input-bordered w-full max-w-xs" />
                         </div>
                         <div class="text-center py-8">
-                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            <button type="submit" class="btn btn-sm btn-secondary bg-secondary">Update</button><br/><br/>
+                            <button @click.prevent.stop="reset();" type="button" class="btn btn-ghost btn-xs">Cancel</button>
                         </div>
                     </form>
                 </div>
