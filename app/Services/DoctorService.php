@@ -13,5 +13,21 @@ class DoctorService implements ModelViewConnector
     {
         $this->modelClass = Doctor::class;
     }
+
+    public function getStoreValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string'],
+            'department' => ['sometimes', 'string']
+        ];
+    }
+
+    public function getUpdateValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string'],
+            'department' => ['sometimes','nullable', 'string']
+        ];
+    }
 }
 ?>

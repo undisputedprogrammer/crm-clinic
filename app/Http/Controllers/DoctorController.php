@@ -24,22 +24,4 @@ class DoctorController extends SmartController
         $doctors = Doctor::orderBy('id', 'desc')->paginate(10);
         return $this->buildResponse('pages.doctors',['doctors' => $doctors]);
     }
-
-    public function store()
-    {
-        try {
-            $doctor = $this->connectorService->store($this->request->all());
-
-            return response()->json([
-                'success' => true,
-                'doctor' => $doctor
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->__toString()
-            ]);
-        }
-
-    }
 }

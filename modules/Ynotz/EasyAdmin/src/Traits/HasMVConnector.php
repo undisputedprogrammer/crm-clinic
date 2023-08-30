@@ -21,6 +21,8 @@ trait HasMVConnector {
     private $showView = 'easyadmin::admin.show';
     private $createView = 'easyadmin::admin.form';
     private $editView = 'easyadmin::admin.form';
+    private $itemsCount = 10;
+    private $resulsName = 'results';
 
     public function index()
     {
@@ -33,7 +35,7 @@ trait HasMVConnector {
 
         try {
             $result = $this->connectorService->index(
-                intval($this->request->input('items_count', 10)),
+                intval($this->request->input('items_count', $this->itemsCount)),
                 $this->request->input('page'),
                 $this->request->input('search', []),
                 $this->request->input('sort', []),
@@ -41,7 +43,7 @@ trait HasMVConnector {
                 $this->request->input('adv_search', []),
                 $this->request->input('index_mode', true),
                 $this->request->input('selected_ids', ''),
-                'results',
+                $this->resulsName,
             );
             return $this->buildResponse($view, $result);
         } catch (AuthorizationException $e) {
@@ -148,8 +150,7 @@ trait HasMVConnector {
                         [
                             'success' => false,
                             'errors' => $validator->errors()
-                        ],
-                        status: 401
+                        ]
                     );
                     // return $this->buildResponse($view, $data);
                 }
@@ -163,8 +164,7 @@ trait HasMVConnector {
                         [
                             'success' => false,
                             'errors' => 'Validation rules not defined'
-                        ],
-                        status: 401
+                        ]
                     );
                 }
                 $instance = $this->connectorService->store($request->all());
