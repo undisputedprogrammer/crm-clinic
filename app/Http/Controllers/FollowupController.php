@@ -38,21 +38,21 @@ class FollowupController extends SmartController
 
 
 
-            if($request->convert == true){
-                $followup = Followup::find($request->followup_id);
-                $followup->converted = true;
-                $followup->actual_date = date('Y-m-d');
-                $followup->save();
-                $lead = Lead::find($request->lead_id);
-                $lead->status='Converted';
-                $lead->save();
-                $appointment = Appointment::create([
-                    'lead_id'=>$request->lead_id,
-                    'doctor_id'=>$request->doctor,
-                    'appointment_date'=>$request->appointment_date
-                ]);
-                return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead,'appointment'=>$appointment]);
-            }
+            // if($request->convert == true){
+            //     $followup = Followup::find($request->followup_id);
+            //     $followup->converted = true;
+            //     $followup->actual_date = date('Y-m-d');
+            //     $followup->save();
+            //     $lead = Lead::find($request->lead_id);
+            //     $lead->status='Converted';
+            //     $lead->save();
+            //     $appointment = Appointment::create([
+            //         'lead_id'=>$request->lead_id,
+            //         'doctor_id'=>$request->doctor,
+            //         'appointment_date'=>$request->appointment_date
+            //     ]);
+            //     return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead,'appointment'=>$appointment]);
+            // }
 
 
             return response()->json(['success'=>true, 'message'=>'Remark added','followup_remark'=>$followup_remark]);

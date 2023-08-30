@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('actual_date')->nullable();
             $table->date('next_followup_date')->nullable();
             $table->enum('status',['pending','completed']);
-            $table->text('remarks')->nullable();
+
             $table->boolean('converted')->nullable();
             $table->timestamps();
         });
