@@ -14,7 +14,7 @@ class Lead extends Model
     protected $fillable = ['name','phone','email','city','is_valid','is_genuine','history','customer_segment','status','followup_created'];
 
     public function remarks(){
-        return $this->morphMany(Remark::class,'remarkable')->orderBy('created_at')->select('id','remark');
+        return $this->morphMany(Remark::class,'remarkable');
     }
 
     public function followups(){

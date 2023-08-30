@@ -54,7 +54,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <div class="h-[calc(100vh-3.5rem)] mt-14 pt-7 bg-base-200 w-full flex justify-evenly">
+      <div class="h-[calc(100vh-3.5rem)] pt-7 bg-base-200 w-full flex justify-evenly">
 
         {{-- followups table --}}
         <x-tables.followup-table :followups="$followups"/>
@@ -370,6 +370,7 @@
 
                                 fp.lead.status = $event.detail.content.lead.status;
                                 fp.actual_date = $event.detail.content.followup.actual_date;
+                                fp.converted = $event.detail.content.followup.converted;
 
                                 }
 

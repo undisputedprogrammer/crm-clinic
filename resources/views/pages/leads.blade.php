@@ -9,7 +9,9 @@
 
 
 
-      <div
+      <div x-data="{
+        convert: false
+      }"
 
         {{-- pagination event handler --}}
         @pageaction.window="
@@ -79,7 +81,7 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" h-[calc(100vh-3.5rem)] mt-14 pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
+       class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
 
 
 
@@ -95,6 +97,7 @@
 
             <div x-show="selected" x-transition
             @detailsupdate.window="
+            console.log($event.detail);
             selected = true;
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
@@ -256,7 +259,9 @@
                         <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].actual_date : '---' " class="text-secondary"></span>
                     </p>
 
-                    <form x-show="lead.followup_created == 0"
+                    <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Lead Converted</p>
+
+                    <form x-show="lead.followup_created == 0 && !convert"
                     x-data = "{ doSubmit() {
                         let form = document.getElementById('initiate-followup-form');
                         let formdata = new FormData(form);
@@ -294,6 +299,15 @@
                     <input id="scheduled-date" name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
                     <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Initiate follow up</button>
                     </form>
+
+                    {{-- convert checkbox --}}
+                    <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
+
+                        <input @click="convert = $el.checked" :disabled=" lead.followup_created == true || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
+                        <span class="label-text">Save remark and schedule appointment</span>
+                    </label>
+
+                    <x-forms.add-appointment-form :doctors="$doctors"/>
 
                 </div>
 

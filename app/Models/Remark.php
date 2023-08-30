@@ -11,9 +11,9 @@ class Remark extends Model
 
     protected $fillable = ['remarkable_type','remarkable_id','remark','user_id'];
 
-    // public function remarkable()
-    // {
-    //     return $this->morphedByMany(Remark::class,'remarkable');
-    // }
+    public function remarkable()
+    {
+        return $this->morphTo();
+    }
 
 }

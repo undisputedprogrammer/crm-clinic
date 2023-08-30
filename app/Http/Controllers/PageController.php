@@ -40,12 +40,20 @@ class PageController extends SmartController
         MetatagHelper::setTitle('Fresh leads - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
         if($request->user()->hasRole('agent')) {
-            $leads = Lead::where('status', '!=', 'Converted')->where('assigned_to', $request->user()->id)->with(['remarks','answers'])->paginate(10);
+            $leads = Lead::where('status', '!=', 'Converted')->where('assigned_to', $request->user()->id)
+            ->with(
+                [
+                'remarks' => function($q) {
+                    return $q->orderBy('created_at', 'desc');
+                },
+                'answers'
+                ])->paginate(10);
         }
         if($request->user()->hasRole('admin')){
             $leads = Lead::where('status', '!=', 'Converted')->with(['remarks','answers'])->paginate(10);
         }
-        return $this->buildResponse('pages.leads',compact('leads'));
+        $doctors = Doctor::all();
+        return $this->buildResponse('pages.leads',compact('leads','doctors'));
     }
 
     public function destroy(Request $request){
@@ -96,7 +104,7 @@ class PageController extends SmartController
         MetatagHelper::clearAllMeta();
         MetatagHelper::setTitle('Follow ups - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $questions = Question::orderBy('created_at', 'desc')->get();
+        $questions = Question::orderBy('created_at', 'desc')->paginate(10);
         return $this->buildResponse('pages.manage-questions',compact('questions'));
     }
 }

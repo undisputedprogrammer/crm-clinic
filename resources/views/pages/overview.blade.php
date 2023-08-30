@@ -8,7 +8,7 @@
 
 
 
-      <div class=" min-h-[calc(100vh-3.5rem)] w-full mx-auto  bg-base-100 mt-14  ">
+      <div class=" min-h-[calc(100vh-3.5rem)] w-full mx-auto  bg-base-100 ">
 
         <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3 my-4">
             <div class="flex space-x-3 justify-evenly items-center">
@@ -55,7 +55,7 @@
 
             {{-- import leads form --}}
             @can('import-lead')
-            <div class="mt-2.5">
+            <div class="my-3 bg-base-200 p-3 rounded-xl w-fit">
             <h1 class="font-semibold mb-1 text-primary">Import leads from Excel</h1>
             <form
             x-data = "{ doSubmit() {
@@ -82,14 +82,14 @@
                 }"
 
             id="import-form" class="flex space-x-3">
-                <input type="file" name="sheet" class="file-input input-success file-input-bordered file-input-sm w-full max-w-xs" />
+                <input type="file" name="sheet" class="file-input file-input-bordered file-input-success text-base-content file-input-sm w-full max-w-xs" />
                 <button type="submit" class="btn btn-sm btn-success">Import</button>
             </form>
             </div>
             @endcan
 
             @can('is-admin')
-            <div class="bg-base-200 rounded-xl mt-2.5 p-2.5 w-fit">
+            <div class="bg-base-200 rounded-xl my-3 p-3 w-fit">
                 <h2 class="text-primary font-medium">More actions</h2>
 
                 <div class=" flex space-x-2 mt-1">
@@ -99,8 +99,19 @@
                         route:'manage-questions',
                         fragment:'page-content'
                     })">Manage Questions</button>
-                    <button class="btn btn-sm btn-secondary">Manage Appointments</button>
-                    <button class="btn btn-sm btn-secondary">Manage Doctors</button>
+                    <button class="btn btn-sm btn-secondary"
+                    @click.prevent.stop="$dispatch('linkaction',{
+                        link:'{{route('appointments.index')}}',
+                        route:'appointments.index',
+                        fragment:'page-content'
+                    })">Manage Appointments</button>
+                    <button class="btn btn-sm btn-secondary"
+                    @click.prevent.stop="$dispatch('linkaction',{
+                        link:'{{route('doctors.index')}}',
+                        route:'doctors.index',
+                        fragment:'page-content'
+                    })"
+                    >Manage Doctors</button>
                 </div>
             </div>
 

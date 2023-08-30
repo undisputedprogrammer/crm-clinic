@@ -1,4 +1,6 @@
 @props(['leads'])
+
+{{-- {{dd($leads[0])}} --}}
 <div class="w-[55%]">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($leads != null && count($leads)>0)

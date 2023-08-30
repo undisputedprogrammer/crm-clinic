@@ -11,8 +11,6 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Remarkcontroller;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TestController;
-use App\Models\Appointment;
-use App\Models\Followup;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +46,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
     Route::post('/appointment/store',[AppointmentController::class, 'store'])->name('add-appointment');
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
 });
 
 Route::get('/',[PageController::class, 'home']);
