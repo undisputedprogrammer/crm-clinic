@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImportController;
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
 });
 
 Route::get('/',[PageController::class, 'home']);

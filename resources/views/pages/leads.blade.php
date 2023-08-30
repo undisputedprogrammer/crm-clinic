@@ -79,7 +79,7 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" h-[calc(100vh-3.5rem)] mt-14 pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
+       class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
 
 
 

@@ -8,7 +8,7 @@
 
 
 
-      <div class=" min-h-[calc(100vh-3.5rem)] w-full mx-auto  bg-base-100 mt-14  ">
+      <div class=" min-h-[calc(100vh-3.5rem)] w-full mx-auto  bg-base-100 ">
 
         <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3 my-4">
             <div class="flex space-x-3 justify-evenly items-center">

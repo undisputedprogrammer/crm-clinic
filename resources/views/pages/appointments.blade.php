@@ -6,7 +6,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-base-content bg-base-200">Manage Doctors</h2>
+      <h2 class="py-4 px-12 text-lg font-semibold text-base-content bg-base-200">Manage Appointments</h2>
 
 
       <div x-data="{page: 0}"
@@ -26,24 +26,24 @@
        class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
 
 
-        <x-tables.doctors-table :doctors="$doctors"/>
+        <x-tables.appointments-table :appointments="$appointments"/>
 
 
 
-        <div
+        {{-- <div
             x-data="{
                 mode: 'add',
             }"
             class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div x-show="mode=='add'" x-transition>
-                <h2 class="text-lg font-semibold text-secondary ">Add Doctor</h2>
+                <h2 class="text-lg font-semibold text-secondary ">Add Appointment</h2>
                 <div class=" mt-2 flex flex-col space-y-2">
-                    <form id="doctor-add-form"
+                    <form id="appointment-add-form"
                         x-data="{
                             doSubmit() {
-                                let form = document.getElementById('doctor-add-form');
+                                let form = document.getElementById('appointment-add-form');
                                 let fd = new FormData(form);
-                                $dispatch('formsubmit', {url: '{{route('doctors.store')}}', formData: fd, target: 'doctor-add-form'});
+                                $dispatch('formsubmit', {url: '{{route('appointments.store')}}', formData: fd, target: 'appointment-add-form'});
                             }
                         }"
                         class="flex flex-col items-center"
@@ -51,9 +51,9 @@
                         @formresponse.window="
                         console.log($event.detail);
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Doctor Added!'});$dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Appointment Added!'});$dispatch('linkaction', {link: '{{route('appointments.index')}}', route: 'appointments.index'});
                             } else {
-                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add doctor. Please make sure you have entered all details.'});
+                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add appointment. Please make sure you have entered all details.'});
                             }
                         "
                         >
@@ -88,33 +88,33 @@
                     }
                 }"
                 x-show="mode=='edit'"
-                @doctoredit.window="
+                @appointmentedit.window="
                     id = $event.detail.id;
                     name = $event.detail.name;
                     department = $event.detail.department;
                     mode='edit';
                 "  x-transition>
-                <h2 class="text-lg font-semibold text-primary ">Edit Doctor</h2>
+                <h2 class="text-lg font-semibold text-primary ">Edit Appointment</h2>
                 <div class=" mt-2 flex flex-col space-y-2">
-                    <form id="doctor-edit-form"
+                    <form id="appointment-edit-form"
                         x-data="{
                             doSubmit() {
-                                let form = document.getElementById('doctor-edit-form');
+                                let form = document.getElementById('appointment-edit-form');
                                 let fd = new FormData(form);
-                                $dispatch('formsubmit', {url: '{{route('doctors.update', '_X_')}}'.replace('_X_', id), formData: fd, target: 'doctor-edit-form'});
+                                $dispatch('formsubmit', {url: '{{route('appointments.update', '_X_')}}'.replace('_X_', id), formData: fd, target: 'appointment-edit-form'});
                             }
                         }"
                         class="flex flex-col items-center"
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Doctor Updated!'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Appointment Updated!'});
                                 let params = {
                                     page: page
                                 };
-                                $dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index', params: params, fresh: true});
+                                $dispatch('linkaction', {link: '{{route('appointments.index')}}', route: 'appointments.index', params: params, fresh: true});
                             } else {
-                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add doctor. Please make sure you have entered all details.'});
+                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add appointment. Please make sure you have entered all details.'});
                             }
                         "
                         >
@@ -137,7 +137,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
       </div>
     </div>

@@ -9,7 +9,7 @@
 
 
 
-      <div class=" h-[calc(100vh-3.5rem)] mt-14 pt-7 pb-3  bg-base-200 w-full ">
+      <div class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full ">
 
         <h1 class=" text-center font-semibold text-primary text-lg">Manage Questions</h1>
 

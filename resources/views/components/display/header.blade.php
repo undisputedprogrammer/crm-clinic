@@ -1,4 +1,4 @@
-<div class="fixed w-full flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
+<div class="w-full flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
 
 
     <a href="#" class="text-xl font-bold flex items-center ">

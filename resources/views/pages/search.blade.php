@@ -33,7 +33,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <div class="min-h-[calc(100vh-3.5rem)] mt-14 pt-7 bg-base-200 w-full ">
+      <div class="min-h-[calc(100vh-3.5rem)] pt-7 bg-base-200 w-full ">
             <h1 class=" text-secondary text-xl font-medium text-center">Leads - Advanced Search</h1>
 
             <form
