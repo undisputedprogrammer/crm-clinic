@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -46,5 +47,17 @@ class LeadFactory extends Factory
         else{
             return $this->getAgent();
         }
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Lead $lead) {
+            $n = random_int(0, 1);
+            if ($n == 1) {
+                Appointment::factory()->create([
+                    'lead_id' => $lead->id
+                ]);
+            }
+        });
     }
 }

@@ -20,9 +20,9 @@ return new class extends Migration
             $table->boolean('is_valid');
             $table->boolean('is_genuine');
             $table->text('history');
-            $table->enum('customer_segment',['hot','warm','cold']);
-            $table->enum('status',['Created','Validated','Converted','Closed']);
-            $table->boolean('followup_created')->nullable();
+            $table->enum('customer_segment',['hot','warm','cold'])->nullable();
+            $table->enum('status',['Created','Validated','Converted','Closed'])->default('Created');
+            $table->boolean('followup_created')->default(false);
             $table->foreignId('assigned_to')->references('id')->on('users');
             $table->timestamps();
         });

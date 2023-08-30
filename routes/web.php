@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LeadController;
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function(){
     Route::post('/search',[SearchController::class, 'index'])->name('get-results');
     Route::post('/followup/new',[FollowupController::class,'next'])->name('next-followup');
     Route::post('/import/lead',[ImportController::class, 'importLead'])->name('import-leads');
+    Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
+    Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
 });
 
 Route::get('/',[PageController::class, 'home']);

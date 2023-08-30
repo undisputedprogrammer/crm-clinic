@@ -13,14 +13,22 @@ class QuestionSeeder extends Seeder
      */
     public function run(): void
     {
-        $questions = ['Q-FC'=>'What is your favourite color ?','Q-FF'=>'What is your favourite food ?','Q-DLS'=>'Do you like sports ?','Q-FOE'=>'How often do you exercise ?','Q-POM'=>'How long have you been married','Q-YO'=>'What is your occupation ?'];
+        $questions = [
+            'What is your favourite color ?',
+            'What is your favourite food ?',
+            'Do you like sports ?',
+            'How often do you exercise ?',
+            'How long have you been married',
+            'What is your occupation ?'
+        ];
 
-        $keys = array_keys($questions);
-        foreach($keys as $key){
-            Question::create([
-                'question_code'=>$key,
-                'question'=>$questions[$key],
+        foreach($questions as $qn){
+            $q = Question::create([
+                'question_code'=>'qcode',
+                'question'=>$qn,
             ]);
+            $q->question_code = 'Q_'.$q->id;
+            $q->save();
         }
     }
 }
