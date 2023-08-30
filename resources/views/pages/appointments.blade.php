@@ -1,6 +1,24 @@
 <x-easyadmin::app-layout>
 <div >
-    <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
+    <div
+        x-data="{
+            from: '',
+            to: '',
+            doSubmit() {
+                $dispatch('linkaction', {link: '{{route('appointments.index')}}',
+                route: 'appointments.index', fresh: true, params: {from: this.from, to: this.to}});
+            }
+        }"
+        x-init="
+            @if (isset(request()->from))
+                from = '{{request()->from}}';
+            @endif
+
+            @if (isset(request()->to))
+                to = '{{request()->to}}';
+            @endif
+        "
+        class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
       <x-display.header/>
@@ -8,7 +26,26 @@
       {{-- page body --}}
       <h2 class="py-4 px-12 text-lg font-semibold text-base-content bg-base-200">Manage Appointments</h2>
 
-
+        <form id="appointments-search-form"
+            action=""
+            @submit.prevent.stop="doSubmit();"
+            class="flex flex-row w-full m-auto justify-center space-x-8 bg-base-200 items-end">
+            <div class="form-control max-w-xs">
+                <label class="label">
+                  <span class="label-text">From</span>
+                </label>
+                <input x-model="from" name="from" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+            </div>
+            <div class="form-control max-w-xs">
+                <label class="label">
+                  <span class="label-text">To</span>
+                </label>
+                <input x-model="to" name="to" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-md btn-secondary">Search</button>
+            </div>
+        </form>
       <div x-data="{page: 0}"
         x-init="
             page = {{request()->input('page', 0)}};
@@ -17,10 +54,20 @@
         {{-- pagination event handler --}}
         @pageaction.window="
             page = $event.detail.page;
+            let params = {
+                page: page
+            };
+            if (from != '') {
+                params.from = from;
+            }
+            if (to != '') {
+                params.to = to;
+            }
             $dispatch('linkaction',{
-                link: $event.detail.link,
+                link: '{{route('appointments.index')}}',
                 route: currentroute,
                 fragment: 'page-content',
+                params: params
             })"
 
        class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
