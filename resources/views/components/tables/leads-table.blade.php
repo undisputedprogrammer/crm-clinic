@@ -4,25 +4,7 @@
         @if ($leads != null && count($leads)>0)
 
 
-        {{-- getting all questions in an array --}}
-        @php
-            $allQuestions = [];
 
-            foreach ($leads as $lead) {
-                foreach ($lead->answers as $answer) {
-                    if ($answer->question) {
-                        $questionId = $answer->question->id;
-                        $allQuestions[$questionId] = $answer->question->question;
-                    }
-                }
-            }
-        @endphp
-
-
-            {{-- converting questions array to js array --}}
-            <script>
-                var allQuestions = @json($allQuestions);
-            </script>
 
 
 
@@ -46,7 +28,7 @@
 
                 <tr x-data="{questions : null}"  class="text-base-content hover:bg-base-100" :class=" name == `{{$lead->name}}` ? 'bg-base-100 font-medium' : '' "
                     @click.prevent.stop="
-                    console.log({{$lead}});
+                    console.log({{$lead->remarks}});
                     $dispatch('detailsupdate',{lead : {{json_encode($lead)}}, remarks: {{json_encode($lead->remarks)}}, id: {{$lead->id}}, followups: {{$lead->followups}}, answers: {{json_encode($lead->answers)}}})"
 
 

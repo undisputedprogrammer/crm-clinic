@@ -5,6 +5,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Remarkcontroller;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TestController;
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function(){
     Route::post('/search',[SearchController::class, 'index'])->name('get-results');
     Route::post('/followup/new',[FollowupController::class,'next'])->name('next-followup');
     Route::post('/import/lead',[ImportController::class, 'importLead'])->name('import-leads');
+    Route::get('/questions',[PageController::class, 'questionIndex'])->name('manage-questions');
+    Route::post('/questions/store',[QuestionController::class, 'store'])->name('add-question');
 });
 
 Route::get('/',[PageController::class, 'home']);

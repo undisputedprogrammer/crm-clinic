@@ -1,0 +1,70 @@
+@props(['questions'])
+<div x-data="{questions:{{json_encode($questions)}},
+edit_question: '',
+edit_question_id: null}" class="w-fit mx-auto">
+    {{-- add new question form --}}
+<x-forms.add-question-form/>
+
+<dialog id="my_modal_1" class="modal">
+    <form method="dialog" class="modal-box bg-base-100 text-base-content">
+      <h3 class="font-bold text-lg text-secondary">Edit Question</h3>
+      <input type="text" placeholder="" :value="edit_question" class="input input-sm w-full bg-base-200 max-w-md" />
+      <div class="flex space-x-2 mt-2.5">
+        <a href="#" class="btn btn-success btn-sm">Submit</a>
+
+        <button class="btn btn-error btn-sm">Close</button>
+      </div>
+
+
+    </form>
+</dialog>
+
+<div
+
+ class="overflow-x-auto w-fit mx-auto border border-primary rounded-xl mt-3">
+
+    <table class="table w-fit mx-auto  ">
+      <!-- head -->
+      <thead>
+        <tr class=" text-secondary">
+          <th></th>
+          <th>Question Code</th>
+          <th>Question</th>
+          <th>Created at</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{-- @foreach ($questions as $question) --}}
+
+        <template x-for="question in questions">
+        <tr class=" text-base-content hover:bg-base-100">
+          <th x-text="question.id"></th>
+          <td x-text="question.question_code"></td>
+          <td x-text="question.question"></td>
+          <td x-text="question.created_at"></td>
+          <td class="flex ">
+            {{-- edit btn --}}
+            <svg @click.prevent.stop="
+            edit_question=question.question;
+            edit_question_id=question.id;
+
+            " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 p-1 rounded-md stroke-primary hover:bg-base-200">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+
+            {{-- delete btn --}}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 p-1 rounded-md stroke-error hover:bg-base-200">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>
+
+
+          </td>
+        </tr>
+        </template>
+        {{-- @endforeach --}}
+
+      </tbody>
+    </table>
+  </div>
+</div>

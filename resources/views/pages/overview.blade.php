@@ -88,7 +88,23 @@
             </div>
             @endcan
 
+            @can('is-admin')
+            <div class="bg-base-200 rounded-xl mt-2.5 p-2.5 w-fit">
+                <h2 class="text-primary font-medium">More actions</h2>
 
+                <div class=" flex space-x-2 mt-1">
+                    <button class="btn btn-sm btn-secondary"
+                    @click.prevent.stop="$dispatch('linkaction',{
+                        link:'{{route('manage-questions')}}',
+                        route:'manage-questions',
+                        fragment:'page-content'
+                    })">Manage Questions</button>
+                    <button class="btn btn-sm btn-secondary">Manage Appointments</button>
+                    <button class="btn btn-sm btn-secondary">Manage Doctors</button>
+                </div>
+            </div>
+
+            @endcan
 
         </div>
 

@@ -25,5 +25,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('import-lead', function ($user) {
             return $user->hasRole('admin');
         });
+
+        Gate::define('is-admin', function($user) {
+            return $user->hasRole('admin');
+        });
     }
 }

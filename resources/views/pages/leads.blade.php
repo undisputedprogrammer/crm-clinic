@@ -121,6 +121,7 @@
 
 
             }
+            console.log($event.detail);
 
 
 

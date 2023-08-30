@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Followup;
 use App\Models\Lead;
+use App\Models\Question;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,5 +88,13 @@ class PageController extends SmartController
         MetatagHelper::setTitle('Follow ups - Clinic-crm');
         MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
         return $this->buildResponse('pages.search');
+    }
+
+    public function questionIndex(Request $request){
+        MetatagHelper::clearAllMeta();
+        MetatagHelper::setTitle('Follow ups - Clinic-crm');
+        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
+        $questions = Question::orderBy('created_at', 'desc')->get();
+        return $this->buildResponse('pages.manage-questions',compact('questions'));
     }
 }
