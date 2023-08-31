@@ -80,7 +80,9 @@ class AppointmentController extends SmartController
 
     public function index()
     {
-        $query = Appointment::orderBy('appointment_date', 'asc');
+        $query = Appointment::with(['lead'=>function($query){
+            return $query->with('remarks');
+        },'doctor'])->orderBy('appointment_date', 'asc');
         if (isset($this->request->from)) {
             $query->where('appointment_date', '>=', $this->request->from);
         }

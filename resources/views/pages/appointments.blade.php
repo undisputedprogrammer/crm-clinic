@@ -77,114 +77,58 @@
 
 
 
-        {{-- <div
+        <div id="appointment-details"
             x-data="{
-                mode: 'add',
+                appointments: [],
+                appointment: [],
+                doctor: [],
+                lead: [],
+                leadremarks: [],
+                contentRecieved: false
             }"
+            @dataupdate.window="
+                if($event.detail.target == $el.id){
+                    console.log($event.detail.appointment);
+                    appointment = $event.detail.appointment;
+                    appointments[appointment.id] = appointment;
+                    lead = appointment.lead;
+                    leadremarks = lead.remarks;
+                    doctor = appointment.doctor;
+                    contentRecieved = true;
+                }
+            "
             class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
-            <div x-show="mode=='add'" x-transition>
-                <h2 class="text-lg font-semibold text-secondary ">Add Appointment</h2>
-                <div class=" mt-2 flex flex-col space-y-2">
-                    <form id="appointment-add-form"
-                        x-data="{
-                            doSubmit() {
-                                let form = document.getElementById('appointment-add-form');
-                                let fd = new FormData(form);
-                                $dispatch('formsubmit', {url: '{{route('appointments.store')}}', formData: fd, target: 'appointment-add-form'});
-                            }
-                        }"
-                        class="flex flex-col items-center"
-                        @submit.prevent.stop="doSubmit();"
-                        @formresponse.window="
-                        console.log($event.detail);
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Appointment Added!'});$dispatch('linkaction', {link: '{{route('appointments.index')}}', route: 'appointments.index'});
-                            } else {
-                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add appointment. Please make sure you have entered all details.'});
-                            }
-                        "
-                        >
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                            <span class="label-text">Name</span>
-                            </label>
-                            <input type="text" name="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                            <span class="label-text">Department</span>
-                            </label>
-                            <input type="text" name="department" placeholder="Department" class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="text-center py-8">
-                            <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                        </div>
-                    </form>
+
+            <p x-show="!contentRecieved" x-transition class=" text-lg font-medium text-base-content text-center">Select an appointment</p>
+
+            <div x-show="contentRecieved" x-transition x-cloak>
+                <h2 class=" text-secondary font-semibold text-lg mb-2">Appointment Details</h2>
+                <p class="font-medium text-base-content text-base">Prospect name : <span x-text="lead.name" class=" text-primary"></span></p>
+                <p class="font-medium text-base-content text-base">Doctor name : <span x-text="doctor.name" class=" text-primary"></span></p>
+                <p class="font-medium text-base-content text-base">Appointment date : <span x-text="appointment.appointment_date" class=" text-primary"></span></p>
+
+                <h1 class=" text-base font-semibold text-secondary mt-3">More details on lead</h1>
+                <p class="text-base font-medium">City : <span x-text="lead != undefined ? lead.city : '' "> </span></p>
+                <p class="text-base font-medium">Phone : <span x-text=" lead != undefined ? lead.phone : '' "> </span></p>
+                <p class="text-base font-medium">Email : <span x-text=" lead != undefined ? lead.email : '' "> </span></p>
+
+                <div class="mt-2.5">
+                    <p class=" text-base font-medium text-secondary">Lead remarks</p>
+
+                    <ul class=" list-disc text-sm list-outside font-normal">
+                        <template x-for="remark in leadremarks">
+
+                            <li x-text="remark.remark"></li>
+
+                        </template>
+                    </ul>
                 </div>
+
             </div>
-            <div
-                x-data="{
-                    id: '',
-                    name: '',
-                    department: '',
-                    reset() {
-                        this.id = '';
-                        this.name = '';
-                        this.department = '';
-                        mode = 'add';
-                    }
-                }"
-                x-show="mode=='edit'"
-                @appointmentedit.window="
-                    id = $event.detail.id;
-                    name = $event.detail.name;
-                    department = $event.detail.department;
-                    mode='edit';
-                "  x-transition>
-                <h2 class="text-lg font-semibold text-primary ">Edit Appointment</h2>
-                <div class=" mt-2 flex flex-col space-y-2">
-                    <form id="appointment-edit-form"
-                        x-data="{
-                            doSubmit() {
-                                let form = document.getElementById('appointment-edit-form');
-                                let fd = new FormData(form);
-                                $dispatch('formsubmit', {url: '{{route('appointments.update', '_X_')}}'.replace('_X_', id), formData: fd, target: 'appointment-edit-form'});
-                            }
-                        }"
-                        class="flex flex-col items-center"
-                        @submit.prevent.stop="doSubmit();"
-                        @formresponse.window="
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Appointment Updated!'});
-                                let params = {
-                                    page: page
-                                };
-                                $dispatch('linkaction', {link: '{{route('appointments.index')}}', route: 'appointments.index', params: params, fresh: true});
-                            } else {
-                                $dispatch('shownotice', {mode: 'error', message: 'Failed to add appointment. Please make sure you have entered all details.'});
-                            }
-                        "
-                        >
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                            <span class="label-text">Name</span>
-                            </label>
-                            <input type="text" name="name" x-model="name" placeholder="Name" class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                            <span class="label-text">Department</span>
-                            </label>
-                            <input type="text" name="department" x-model="department" placeholder="Department" class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="text-center py-8">
-                            <button type="submit" class="btn btn-sm btn-secondary bg-secondary">Update</button><br/><br/>
-                            <button @click.prevent.stop="reset();" type="button" class="btn btn-ghost btn-xs">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> --}}
+
+        </div>
+
+
 
       </div>
     </div>

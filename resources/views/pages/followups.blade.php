@@ -344,7 +344,7 @@
                         <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
 
                             <input @click="convert = $el.checked" :disabled="fp.next_followup_date != null || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
-                            <span class="label-text">Save remark and schedule appointment</span>
+                            <span class="label-text">Schedule appointment</span>
                         </label>
 
                         {{-- schedule appointment form --}}

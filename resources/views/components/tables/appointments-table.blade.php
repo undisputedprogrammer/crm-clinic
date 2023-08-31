@@ -17,7 +17,13 @@
           </thead>
           <tbody>
             @foreach ($appointments as $appointment)
-                <tr class="text-base-content hover:bg-base-100 relative">
+                <tr
+                @click.prevent.stop="
+                $dispatch('dataupdate',{
+                    appointment: {{json_encode($appointment)}},
+                    target: 'appointment-details'
+                })"
+                class="text-base-content hover:bg-base-100 relative">
                     {{-- <th>{{$loop->index + 1}}</th> --}}
                     <td>{{$appointment->appointment_date}}</td>
                     <td>{{$appointment->lead->name}}</td>
