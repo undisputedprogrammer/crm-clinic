@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Doctor;
 use App\Models\Followup;
 use App\Models\Lead;
+use App\Models\Message;
 use App\Models\Question;
+use App\Services\PageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,49 +16,31 @@ use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class PageController extends SmartController
 {
-    public function __construct(Request $request)
+    private $pageService;
+
+    public function __construct(Request $request, PageService $pageService)
     {
         parent::__construct($request);
+        $this->pageService = $pageService;
     }
+
     public function overview()
     {
-        MetatagHelper::clearAllMeta();
-        MetatagHelper::setTitle('Overview - Clinic-crm');
-        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        $now = Carbon::now();
-        $currentMonth = $now->format('m');
-        $currentYear = $now->format('Y');
-        $lpm = Lead::whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
-        $ftm = Lead::where('followup_created',true)->whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
-        $lcm = Lead::where('status','Converted')->whereMonth('created_at',$currentMonth)->whereYear('created_at',$currentYear)->count();
-        $pf = Followup::whereHas('lead', function ($query) {
-            $query->where('status','!=','Converted');
-        })->where('next_followup_date',null)->count();
-        return $this->buildResponse('pages.overview',compact('lpm','ftm','lcm','pf'));
+        $data = $this->pageService->getOverviewData();
+
+        return $this->buildResponse('pages.overview', $data);
     }
 
-    public function leadIndex(Request $request){
-        MetatagHelper::clearAllMeta();
-        MetatagHelper::setTitle('Fresh leads - Clinic-crm');
-        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        if($request->user()->hasRole('agent')) {
-            $leads = Lead::where('status', '!=', 'Converted')->where('assigned_to', $request->user()->id)
-            ->with(
-                [
-                'remarks' => function($q) {
-                    return $q->orderBy('created_at', 'desc');
-                },
-                'answers'
-                ])->paginate(10);
-        }
-        if($request->user()->hasRole('admin')){
-            $leads = Lead::where('status', '!=', 'Converted')->with(['remarks','answers'])->paginate(10);
-        }
-        $doctors = Doctor::all();
-        return $this->buildResponse('pages.leads',compact('leads','doctors'));
+    public function leadIndex(Request $request)
+    {
+
+        $data = $this->pageService->getLeads($request->user());
+
+        return $this->buildResponse('pages.leads', $data);
     }
 
-    public function destroy(Request $request){
+    public function destroy(Request $request)
+    {
 
         Auth::guard('web')->logout();
 
@@ -67,44 +51,42 @@ class PageController extends SmartController
         return redirect('/login');
     }
 
-    public function home(){
+    public function home()
+    {
         return redirect('/overview');
     }
 
-    public function followUps(Request $request){
-        MetatagHelper::clearAllMeta();
-        MetatagHelper::setTitle('Follow ups - Clinic-crm');
-        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
-        if($request->user()->hasRole('admin')) {
-            $followups = Followup::with(['lead','remarks'])->where('scheduled_date', '<=', date('Y-m-d'))->where('actual_date', null)->where('converted', null)->paginate(10);
-        }
-        if($request->user()->hasRole('agent')){
-            $followups = Followup::with(['lead', 'remarks'])
-            ->whereHas('lead', function ($query) {
-                $query->where('assigned_to', Auth::id());
-            })
-            ->where('scheduled_date', '<=', date('Y-m-d'))
-            ->where('actual_date', null)
-            ->where('converted', null)
-            ->paginate(10);
-        }
-        $doctors = Doctor::all();
+    public function followUps(Request $request)
+    {
+        // if ($request->user()->hasRole('admin')) {
+        //     $followups = Followup::with(['lead', 'remarks'])->where('scheduled_date', '<=', date('Y-m-d'))->where('actual_date', null)->where('converted', null)->paginate(10);
+        // }
+        // if ($request->user()->hasRole('agent')) {
+        //     $followups = Followup::with(['lead', 'remarks'])
+        //         ->whereHas('lead', function ($query) {
+        //             $query->where('assigned_to', Auth::id());
+        //         })
+        //         ->where('scheduled_date', '<=', date('Y-m-d'))
+        //         ->where('actual_date', null)
+        //         ->where('converted', null)
+        //         ->paginate(10);
+        // }
+        // $doctors = Doctor::all();
 
-        return $this->buildResponse('pages.followups', compact('followups','doctors'));
+        $data = $this->pageService->getFollowupData($request->user());
+
+        return $this->buildResponse('pages.followups', $data);
     }
 
-    public function searchIndex(Request $request){
-        MetatagHelper::clearAllMeta();
-        MetatagHelper::setTitle('Follow ups - Clinic-crm');
-        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
+    public function searchIndex(Request $request)
+    {
         return $this->buildResponse('pages.search');
     }
 
-    public function questionIndex(Request $request){
-        MetatagHelper::clearAllMeta();
-        MetatagHelper::setTitle('Follow ups - Clinic-crm');
-        MetatagHelper::addMetatags(['description'=>'Customer relationship management system']);
+    public function questionIndex(Request $request)
+    {
         $questions = Question::orderBy('created_at', 'desc')->paginate(10);
-        return $this->buildResponse('pages.manage-questions',compact('questions'));
+
+        return $this->buildResponse('pages.manage-questions', compact('questions'));
     }
 }

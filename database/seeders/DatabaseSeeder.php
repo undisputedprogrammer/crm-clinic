@@ -8,6 +8,7 @@ use Database\Seeders\LeadSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\AnswerSeeder;
 use Database\Seeders\RemarkSeeder;
+use Database\Seeders\MessageSeeder;
 use Database\Seeders\QuestionSeeder;
 use Ynotz\AccessControl\Models\Role;
 
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
             LeadSeeder::class,
             RemarkSeeder::class,
             AnswerSeeder::class,
+            MessageSeeder::class,
         ]);
 
 

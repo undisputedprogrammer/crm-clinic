@@ -5,12 +5,14 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Remarkcontroller;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TestController;
+use App\Models\Message;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +49,7 @@ Route::middleware('auth')->group(function(){
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
     Route::post('/appointment/store',[AppointmentController::class, 'store'])->name('add-appointment');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+    Route::post('/message',[MessageController::class, 'message'])->name('message.sent');
 });
 
 Route::get('/',[PageController::class, 'home']);

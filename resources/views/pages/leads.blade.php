@@ -250,6 +250,8 @@
 
                 </div>
 
+                <x-forms.message-form :templates="$messageTemplates"/>
+
                 {{-- <x-sections.qna /> --}}
 
                 <div>
