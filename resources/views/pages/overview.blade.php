@@ -27,7 +27,13 @@
                         <span class=" text-base font-semibold text-secondary">{{$ftm}}/{{$lpm}}</span>
                     </label>
                     @php
-                        $perc_lf = ($ftm/$lpm)*100;
+                        if($lpm != 0){
+                            $perc_lf = ($ftm/$lpm)*100;
+                        }
+                        else{
+                            $perc_lf = 0;
+                        }
+
                     @endphp
                     <progress class="progress progress-success w-[90%] mx-auto" value="{{$perc_lf}}" max="100"></progress>
 
@@ -36,9 +42,18 @@
                 <div class="flex flex-col space-y-1 bg-base-200 w-1/4 rounded-xl items-center py-4">
                     <label for="" class=" font-medium text-primary w-[90%] flex justify-between">
                         <span>Leads converted this month</span>
+                        @php
+                            if($lpm != 0){
+                                $ctm = $lcm/$lpm;
+                            }
+                            else{
+                                $ctm = 0;
+                            }
+                        @endphp
                         <span class="text-base font-semibold text-secondary">{{$lcm}}/{{$lpm}}</span>
                     </label>
-                    <progress class="progress progress-success w-[90%] mx-auto" value="{{($lcm/$lpm)*100}}" max="100"></progress>
+
+                    <progress class="progress progress-success w-[90%] mx-auto" value="{{$ctm*100}}" max="100"></progress>
                 </div>
 
                 <div class="flex flex-col space-y-1 bg-base-200 justify-center h-16 w-1/4 rounded-xl items-center py-4">

@@ -90,14 +90,20 @@
 
 
 
-        <div class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
-            <h2 class="text-lg font-semibold text-secondary ">Lead details</h2>
+        <div x-data="{
+            selected_section: 'details'
+        }" class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+            <div class=" flex space-x-4">
+                <h2 @click="selected_section = 'details'" class="text-lg font-semibold text-secondary cursor-pointer" :class=" selected_section == 'details' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Lead details</h2>
+
+                <h2 @click="selected_section = 'qna'" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'qna' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">QNA</h2>
+            </div>
 
             <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
 
-            <div x-show="selected" x-transition
+            <div x-show="selected && selected_section == 'details'" x-transition
             @detailsupdate.window="
-            console.log($event.detail);
+            selected_section = 'details';
             selected = true;
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
@@ -244,7 +250,7 @@
 
                 </div>
 
-                <x-sections.qna />
+                {{-- <x-sections.qna /> --}}
 
                 <div>
                     <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
@@ -313,6 +319,12 @@
 
 
             </div>
+
+            {{-- QNA section --}}
+            <div x-show="selected_section == 'qna' " class=" py-3">
+                <x-sections.qna />
+            </div>
+
         </div>
 
       </div>
