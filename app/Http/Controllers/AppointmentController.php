@@ -14,63 +14,7 @@ use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class AppointmentController extends SmartController
 {
-
-
-    public function store(Request $request){
-
-
-                if($request->no_followup){
-                    $lead = Lead::find($request->lead_id);
-                    $lead->status="Converted";
-                    $lead->save();
-
-                    $appointment = Appointment::create([
-                        'lead_id'=>$request->lead_id,
-                        'doctor_id'=>$request->doctor,
-                        'appointment_date'=>$request->appointment_date
-                    ]);
-
-                    Remark::create([
-                        'remarkable_type'=>Lead::class,
-                        'remarkable_id'=>$lead->id,
-                        'remark'=>'Appointment fixed on '.$appointment->appointment_date,
-                        'user_id'=>Auth::id(),
-                    ]);
-
-                    return response()->json(['success'=>true, 'message'=>'Appointment fixed', 'converted'=>true, 'lead'=>$lead,'appointment'=>$appointment]);
-                }
-                else{
-
-                    $lead = Lead::find($request->lead_id);
-                    $lead->status="Converted";
-                    $lead->save();
-
-                    $followup = Followup::where('id',$request->followup_id)->with('remarks')->get()->first();
-                    $followup->converted = true;
-                    $followup->actual_date = date('Y-m-d');
-                    $followup->save();
-
-
-                    $appointment = Appointment::create([
-                        'lead_id'=>$request->lead_id,
-                        'doctor_id'=>$request->doctor,
-                        'appointment_date'=>$request->appointment_date
-                    ]);
-
-                    if(count($followup->remarks)<1){
-                        Remark::create([
-                            'remarkable_type'=>Followup::class,
-                            'remarkable_id'=>$followup->id,
-                            'remark'=>'Appointment fixed on '.$appointment->appointment_date,
-                            'user_id'=>Auth::id(),
-                        ]);
-                    }
-
-                return response()->json(['success'=>true, 'message'=>'Remark added and converted', 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead,'appointment'=>$appointment]);
-
-                }
-
-    }
+    protected $connectorService;
 
     public function __construct(Request $request, AppointmentService $service)
     {
@@ -78,18 +22,31 @@ class AppointmentController extends SmartController
         $this->connectorService = $service;
     }
 
+    public function store(Request $request)
+    {
+        $response = $this->connectorService->processAndStore($request);
+
+        return response()->json($response);
+
+    }
+
+
     public function index()
     {
-        $query = Appointment::with(['lead'=>function($query){
+        $query = Appointment::with(['lead' => function ($query) {
             return $query->with('remarks');
-        },'doctor'])->orderBy('appointment_date', 'asc');
+        }, 'doctor'])->orderBy('appointment_date', 'asc');
+
         if (isset($this->request->from)) {
             $query->where('appointment_date', '>=', $this->request->from);
         }
+
         if (isset($this->request->to)) {
             $query->where('appointment_date', '<=', $this->request->to);
         }
+
         $appointments = $query->paginate(10);
-        return $this->buildResponse('pages.appointments',['appointments' => $appointments]);
+
+        return $this->buildResponse('pages.appointments', ['appointments' => $appointments]);
     }
 }

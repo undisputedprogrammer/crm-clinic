@@ -14,28 +14,7 @@
             history: [],
             convert: false,
 
-            {{-- convert to customer function begins --}}
-            {{-- convert(){
-                if(this.history.length == 1){
 
-                    $dispatch('showtoast', {message: 'You have not completed a follow up yet', mode: 'error'});
-                }
-                else{
-                    axios.post('/api/convert',{
-
-                            followup_id : this.fp.id,
-                            lead_id : this.fp.lead.id,
-
-                    }).then((r)=>{
-                        console.log(r.data);
-                        this.fp.converted = true;
-                        $dispatch('showtoast', {message: r.data.message, mode: 'success'});
-                    }).catch((e)=>{
-                        $dispatch('showtoast', {message: 'Server error occured', mode: 'error'});
-                    });
-                }
-            } --}}
-            {{-- convert to customer function ends --}}
         }"
 
         {{-- pagination event handler --}}

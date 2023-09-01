@@ -15,23 +15,20 @@ class Remarkcontroller extends SmartController
         parent::__construct($request);
     }
 
-    public function store(Request $request){
-        // if($request->remark_type == 'lead'){
-        //     $is_followup = false;
-        // }
-        // else{
-        //     $is_followup = true;
-        // }
+    public function store(Request $request)
+    {
         Remark::create([
             'remarkable_type'=>Lead::class,
             'remarkable_id'=>$request->remarkable_id,
             'remark'=>$request->remark,
             'user_id'=>$request->user()->id
         ]);
+
         return response()->json(['success'=>true,'message'=>'New remark has been added']);
     }
 
-    public function getRemarks(Request $request){
+    public function getRemarks(Request $request)
+    {
         $remarkable_type = null;
         if($request->remarkable_type == 'lead'){
             $remarkable_type = Lead::class;
@@ -42,7 +39,8 @@ class Remarkcontroller extends SmartController
         return response()->json(['remarks'=>$remarks,'remarkable_type'=>$remarkable_type]);
     }
 
-    public function followup(Request $request){
+    public function followup(Request $request)
+    {
         $followups = Followup::where('lead_id',$request->lead_id)->with('remarks')->orderBy('created_at','desc')->get();
         return response()->json(['followup'=>$followups]);
     }

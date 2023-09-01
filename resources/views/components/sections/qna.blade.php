@@ -5,15 +5,15 @@
     <ul class=" text-sm  font-normal">
         <template x-for="(answer,i) in answers">
 
-        <li>
-            <p class=" font-medium">
-                <span x-text=" i+1"></span>
-                <span class="" x-text="answer.question.question"></span>
-            </p>
-            <p class="px-3" x-text="answer.answer">
+            <li>
+                <p class=" font-medium">
+                    <span x-text=" i+1"></span>
+                    <span class="" x-text="answer.question.question"></span>
+                </p>
+                <p class="px-3" x-text="answer.answer">
 
-            </p>
-        </li>
+                </p>
+            </li>
 
         </template>
     </ul>

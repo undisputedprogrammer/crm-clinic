@@ -2,7 +2,7 @@
 
 
     <a href="#" class="text-xl font-bold flex items-center ">
-        <img src="https://demo.themesberg.com/windster/images/logo.svg" class="h-6 mr-2" alt="crm-app Logo">
+        <img src="{{asset('images/CRAFT Hospital Logo_Final-cut.png')}}" class="h-12 mr-2" alt="crm-app Logo">
         <span class="self-center text-neutral-content whitespace-nowrap">CRMS</span>
     </a>
 

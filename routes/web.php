@@ -26,37 +26,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth')->group(function(){
-    Route::get('/logout',[PageController::class,'destroy'])->name('user-logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', [PageController::class, 'destroy'])->name('user-logout');
     Route::get('/overview', [PageController::class, 'overview'])->name('overview');
-    Route::get('/leads',[PageController::class, 'leadIndex'])->name('fresh-leads');
-    Route::post('/remark/store',[Remarkcontroller::class, 'store'])->name('add-remark');
-    Route::get('/lead/change/segment',[LeadController::class, 'change'])->name('change-segment');
-    Route::get('/lead/change/valid',[LeadController::class, 'changevalid'])->name('change-valid');
-    Route::get('/lead/change/genuine',[LeadController::class, 'changeGenuine'])->name('change-genuine');
-    Route::get('/followups',[PageController::class, 'followUps'])->name('followups');
-    Route::post('/followup/initiate',[FollowupController::class, 'initiate'])->name('initiate-followup');
-    Route::post('/followup/store',[FollowupController::class, 'store'])->name('process-followup');
-    Route::get('/search',[PageController::class, 'searchIndex'])->name('search-index');
-    Route::post('/search',[SearchController::class, 'index'])->name('get-results');
-    Route::post('/followup/new',[FollowupController::class,'next'])->name('next-followup');
-    Route::post('/import/lead',[ImportController::class, 'importLead'])->name('import-leads');
-    Route::get('/questions',[PageController::class, 'questionIndex'])->name('manage-questions');
-    Route::post('/questions/store',[QuestionController::class, 'store'])->name('add-question');
-    Route::post('/questions/update',[QuestionController::class, 'update'])->name('update-question');
+    Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
+    Route::post('/remark/store', [Remarkcontroller::class, 'store'])->name('add-remark');
+    Route::get('/lead/change/segment', [LeadController::class, 'change'])->name('change-segment');
+    Route::get('/lead/change/valid', [LeadController::class, 'changevalid'])->name('change-valid');
+    Route::get('/lead/change/genuine', [LeadController::class, 'changeGenuine'])->name('change-genuine');
+    Route::get('/followups', [PageController::class, 'followUps'])->name('followups');
+    Route::post('/followup/initiate', [FollowupController::class, 'initiate'])->name('initiate-followup');
+    Route::post('/followup/store', [FollowupController::class, 'store'])->name('process-followup');
+    Route::get('/search', [PageController::class, 'searchIndex'])->name('search-index');
+    Route::post('/search', [SearchController::class, 'index'])->name('get-results');
+    Route::post('/followup/new', [FollowupController::class, 'next'])->name('next-followup');
+    Route::post('/import/lead', [ImportController::class, 'importLead'])->name('import-leads');
+    Route::get('/questions', [PageController::class, 'questionIndex'])->name('manage-questions');
+    Route::post('/questions/store', [QuestionController::class, 'store'])->name('add-question');
+    Route::post('/questions/update', [QuestionController::class, 'update'])->name('update-question');
     Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
-    Route::post('/appointment/store',[AppointmentController::class, 'store'])->name('add-appointment');
+    Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('add-appointment');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
-    Route::post('/message',[MessageController::class, 'message'])->name('message.sent');
+    Route::post('/message', [MessageController::class, 'message'])->name('message.sent');
 });
 
-Route::get('/',[PageController::class, 'home']);
+Route::get('/', [PageController::class, 'home']);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -64,4 +62,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

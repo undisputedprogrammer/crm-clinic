@@ -16,71 +16,55 @@ class FollowupController extends SmartController
         parent::__construct($request);
     }
 
-    public function initiate(Request $request){
+    public function initiate(Request $request)
+    {
         $followup = Followup::create([
-            'lead_id'=>$request->lead_id,
-            'scheduled_date'=>$request->scheduled_date
+            'lead_id' => $request->lead_id,
+            'scheduled_date' => $request->scheduled_date
         ]);
         $lead = Lead::find($request->lead_id);
         $lead->followup_created = true;
         $lead->save();
-        return response()->json(['success'=>true, 'message'=>'Follow up has been initiated for this lead','followup'=>$followup]);
+        return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
-            $followup_remark = Remark::create([
-                'remarkable_type'=>Followup::class,
-                'remarkable_id'=>$request->followup_id,
-                'remark'=>$request->remark,
-                'user_id'=>$request->user()->id
-            ]);
+        $followup_remark = Remark::create([
+            'remarkable_type' => Followup::class,
+            'remarkable_id' => $request->followup_id,
+            'remark' => $request->remark,
+            'user_id' => $request->user()->id
+        ]);
 
-
-
-            // if($request->convert == true){
-            //     $followup = Followup::find($request->followup_id);
-            //     $followup->converted = true;
-            //     $followup->actual_date = date('Y-m-d');
-            //     $followup->save();
-            //     $lead = Lead::find($request->lead_id);
-            //     $lead->status='Converted';
-            //     $lead->save();
-            //     $appointment = Appointment::create([
-            //         'lead_id'=>$request->lead_id,
-            //         'doctor_id'=>$request->doctor,
-            //         'appointment_date'=>$request->appointment_date
-            //     ]);
-            //     return response()->json(['success'=>true, 'message'=>'Remark added and converted','followup_remark'=>$followup_remark, 'converted'=>true, 'followup'=>$followup, 'lead'=>$lead,'appointment'=>$appointment]);
-            // }
-
-
-            return response()->json(['success'=>true, 'message'=>'Remark added','followup_remark'=>$followup_remark]);
-
+        return response()->json(['success' => true, 'message' => 'Remark added', 'followup_remark' => $followup_remark]);
     }
 
-    public function next(Request $request){
+    public function next(Request $request)
+    {
 
-            $followup = Followup::find($request->followup_id);
-            $followup->actual_date = date('Y-m-d');
-            $followup->next_followup_date = $request->next_followup_date;
-            $followup->save();
-            $next_followup = Followup::create([
-                'lead_id'=>$request->lead_id,
-                'scheduled_date'=>$request->next_followup_date,
-            ]);
+        $followup = Followup::find($request->followup_id);
+        $followup->actual_date = date('Y-m-d');
+        $followup->next_followup_date = $request->next_followup_date;
+        $followup->save();
+        $next_followup = Followup::create([
+            'lead_id' => $request->lead_id,
+            'scheduled_date' => $request->next_followup_date,
+        ]);
 
-            return response()->json(['success'=>true, 'message'=>'Next follow up scheduled','followup'=>$followup,'next_followup'=>$next_followup,'remarks'=>$followup->remarks]);
+        return response()->json(['success' => true, 'message' => 'Next follow up scheduled', 'followup' => $followup, 'next_followup' => $next_followup, 'remarks' => $followup->remarks]);
     }
 
-    public function convert(Request $request){
+    public function convert(Request $request)
+    {
 
         $followup = Followup::find($request->followup_id);
         $followup->converted = true;
         $followup->save();
         $lead = Lead::find($request->lead_id);
-        $lead->status='Converted';
+        $lead->status = 'Converted';
         $lead->save();
-        return response()->json(['success'=>true,'message'=>'Lead converted to customer','followup'=>$followup,'lead'=>$lead]);
+        return response()->json(['success' => true, 'message' => 'Lead converted to customer', 'followup' => $followup, 'lead' => $lead]);
     }
 }

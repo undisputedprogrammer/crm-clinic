@@ -8,8 +8,8 @@ currentroute=$event.detail.currentroute;"
 @routechange.window="currentroute=$event.detail.route;"
 :data-theme="theme">
     <head>
-        <title>{{ config('app.name', 'Clinic-CRM') }}</title>
-        <link rel="shortcut icon" type="image/jpg" href="{{asset('favicon-crm.ico')}}"/>
+        <title>{{ config('app.name', 'CRAFT Hospital and Research Centre') }}</title>
+        <link rel="shortcut icon" type="image/jpg" href="{{asset('favicon-craft.ico')}}"/>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -27,7 +27,7 @@ currentroute=$event.detail.currentroute;"
         @linkaction.window="initialised = false; fetchLink($event.detail);"
         @formsubmit.window="postForm($event.detail);"
         @popstate.window="historyAction($event)"
-        class="font-sans antialiased text-sm transition-colors">
+        class="font-sans antialiased text-sm transition-colors hide-scroll ">
         <div x-data ="{
             selected : false,
 
@@ -49,7 +49,7 @@ currentroute=$event.detail.currentroute;"
 
         }" class="min-h-screen bg-base-200 flex flex-col">
 
-            <main class="flex flex-col items-stretch flex-grow w-full">
+            <main class="flex flex-col items-stretch  flex-grow w-full pb-10 relative ">
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {
@@ -71,12 +71,15 @@ currentroute=$event.detail.currentroute;"
                 @fragment('page-content')
                     {{ $slot }}
                 @endfragment
+
                 </div>
+                <x-footer/>
             </main>
         </div>
         <x-easyadmin::display.notice />
         <x-easyadmin::display.toast />
         <x-display.loading/>
+
         @stack('js')
     </body>
 </html>

@@ -58,21 +58,6 @@ class PageController extends SmartController
 
     public function followUps(Request $request)
     {
-        // if ($request->user()->hasRole('admin')) {
-        //     $followups = Followup::with(['lead', 'remarks'])->where('scheduled_date', '<=', date('Y-m-d'))->where('actual_date', null)->where('converted', null)->paginate(10);
-        // }
-        // if ($request->user()->hasRole('agent')) {
-        //     $followups = Followup::with(['lead', 'remarks'])
-        //         ->whereHas('lead', function ($query) {
-        //             $query->where('assigned_to', Auth::id());
-        //         })
-        //         ->where('scheduled_date', '<=', date('Y-m-d'))
-        //         ->where('actual_date', null)
-        //         ->where('converted', null)
-        //         ->paginate(10);
-        // }
-        // $doctors = Doctor::all();
-
         $data = $this->pageService->getFollowupData($request->user());
 
         return $this->buildResponse('pages.followups', $data);
@@ -85,7 +70,7 @@ class PageController extends SmartController
 
     public function questionIndex(Request $request)
     {
-        $questions = Question::orderBy('created_at', 'desc')->paginate(10);
+        $questions = Question::orderBy('created_at', 'desc')->paginate(8);
 
         return $this->buildResponse('pages.manage-questions', compact('questions'));
     }

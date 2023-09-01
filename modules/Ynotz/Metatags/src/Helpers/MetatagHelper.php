@@ -43,7 +43,9 @@ class MetatagHelper
      */
     public static function getMetatags()
     {
-        return count(session('metatags')) > 0 ? json_encode(session('metatags')) : null;
+        if(session('metatags') != null) {
+            return count(session('metatags')) > 0 ? json_encode(session('metatags')) : null;
+        }
     }
 
     /**
