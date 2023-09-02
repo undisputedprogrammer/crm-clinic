@@ -18,14 +18,25 @@ class FollowupController extends SmartController
 
     public function initiate(Request $request)
     {
+        $lead = Lead::find($request->lead_id);
+        $converted = null;
+
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
-            'scheduled_date' => $request->scheduled_date
+            'scheduled_date' => $request->scheduled_date,
+
         ]);
-        $lead = Lead::find($request->lead_id);
+
+        if($lead->status == "Converted"){
+
+            $followup->converted = true;
+            $followup->save();
+        }
+
         $lead->followup_created = true;
         $lead->save();
         return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
+        // return response()->json(['success'=>true,'message'=>'converted '.$followup->converted]);
     }
 
     public function store(Request $request)

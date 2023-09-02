@@ -267,9 +267,9 @@
                         <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].actual_date : '---' " class="text-secondary"></span>
                     </p>
 
-                    <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Lead Converted</p>
+                    <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>
 
-                    <form x-show="lead.followup_created == 0 && !convert"
+                    <form x-show="lead.followup_created == 0 "
                     x-data = "{ doSubmit() {
                         let form = document.getElementById('initiate-followup-form');
                         let formdata = new FormData(form);

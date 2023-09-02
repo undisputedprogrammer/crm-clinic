@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Remark;
+use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -27,5 +28,9 @@ class Lead extends Model
 
     public function assigned(){
         return $this->hasOne(User::class,'assigned_id','id');
+    }
+
+    public function appointment(){
+        return $this->hasOne(Appointment::class, 'lead_id', 'id');
     }
 }

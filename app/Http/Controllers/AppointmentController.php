@@ -49,4 +49,27 @@ class AppointmentController extends SmartController
 
         return $this->buildResponse('pages.appointments', ['appointments' => $appointments]);
     }
+
+    public function consulted(Request $request)
+    {
+        $lead = Lead::where('id',$request->lead_id)->with('appointment')->get()->first();
+        $date = Carbon::createFromFormat('d-m-Y', substr($lead->appointment->appointment_date,0,10));
+
+        if($date->isPast()){
+            $followup = Followup::find($request->followup_id);
+            $followup->consulted = true;
+            $followup->save();
+            $lead->status = 'Consulted';
+            $lead->save();
+            $appointment = null;
+            if($request->remark){
+                $a = Appointment::find($lead->appointment->id);
+                $a->remarks = $request->remark;
+                $a->save();
+                $appointment = $a;
+            }
+            return response()->json(['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'message'=>'Consult is marked']);
+        }
+        return response()->json(['success'=>false, 'lead'=>$lead, 'message'=>'Appointment is not over']);
+    }
 }

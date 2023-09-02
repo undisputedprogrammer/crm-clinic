@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('status',['pending','completed']);
 
             $table->boolean('converted')->nullable();
+            $table->boolean('consulted')->nullable();
             $table->timestamps();
         });
     }

@@ -49,7 +49,7 @@ currentroute=$event.detail.currentroute;"
 
         }" class="min-h-screen bg-base-200 flex flex-col">
 
-            <main class="flex flex-col items-stretch  flex-grow w-full pb-10 relative ">
+            <main class="flex flex-col items-stretch  flex-grow w-full ">
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {
@@ -73,7 +73,7 @@ currentroute=$event.detail.currentroute;"
                 @endfragment
 
                 </div>
-                <x-footer/>
+
             </main>
         </div>
         <x-easyadmin::display.notice />
@@ -81,5 +81,6 @@ currentroute=$event.detail.currentroute;"
         <x-display.loading/>
 
         @stack('js')
+        <x-footer/>
     </body>
 </html>

@@ -113,25 +113,36 @@
                             <div class=" flex space-x-2 mt-1">
                                 <button class="btn btn-sm btn-secondary"
                                     @click.prevent.stop="$dispatch('linkaction',{
-                        link:'{{ route('manage-questions') }}',
-                        route:'manage-questions',
-                        fragment:'page-content'
-                    })">Manage
-                                    Questions</button>
+                                        link:'{{ route('manage-questions') }}',
+                                        route:'manage-questions',
+                                        fragment:'page-content'
+                                        })">Manage Questions
+                                </button>
+
                                 <button class="btn btn-sm btn-secondary"
                                     @click.prevent.stop="$dispatch('linkaction',{
-                        link:'{{ route('appointments.index') }}',
-                        route:'appointments.index',
-                        fragment:'page-content'
-                    })">Manage
-                                    Appointments</button>
+                                        link:'{{ route('appointments.index') }}',
+                                        route:'appointments.index',
+                                        fragment:'page-content'
+                                    })">Manage Appointments
+                                </button>
+
                                 <button class="btn btn-sm btn-secondary"
                                     @click.prevent.stop="$dispatch('linkaction',{
-                        link:'{{ route('doctors.index') }}',
-                        route:'doctors.index',
-                        fragment:'page-content'
-                    })">Manage
-                                    Doctors</button>
+                                        link:'{{ route('doctors.index') }}',
+                                        route:'doctors.index',
+                                        fragment:'page-content'
+                                    })">Manage Doctors
+                                </button>
+
+                                <button class="btn btn-sm btn-secondary"
+                                    @click.prevent.stop="$dispatch('linkaction',{
+                                        link:'{{ route('messages.index') }}',
+                                        route:'messages.index',
+                                        fragment:'page-content'
+                                    })">Manage Messages
+                                </button>
+
                             </div>
                         </div>
                     @endcan

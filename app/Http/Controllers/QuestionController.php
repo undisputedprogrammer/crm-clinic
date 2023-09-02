@@ -27,14 +27,8 @@ class QuestionController extends SmartController
 
     public function update(Request $request)
     {
-        if(!Gate::allows('is-admin')){
-            return response(['success'=>false,'message'=>'Unauthorized action'],401);
-        }
+        $result = $this->connectorService->processAndUpdate($request->id, $request->question);
 
-        $question = Question::find($request->id);
-        $question->question = $request->question;
-        $question->save();
-
-        return response()->json(['success'=>true,'message'=>'Question Updated','question'=>$question]);
+        return response()->json($result);
     }
 }

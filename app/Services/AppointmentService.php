@@ -62,7 +62,7 @@ class AppointmentService implements ModelViewConnector
 
             $followup = Followup::where('id', $request->followup_id)->with('remarks')->get()->first();
             $followup->converted = true;
-            $followup->actual_date = date('Y-m-d');
+            // $followup->actual_date = date('Y-m-d');
             $followup->save();
 
             if (count($followup->remarks) < 1) {

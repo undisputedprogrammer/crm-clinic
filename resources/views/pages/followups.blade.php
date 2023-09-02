@@ -13,7 +13,9 @@
             historyLoading: true,
             history: [],
             convert: false,
-
+            consult: false,
+            appointment: null,
+            showconsultform: false,
 
         }"
 
@@ -52,7 +54,9 @@
                 <div
                 {{-- updating values in the details section --}}
                 @fpupdate.window="
-
+                console.log($event.detail);
+                showconsultform = false;
+                appointment = $event.detail.appointment;
                 if(fps[$event.detail.id] != null || fps[$event.detail.id] != undefined){
                     fp = fps[$event.detail.id];
                     fpname = fp.lead.name;
@@ -61,7 +65,7 @@
                     fp = $event.detail.followup;
                     fp.lead = $event.detail.lead;
                     lead = fp.lead;
-
+                    lead.appointment = $event.detail.appointment;
                     leadremarks = $event.detail.lead_remarks;
                     fp.lead.remarks = leadremarks;
                     fps[fp.id] = fp;
@@ -91,7 +95,7 @@
                     historyLoading = false;
                   });
 
-                  console.log(fp.lead.status);
+
                 "
 
 
@@ -252,7 +256,7 @@
 
 
                         {{-- next follow up schedule form --}}
-                        <form x-show="!convert" x-transition
+                        <form x-show="!consult && !fp.consulted" x-transition
                         x-data ="
                         { doSubmit() {
                             let form = document.getElementById('next-followup-form');
@@ -306,12 +310,12 @@
                         }
                         "
                         id="next-followup-form"
-                         x-show="lead.status != 'Converted' && fp.next_followup_date == null" action="" class=" mt-5">
+                         x-show="lead.status != 'Consulted' && fp.next_followup_date == null" action="" class=" mt-5">
 
                             <div>
-                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
+                                <label x-show="fp.next_followup_date == null && fp.consulted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
 
-                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="next-followup-date" name="next_followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                                <input x-show="fp.next_followup_date == null && fp.consulted == null" id="next-followup-date" name="next_followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full">
                             </div>
 
                             <button :disabled=" fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule next follow up</button>
@@ -320,14 +324,87 @@
 
 
 
-                        <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
+                        <label x-show="fp.converted == null" class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
 
                             <input @click="convert = $el.checked" :disabled="fp.next_followup_date != null || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
                             <span class="label-text">Schedule appointment</span>
                         </label>
 
+                        <div x-show="fp.converted && !showconsultform && fp.consulted != true" class="mt-4">
+                            <p class=" text-success font-medium">Appointment Scheduled</p>
+                            <button @click.prevent.stop="showconsultform = true" class=" btn btn-xs btn-secondary mt-1">Mark Consulted</button>
+                        </div>
+
+                        <div x-show="fp.consulted != null" class="mt-4">
+                            <p class=" text-success font-medium">Consult completed on <span x-text="lead.appointment != null ? lead.appointment.appointment_date : '' "></span></p>
+                            <label @click.prevent.stop="showconsultform = true" class=" text-base-content font-medium mt-1" x-text="lead.appointment != null && lead.appointment.remarks != null ? lead.appointment.remarks : 'No remark made' "></label>
+                        </div>
+
+
+                        {{-- mark consulted form --}}
+                        <form
+                        x-data="{
+                            doSubmit() {
+                                let form = document.getElementById('mark-consulted-form');
+                                let formdata = new FormData(form);
+                                formdata.append('followup_id',fp.id);
+                                formdata.append('lead_id',fp.lead.id);
+                                $dispatch('formsubmit',{url:'{{route('consulted.mark')}}', route: 'consulted.mark',fragment: 'page-content', formData: formdata, target: 'mark-consulted-form'});
+                            }
+                        }"
+
+                        @submit.prevent.stop="doSubmit()"
+
+                        @formresponse.window="
+                        if ($event.detail.target == $el.id) {
+                            {{-- console.log($event.detail.content); --}}
+                            if ($event.detail.content.success) {
+                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                $el.reset();
+
+                                if($event.detail.content.lead != null || $event.detail.content.lead != undefined){
+                                    lead.status = $event.detail.content.lead.status;
+                                    console.log(lead.status);
+                                }
+
+                                if($event.detail.content.followup != null || $event.detail.content.followup != undefined){
+                                    fp.consulted = $event.detail.content.followup.consulted;
+                                    console.log(fp.consulted);
+                                }
+
+                                if($event.detail.content.appointment != null && $event.detail.content != undefined){
+                                    lead.appointment.remarks = $event.detail.content.appointment.remarks;
+                                }
+
+
+                                  $dispatch('formerrors', {errors: []});
+                            }
+
+                            else if (typeof $event.detail.content.errors != undefined) {
+                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                            } else{
+                                $dispatch('formerrors', {errors: $event.detail.content.errors});
+                            }
+                        }
+                        "
+                         x-show="showconsultform && fp.consulted == null" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-4 rounded-xl">
+                            <h1 class=" text-secondary font-medium text-base mb-1">Mark consulted</h1>
+
+                            <textarea name="remark" class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
+
+                            <div class=" flex space-x-2 mt-1">
+                                <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
+
+                                <button @click.prevent.stop="showconsultform = false" class=" btn btn-error btn-xs">Hide</button>
+                            </div>
+
+
+                        </form>
+
+
                         {{-- schedule appointment form --}}
-                        <form x-show="convert" x-cloak x-transition
+                        <form x-show="convert && fp.converted != true" x-cloak x-transition
                         x-data ="
                         { doSubmit() {
                             let form = document.getElementById('appointment-form');
@@ -351,6 +428,11 @@
                                 fp.actual_date = $event.detail.content.followup.actual_date;
                                 fp.converted = $event.detail.content.followup.converted;
 
+                                }
+
+                                if($event.detail.content.appointment != null && $event.detail.content.appointment != undefined){
+                                    lead.appointment = $event.detail.content.appointment;
+                                    fp.lead.appointment = $event.detail.content.appointment;
                                 }
 
                                 if($event.detail.content.followup_remark != null || $event.detail.content.followup_remark != undefined)

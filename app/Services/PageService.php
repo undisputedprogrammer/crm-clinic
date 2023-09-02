@@ -16,16 +16,17 @@ class PageService
     public function getLeads($user)
     {
 
-        $leadsQuery = Lead::where('status', '!=', 'Converted');
+        $leadsQuery = Lead::where('status', '!=', 'Consulted')->with([
+            'remarks' => function ($q) {
+                return $q->orderBy('created_at', 'desc');
+            },
+            'answers',
+            'appointment'
+        ]);;
 
         $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
-            return $query->where('assigned_to', $user->id)
-                ->with([
-                    'remarks' => function ($q) {
-                        return $q->orderBy('created_at', 'desc');
-                    },
-                    'answers',
-                ]);
+            return $query->where('assigned_to', $user->id);
+
         });
 
         $leads = $leadsQuery->paginate(10);
@@ -61,10 +62,12 @@ class PageService
     public function getFollowupData($user)
     {
 
-        $followupsQuery = Followup::with(['lead', 'remarks'])
+        $followupsQuery = Followup::with(['lead'=>function($q){
+            return $q->with('appointment');
+        }, 'remarks'])
             ->where('scheduled_date', '<=', date('Y-m-d'))
             ->where('actual_date', null)
-            ->where('converted', null);
+            ->where('consulted', null);
 
         if ($user->hasRole('agent')) {
             $followupsQuery->whereHas('lead', function ($query) use ($user) {
