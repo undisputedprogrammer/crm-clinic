@@ -51,10 +51,12 @@ export default () => ({
                     this.showPage = true;
                     // this.page = this.$store.app.xpages[link];
                     this.$dispatch('pagechanged', {currentpath: link, currentroute: route, target: target, fragment: fragment});
-                    console.log('link is');
-                    console.log(link);
-                    console.log(this.$store.app.xpages);
-                    this.$dispatch('contentupdate', {content: this.$store.app.xpages[link].data.html, target: target});
+
+
+                    if(typeof this.$store.app.xpages[link] != 'undefined'){
+                        this.$dispatch('contentupdate', {content: this.$store.app.xpages[link].data.html, target: target});
+                    }
+
                     if (this.$store.app.xpages[link].meta != undefined) {
                         this.$dispatch('metachange', {data: this.$store.app.xpages[link].meta});
                     }
