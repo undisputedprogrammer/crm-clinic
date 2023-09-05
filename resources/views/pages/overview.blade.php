@@ -8,7 +8,7 @@
 
 
 
-            <div class=" min-h-[calc(100vh-3.5rem)] w-full mx-auto  bg-base-100 ">
+            <div class=" min-h-[calc(100vh-3.5rem)] pb-[2.8rem] w-full mx-auto  bg-base-100 ">
 
                 <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3 my-4">
                     <div class="flex space-x-3 justify-evenly items-center">
@@ -143,6 +143,14 @@
                                     })">Manage Messages
                                 </button>
 
+                                <button class="btn btn-sm btn-secondary"
+                                    @click.prevent.stop="$dispatch('linkaction',{
+                                        link:'{{ route('agents.index') }}',
+                                        route:'agents.index',
+                                        fragment:'page-content'
+                                    })">Manage Agents
+                                </button>
+
                             </div>
                         </div>
                     @endcan
@@ -154,5 +162,5 @@
 
         </div>
     </div>
-
+<x-footer/>
 </x-easyadmin::app-layout>

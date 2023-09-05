@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\Lead;
 use App\Models\Doctor;
 use App\Models\Remark;
@@ -77,5 +78,29 @@ class AppointmentService implements ModelViewConnector
             return ['success' => true, 'message' => 'Remark added and converted', 'converted' => true, 'followup' => $followup, 'lead' => $lead, 'appointment' => $appointment];
         }
     }
+
+    public function processConsult($lead_id, $followup_id, $remark)
+    {
+        $lead = Lead::where('id',$lead_id)->with('appointment')->get()->first();
+        $date = Carbon::createFromFormat('d-m-Y', substr($lead->appointment->appointment_date,0,10));
+
+        if($date->isPast()){
+            $followup = Followup::find($followup_id);
+            $followup->consulted = true;
+            $followup->save();
+            $lead->status = 'Consulted';
+            $lead->save();
+            $appointment = null;
+            if($remark){
+                $a = Appointment::find($lead->appointment->id);
+                $a->remarks = $remark;
+                $a->save();
+                $appointment = $a;
+            }
+            return ['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'message'=>'Consult is marked'];
+        }
+        return ['success'=>false, 'lead'=>$lead, 'message'=>'Appointment date has not reached'];
+    }
+
 }
 ?>

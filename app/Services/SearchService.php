@@ -10,7 +10,9 @@ class SearchService{
         $query = Followup::where('actual_date', null)
             ->where($request->search_type, '>=', $request->from_date)
             ->where($request->search_type, '<=', $request->to_date)
-            ->with(['lead', 'remarks']);
+            ->with(['lead'=>function($q){
+                return $q->with('appointment');
+            }, 'remarks']);
 
         $filters = [
             'is_valid' => 'is_valid',
@@ -25,6 +27,7 @@ class SearchService{
                 });
             }
         }
+        $query->where('consulted',null);
 
         $followups = $query->paginate(10);
 

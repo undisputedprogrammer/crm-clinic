@@ -81,7 +81,7 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
+       class=" h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full flex justify-evenly">
 
 
 
@@ -130,7 +130,7 @@
 
 
             }
-            console.log($event.detail);
+            convert = false;
 
 
 
@@ -311,8 +311,8 @@
                     {{-- convert checkbox --}}
                     <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
 
-                        <input @click="convert = $el.checked" :disabled=" lead.followup_created == true || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
-                        <span class="label-text">Save remark and schedule appointment</span>
+                        <input @click="convert = $el.checked" :disabled=" lead.followup_created == true || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" x-model="convert" class="checkbox checkbox-success checkbox-xs" />
+                        <span class="label-text">Schedule appointment</span>
                     </label>
 
                     <x-forms.add-appointment-form :doctors="$doctors"/>
@@ -332,5 +332,5 @@
       </div>
     </div>
   </div>
-
+  <x-footer/>
 </x-easyadmin::app-layout>

@@ -145,5 +145,5 @@
       </div>
     </div>
   </div>
-
+<x-footer/>
 </x-easyadmin::app-layout>

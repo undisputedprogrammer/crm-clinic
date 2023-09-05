@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\ImportController;
@@ -54,6 +56,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');
+    Route::get('/agents',[AgentController::class, 'index'])->name('agents.index');
+    Route::post('/agents',[AgentController::class, 'store'])->name('agents.store');
+    Route::post('agents/{id}',[AgentController::class, 'update'])->name('agents.update');
+    Route::get('/password/reset',[AgentController::class, 'reset'])->name('user-password.reset');
+    Route::post('/password/reset',[AgentController::class, 'change'])->name('password.change');
 });
 
 Route::get('/', [PageController::class, 'home']);

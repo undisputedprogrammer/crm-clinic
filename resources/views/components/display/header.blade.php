@@ -3,7 +3,7 @@
 
     <a href="#" class="text-xl font-bold flex items-center ">
         <img src="{{asset('images/CRAFT Hospital Logo_Final-cut.png')}}" class="h-12 mr-2" alt="crm-app Logo">
-        <span class="self-center text-neutral-content whitespace-nowrap">CRMS</span>
+        <span class="self-center text-neutral-content whitespace-nowrap">CRAFT</span>
     </a>
 
 
@@ -96,14 +96,9 @@
             <span class="block text-sm   truncate ">{{auth()->user()->email}}</span>
           </div>
           <ul class="py-2 text-base-content" aria-labelledby="user-menu-button">
-            <li class="">
-              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Overview</a>
-            </li>
+
             <li>
-              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary">Pofile</a>
-            </li>
-            <li>
-              <a href="#" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Statistics</a>
+              <a href="" @click.prevent.stop="$dispatch('linkaction',{link:'{{route('user-password.reset')}}', route: 'user-password.reset', fragment: 'page-content'})" class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Change password</a>
             </li>
             <li>
               <a href="/logout" class="block px-4 py-2 text-sm text-error">Sign out</a>

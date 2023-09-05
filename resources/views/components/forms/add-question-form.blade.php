@@ -9,7 +9,9 @@ x-data = "{ doSubmit() {
         if ($event.detail.target == $el.id) {
             if ($event.detail.content.success) {
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                questions = $event.detail.content.questions;
+
+                $dispatch('linkaction',{link: '{{route('manage-questions')}}', route: 'manage-questions', fresh: true, fragment: 'page-content'});
+
                 $dispatch('formerrors', {errors: []});
                 } else if (typeof $event.detail.content.errors != undefined) {
                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});

@@ -214,8 +214,9 @@ export default () => ({
         }).then((r) => {
             this.$dispatch('formresponse', {target: data.target, content: r.data});
             this.ajaxLoading = false;
-        }).catch(function (e) {
-            console.log(e);
+        }).catch((e) => {
+            console.log(e.response.data);
+            this.$dispatch('formresponse', {target: data.target, content: e.response.data});
             this.ajaxLoading = false;
         });
     }

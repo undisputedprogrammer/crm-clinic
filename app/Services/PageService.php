@@ -77,7 +77,8 @@ class PageService
 
         $followups = $followupsQuery->paginate(10);
         $doctors = Doctor::all();
+        $messageTemplates = Message::all();
 
-        return compact('followups', 'doctors');
+        return compact('followups', 'doctors','messageTemplates');
     }
 }

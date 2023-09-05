@@ -81,6 +81,6 @@ currentroute=$event.detail.currentroute;"
         <x-display.loading/>
 
         @stack('js')
-        <x-footer/>
+
     </body>
 </html>

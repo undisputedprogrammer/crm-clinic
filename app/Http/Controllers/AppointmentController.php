@@ -52,24 +52,8 @@ class AppointmentController extends SmartController
 
     public function consulted(Request $request)
     {
-        $lead = Lead::where('id',$request->lead_id)->with('appointment')->get()->first();
-        $date = Carbon::createFromFormat('d-m-Y', substr($lead->appointment->appointment_date,0,10));
+        $result = $this->connectorService->processConsult($request->lead_id, $request->followup_id, $request->remark);
 
-        if($date->isPast()){
-            $followup = Followup::find($request->followup_id);
-            $followup->consulted = true;
-            $followup->save();
-            $lead->status = 'Consulted';
-            $lead->save();
-            $appointment = null;
-            if($request->remark){
-                $a = Appointment::find($lead->appointment->id);
-                $a->remarks = $request->remark;
-                $a->save();
-                $appointment = $a;
-            }
-            return response()->json(['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'message'=>'Consult is marked']);
-        }
-        return response()->json(['success'=>false, 'lead'=>$lead, 'message'=>'Appointment is not over']);
+        return response()->json($result);
     }
 }

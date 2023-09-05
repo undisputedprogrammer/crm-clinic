@@ -1,6 +1,6 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
-<form x-show="convert && lead.status != 'Converted'" x-cloak x-transition
+<form x-show="convert && lead.status != 'Converted' && lead.followup_created == false" x-cloak x-transition
 x-data ="
 { doSubmit() {
     let form = document.getElementById('appointment-form');

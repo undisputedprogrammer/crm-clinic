@@ -14,7 +14,7 @@
             historyLoading: true,
             history: [],
             pagination_type: null,
-
+            appointment: null
 
 
         }"
@@ -33,7 +33,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <div class="min-h-[calc(100vh-3.5rem)] pt-7 bg-base-200 w-full ">
+      <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
             <h1 class=" text-secondary text-xl font-medium text-center">Leads - Advanced Search</h1>
 
             <form
@@ -192,15 +192,16 @@
                         {{-- updating values in the details section --}}
                         @dataupdate.window="
 
+
                         if(fps[$event.detail.id] != null || fps[$event.detail.id] != undefined){
                             fp = fps[$event.detail.id];
                             fpname = fp.lead.name;
                         }
                         else{
                             fp = $event.detail.followup;
-                            fp.lead = JSON.parse($event.detail.lead);
+                            fp.lead = $event.detail.lead;
 
-                            leadremarks = JSON.parse($event.detail.lead_remarks);
+                            leadremarks = $event.detail.lead_remarks;
                             fp.lead.remarks = leadremarks;
                             fps[fp.id] = fp;
                         }
@@ -315,7 +316,9 @@
 
                                 <p x-show="!historyLoading" class=" text-error" x-text=" history.length == 1 ? 'No follow ups completed yet' : '' "></p>
 
-
+                                <template x-if="fp.lead != undefined && fp.lead != null && fp.lead.appointment != null">
+                                    <p x-show="!historyLoading" class=" text-success font-medium mt-1.5"><span>Appointment scheduled for : </span><span class="text-primary" x-text="fp.lead.appointment != null ? fp.lead.appointment.appointment_date : '' "></span></p>
+                                </template>
                             </div>
 
 
@@ -332,5 +335,5 @@
     </div>
 
 </div>
-
+<x-footer/>
 </x-easyadmin::app-layout>

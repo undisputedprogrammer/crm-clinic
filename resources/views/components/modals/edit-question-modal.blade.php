@@ -1,4 +1,4 @@
-<dialog id="edit_question_modal" class="modal">
+<dialog id="edit_question_modal" class="modal z-40">
     <div class=" modal-box" @click.outside="document.getElementById('edit-modal-close-btn').click();">
     <form
     x-data = "{ doSubmit() {

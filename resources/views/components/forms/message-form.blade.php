@@ -48,6 +48,7 @@
             if ($event.detail.content.success) {
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
                 $el.reset();
+                collapse();
                 $dispatch('formerrors', {errors: []});
             } else if (typeof $event.detail.content.errors != undefined) {
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});

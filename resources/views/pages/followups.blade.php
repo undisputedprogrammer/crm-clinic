@@ -35,7 +35,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <div class="h-[calc(100vh-3.5rem)] pt-7 bg-base-200 w-full flex justify-evenly">
+      <div class="h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex justify-evenly">
 
         {{-- followups table --}}
         <x-tables.followup-table :followups="$followups"/>
@@ -256,7 +256,7 @@
 
 
                         {{-- next follow up schedule form --}}
-                        <form x-show="!consult && !fp.consulted" x-transition
+                        <form x-show="!consult && !fp.consulted && fp.next_followup_date == null" x-transition
                         x-data ="
                         { doSubmit() {
                             let form = document.getElementById('next-followup-form');
@@ -322,7 +322,10 @@
 
                         </form>
 
-
+                        {{-- whatsapp message form --}}
+                        <div class="my-4">
+                            <x-forms.message-form :templates="$messageTemplates"/>
+                        </div>
 
                         <label x-show="fp.converted == null" class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
 
@@ -502,5 +505,5 @@
 
 
 </div>
-
+<x-footer/>
 </x-easyadmin::app-layout>
