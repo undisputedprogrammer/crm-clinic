@@ -15,7 +15,7 @@ export default () => ({
             el = document.getElementById(this.panelId);
         }
         if (this.$store.app.xpages == undefined) {
-            this.$store.app.xpages = [];
+            this.$store.app.xpages = {};
         }
         if (this.$store.app.xpages[link] == undefined) {
             this.$store.app.xpages[link] = {data: {}};
@@ -30,7 +30,7 @@ export default () => ({
     historyAction(e) {
         // console.log('inside history action');
         if (e.state != undefined && e.state != null) {
-            // console.log(e.state);
+
 
             let link = e.state.href;
             let route = e.state.route;
@@ -39,7 +39,7 @@ export default () => ({
             this.showPage = false;
             this.ajaxLoading = true;
             if (this.$store.app.xpages == undefined) {
-                this.$store.app.xpages = [];
+                this.$store.app.xpages = {};
             }
             if (this.$store.app.xpages[link] == undefined) {
                 this.$store.app.xpages[link] = {};
@@ -51,6 +51,9 @@ export default () => ({
                     this.showPage = true;
                     // this.page = this.$store.app.xpages[link];
                     this.$dispatch('pagechanged', {currentpath: link, currentroute: route, target: target, fragment: fragment});
+                    console.log('link is');
+                    console.log(link);
+                    console.log(this.$store.app.xpages);
                     this.$dispatch('contentupdate', {content: this.$store.app.xpages[link].data.html, target: target});
                     if (this.$store.app.xpages[link].meta != undefined) {
                         this.$dispatch('metachange', {data: this.$store.app.xpages[link].meta});
@@ -109,7 +112,7 @@ export default () => ({
         if (detail.params != null) {
             thelink += "?" + this.getQueryString(params);
         }
-        console.log(this.$store.app.xpages);
+
         if (!forceFresh && this.$store.app.xpages != undefined && this.$store.app.xpages[thelink] != undefined) {
             this.showPage = false;
             this.ajaxLoading = true;
@@ -155,7 +158,7 @@ export default () => ({
                 }
               ).then(
                 (r) => {
-                    console.log(r.data);
+
                     this.showPage = false;
                     this.ajax = true;
                     setTimeout(
