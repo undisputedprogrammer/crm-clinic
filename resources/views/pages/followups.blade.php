@@ -263,6 +263,11 @@
                             let formdata = new FormData(form);
                             formdata.append('followup_id',fp.id);
                             formdata.append('lead_id',fp.lead.id);
+                            if(fp.converted){
+                                formdata.append('converted',fp.converted);
+                                console.log(fp.converted);
+                            }
+
                             $dispatch('formsubmit',{url:'{{route('next-followup')}}', route: 'next-followup',fragment: 'page-content', formData: formdata, target: 'next-followup-form'});
                         }}"
                         @submit.prevent.stop="doSubmit();"

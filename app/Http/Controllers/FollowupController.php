@@ -59,10 +59,20 @@ class FollowupController extends SmartController
         $followup->actual_date = date('Y-m-d');
         $followup->next_followup_date = $request->next_followup_date;
         $followup->save();
+        $converted = null;
+
+
+
         $next_followup = Followup::create([
             'lead_id' => $request->lead_id,
             'scheduled_date' => $request->next_followup_date,
+
         ]);
+
+        if($request->converted == true){
+            $next_followup->converted = true;
+            $next_followup->save();
+        }
 
         return response()->json(['success' => true, 'message' => 'Next follow up scheduled', 'followup' => $followup, 'next_followup' => $next_followup, 'remarks' => $followup->remarks]);
     }

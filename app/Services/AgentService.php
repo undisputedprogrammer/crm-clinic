@@ -31,6 +31,8 @@ class AgentService implements ModelViewConnector
             'password'=>Hash::make($request->password)
         ]);
 
+        $agent->assignRole('agent');
+
         return ['success'=>true, 'message'=>'Agent Added'];
     }
 

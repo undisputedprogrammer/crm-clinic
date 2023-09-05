@@ -81,14 +81,14 @@
             this.show=true;
         }
 
-    }}" class="flex items-center md:order-2 relative">
-        <button @click.prevent.stop="toggle()" type="button" class="flex mr-3 text-sm text-neutral-content space-x-1 bg-neutral-focus items-center rounded-2xl p-1 md:mr-0  " id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+    }}" class="flex items-center md:order-2 relative w-36">
+        <button @click.prevent.stop="toggle()" type="button" class="flex mr-3 text-sm text-neutral-content space-x-1 bg-neutral-focus items-center rounded-2xl p-1 md:mr-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
           <span class="sr-only">Open user menu</span>
           <img class="w-8 h-8 rounded-full" src="{{asset('images/profile_3135715.png')}}" alt="user photo">
           <span class="px-1.5 min-w-20">{{auth()->user()->name}}</span>
         </button>
         <!-- Dropdown menu -->
-        <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none divide-y   divide-gray-100 rounded-lg shadow "
+        <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none divide-y min-w-48  divide-gray-100 rounded-lg shadow "
         :class="theme == 'light' ? 'bg-base-200' : 'bg-neutral-focus' "
         id="user-dropdown">
           <div class="px-4 py-3 text-base-content">
