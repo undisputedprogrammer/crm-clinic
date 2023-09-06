@@ -12,7 +12,7 @@ class Lead extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','phone','email','city','is_valid','is_genuine','history','customer_segment','status','followup_created'];
+    protected $fillable = ['name','phone','email','city','is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
 
     public function remarks(){
         return $this->morphMany(Remark::class,'remarkable');

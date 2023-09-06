@@ -27,7 +27,7 @@ class ImportController extends SmartController
 
             Excel::import(new LeadsImport($headings[0][0]), request()->file('sheet'));
 
-            return response()->json(['success' => true, 'message' => 'Okay, sheet found','headings'=>$headings[0][0]]);
+            return response()->json(['success' => true, 'message' => 'Success, Leads imported','headings'=>$headings[0][0]]);
         }
         else{
 
