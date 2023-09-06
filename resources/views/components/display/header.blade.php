@@ -14,7 +14,8 @@
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('overview')}}',
                 route: 'overview',
-                fragment: 'page-content'
+                fragment: 'page-content',
+                fresh : true
             })"
             class="tab text-neutral-content "
             :class="currentroute =='overview' ? ' border-b-[3px] border-primary text-opacity-100' : 'opacity-60 hover:opacity-100' ">Dashboard</a>
@@ -24,6 +25,7 @@
                 link:'{{route('fresh-leads')}}',
                 route: 'fresh-leads',
                 fragment: 'page-content',
+                fresh : true
 
             })"
             class="tab text-neutral-content "
@@ -34,6 +36,7 @@
                 link:'{{route('followups')}}',
                 route: 'followups',
                 fragment: 'page-content',
+                fresh : true
 
             })"
              class="tab  text-neutral-content "

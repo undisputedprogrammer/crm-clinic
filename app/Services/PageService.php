@@ -50,11 +50,12 @@ class PageService
 
         $ftm = Lead::where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-        $lcm = Lead::where('status', 'Converted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $lcm = Lead::where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
         $pf = Followup::whereHas('lead', function ($query) {
             $query->where('status', '!=', 'Converted');
-        })->where('next_followup_date', null)->count();
+        })->where('next_followup_date', null)
+        ->where('consulted',null)->count();
 
         return compact('lpm', 'ftm', 'lcm', 'pf');
     }
