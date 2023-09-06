@@ -28,8 +28,8 @@ class LeadsImport implements ToArray, WithHeadingRow
 
     public function array(array $rows)
     {
-        info('finding imports');
-        info($rows);
+        info('showing headings');
+        info($this->headings);
         // $row = $row[0];
         foreach ($rows as $row) {
             if($row['name'] == null){
@@ -59,7 +59,7 @@ class LeadsImport implements ToArray, WithHeadingRow
                     'question_id' => $q->id,
                     'lead_id' => $lead->id,
                     'question_code' => $qh,
-                    'answer' => $row[$qh]
+                    'answer' => $row[strtolower($qh)]
                 ]);
             }
         }
@@ -71,8 +71,8 @@ class LeadsImport implements ToArray, WithHeadingRow
     {
         $h = [];
         foreach ($this->headings as $heading) {
-            if (substr($heading, 0, 2) == 'Q_') {
-                $h[] = $heading;
+            if (substr(strtoupper($heading), 0, 2) == 'Q_') {
+                $h[] = strtoupper($heading);
             }
         }
         return $h;

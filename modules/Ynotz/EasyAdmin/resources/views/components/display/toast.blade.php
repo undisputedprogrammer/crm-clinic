@@ -21,7 +21,7 @@
             }, 2000);
         }
     }" class="fixed top-24 right-14 mx-auto w-4/5 sm:w-2/3 md:w-1/5 rounded-md shadow-md bg-base-100 border-base-300 text-center"
-    x-show="showmodal"
+    x-show="showmodal" x-cloak
     @showtoast.window="message = $event.detail.message; mode = $event.detail.mode; showmodal = true; init();"
     x-transition.duration-1000
     >

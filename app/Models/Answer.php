@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Answer extends Model
 {
     use HasFactory;
-
+    protected $fillable = ['question_id','lead_id','question_code','answer'];
     protected $with = ['question'];
 
     public function question(){
