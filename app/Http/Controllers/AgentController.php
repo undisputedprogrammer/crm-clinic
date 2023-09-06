@@ -21,7 +21,9 @@ class AgentController extends SmartController
 
     public function index(Request $request)
     {
-        $agents = User::havingRoles(['agent'])->paginate(10);
+        $agents = User::whereHas('roles', function($query){
+            $query->where('name','agent');
+        })->paginate(10);
         return $this->buildResponse('pages.agents',compact('agents'));
     }
 

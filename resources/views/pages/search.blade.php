@@ -34,7 +34,7 @@
 
       {{-- page body --}}
       <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
-            <h1 class=" text-secondary text-xl font-medium text-center">Leads - Advanced Search</h1>
+            <h1 class=" text-secondary text-xl font-medium text-center">Advanced Search</h1>
 
             <form
             x-data = "{ doSubmit() {
@@ -47,6 +47,7 @@
                 searchFormState.is_valid = formdata.get('is_valid');
                 searchFormState.is_genuine = formdata.get('is_genuine');
                 searchFormState.lead_status = formdata.get('lead_status');
+                searchFormState.agent = formdata.get('agent');
                 $dispatch('formsubmit',{url:'{{route('get-results')}}', route: 'get-results',fragment: 'page-content', formData: formdata, target: 'search-form'});
             }}"
 
@@ -142,6 +143,21 @@
                     </select>
                 </div>
 
+                @can('is-admin')
+                <div class="w-1/4 px-1 mt-1.5">
+                    <label for="" class=" text-sm text-primary font-medium">Select Agent</label>
+                    <select name="agent" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
+                        <option value="null" :disabled="searchFormState.agent == null ? true : false " :selected="searchFormState.agent == null ? true : false " >--Not selected--</option>
+
+                        @foreach ($agents as $agent)
+                            <option :selected="searchFormState.agent == '{{$agent->id}}' ? true : false " value="{{$agent->id}}">{{$agent->name}}</option>
+                        @endforeach
+
+
+                    </select>
+                </div>
+                @endcan
+
 
 
                 <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary" type="submit">Search</button>
@@ -167,7 +183,7 @@
                     $el.innerHTML = searchResults;
                   }, '400');
                 "
-                id="result-table" class="w-[40%]">
+                id="result-table" class="w-[53%]">
 
                 </div>
 
@@ -180,7 +196,7 @@
 
 
                     }"
-                    class="w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-neutral-content rounded-xl p-3 xl:px-6 py-3">
+                    class="w-[40%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-neutral-content rounded-xl p-3 xl:px-6 py-3">
 
                     <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
 

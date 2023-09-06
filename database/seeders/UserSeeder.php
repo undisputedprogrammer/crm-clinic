@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
 
         $agent = User::create([
-            'name' => 'ali',
+            'name' => 'Muhammed Ali',
             'email' => 'ali@demo.com',
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),

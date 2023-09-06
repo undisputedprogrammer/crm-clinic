@@ -10,6 +10,10 @@
               <th>Name</th>
               <th>City</th>
               <th>Phone</th>
+              @can('is-admin')
+                  <th>Agent</th>
+              @endcan
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
@@ -28,6 +32,10 @@
                     <td>{{$followup->lead->name}}</td>
                     <td>{{$followup->lead->city}}</td>
                     <td>{{$followup->lead->phone}}</td>
+                    @can('is-admin')
+                        <td>{{$followup->lead->assigned->name}}</td>
+                    @endcan
+                    <td>{{date_format($followup->updated_at, 'd-m-Y')}}</td>
                 </tr>
             @endforeach
 

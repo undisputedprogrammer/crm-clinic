@@ -27,7 +27,7 @@ class Lead extends Model
     }
 
     public function assigned(){
-        return $this->hasOne(User::class,'assigned_id','id');
+        return $this->hasOne(User::class,'id','assigned_to');
     }
 
     public function appointment(){

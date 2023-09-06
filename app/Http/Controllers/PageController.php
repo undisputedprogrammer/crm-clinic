@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Doctor;
-use App\Models\Followup;
-use App\Models\Lead;
-use App\Models\Message;
-use App\Models\Question;
-use App\Services\PageService;
 use Carbon\Carbon;
+use App\Models\Lead;
+use App\Models\User;
+use App\Models\Doctor;
+use App\Models\Message;
+use App\Models\Followup;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Services\PageService;
 use Illuminate\Support\Facades\Auth;
 use Ynotz\Metatags\Helpers\MetatagHelper;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -65,7 +66,10 @@ class PageController extends SmartController
 
     public function searchIndex(Request $request)
     {
-        return $this->buildResponse('pages.search');
+        $agents = User::whereHas('roles',function($q){
+            $q->where('name','agent');
+        })->get();
+        return $this->buildResponse('pages.search', compact('agents'));
     }
 
     public function questionIndex(Request $request)

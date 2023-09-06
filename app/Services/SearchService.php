@@ -1,23 +1,37 @@
 <?php
+
 namespace App\Services;
 
+use DB;
 use App\Models\Followup;
+use Illuminate\Support\Facades\Auth;
 
-class SearchService{
+class SearchService
+{
 
-    public function getResults($request){
+    public function getResults($request)
+    {
+        if ($request->search_type == 'actual_date')
+        {
+            $query = Followup::where('actual_date', '!=', null);
 
-        $query = Followup::where('actual_date', null)
-            ->where($request->search_type, '>=', $request->from_date)
-            ->where($request->search_type, '<=', $request->to_date)
-            ->with(['lead'=>function($q){
-                return $q->with('appointment');
-            }, 'remarks']);
+        } else
+        {
+            $query = Followup::where('actual_date', null);
+
+        }
+
+        $query->where($request->search_type, '>=', $request->from_date)
+        ->where($request->search_type, '<=', $request->to_date)
+        ->with(['lead' => function ($q) {
+            return $q->with(['appointment','assigned']);
+        }, 'remarks']);
 
         $filters = [
             'is_valid' => 'is_valid',
             'is_genuine' => 'is_genuine',
             'lead_status' => 'status',
+            'agent' => 'assigned_to'
         ];
 
         foreach ($filters as $param => $column) {
@@ -27,11 +41,25 @@ class SearchService{
                 });
             }
         }
-        $query->where('consulted',null);
+
+
+
+        if(!$request->user()->hasRole('admin')){
+            $query->whereHas('lead', function ($query) use ($request){
+                $query->where('assigned_to',Auth::user()->id);
+            });
+        }
+
+
+
+        $query->where('consulted', null);
+
+
 
         $followups = $query->paginate(10);
 
         $table = view('partials.search-results-table', compact('followups'))->render();
+
 
         return [
             'success' => true,
