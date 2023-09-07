@@ -24,7 +24,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-base-content bg-base-200">Manage Appointments</h2>
+      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Appointments</h2>
 
         <form id="appointments-search-form"
             action=""

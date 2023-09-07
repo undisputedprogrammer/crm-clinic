@@ -10,7 +10,7 @@
     <div>
         <div class="tabs mx-auto font-medium">
 
-            <a
+            <a href=""
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('overview')}}',
                 route: 'overview',
@@ -20,7 +20,7 @@
             class="tab text-neutral-content "
             :class="currentroute =='overview' ? ' border-b-[3px] border-primary text-opacity-100' : 'opacity-60 hover:opacity-100' ">Dashboard</a>
 
-            <a
+            <a href=""
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('fresh-leads')}}',
                 route: 'fresh-leads',
@@ -31,7 +31,7 @@
             class="tab text-neutral-content "
             :class="currentroute =='fresh-leads' ? ' border-b-[3px] border-primary opacity-100' : 'opacity-60 hover:opacity-100' " >Fresh leads</a>
 
-            <a
+            <a href=""
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('followups')}}',
                 route: 'followups',
@@ -42,7 +42,7 @@
              class="tab  text-neutral-content "
              :class="currentroute =='followups' ? ' border-b-[3px] border-primary opacity-100' : 'opacity-60 hover:opacity-100' ">Follow ups</a>
 
-            <a
+            <a href=""
             @click.prevent.stop="$dispatch('linkaction',{
                 link:'{{route('search-index')}}',
                 route: 'search-index',

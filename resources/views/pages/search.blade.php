@@ -34,7 +34,7 @@
 
       {{-- page body --}}
       <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
-            <h1 class=" text-secondary text-xl font-medium text-center">Advanced Search</h1>
+            <h1 class=" text-primary text-xl font-medium text-start px-9">Search follow ups</h1>
 
             <form
             x-data = "{ doSubmit() {
@@ -81,11 +81,12 @@
                             }
                         }"
             id="search-form"
-             action="" class=" flex justify-start  items-end flex-wrap  py-2 px-14">
+             action="" class=" flex justify-start border border-secondary w-[95.3%] mx-auto items-end flex-wrap  py-3 px-2 rounded-xl mt-3">
 
                 <div class="w-1/4 px-1 mt-1.5">
-                    <select @change.prevent.stop="searchtype = $el.value;" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
-                        <option disabled :selected="searchtype == null ? true : false ">--Search by--</option>
+                    <label for="search-by" class="text-sm text-primary font-medium">Search by</label>
+                    <select name="search_type" @change.prevent.stop="searchtype = $el.value;" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
+                        <option disabled>--Search by--</option>
 
                         <option :selected="searchtype == 'scheduled_date' ? true : false " value="scheduled_date">Scheduled date</option>
 

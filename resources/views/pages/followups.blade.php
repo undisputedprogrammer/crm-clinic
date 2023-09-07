@@ -35,7 +35,9 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <div class="h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex justify-evenly">
+      <h1 class=" text-primary text-xl font-semibold bg-base-200 px-[3.3%] pt-2.5">Pending follow ups</h1>
+
+      <div class="h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex justify-evenly">
 
         {{-- followups table --}}
         <x-tables.followup-table :followups="$followups"/>

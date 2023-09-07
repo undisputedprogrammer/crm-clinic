@@ -41,7 +41,7 @@ currentroute=$event.detail.currentroute;"
             showresults : false,
             fromDate : null,
             toDate : null,
-            searchtype : null,
+            searchtype : 'scheduled_date',
             searchResults : null,
             pagination_data: null,
             searchFormState: [],

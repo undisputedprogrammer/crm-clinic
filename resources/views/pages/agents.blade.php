@@ -6,7 +6,7 @@
       <x-display.header/>
 
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Agents</h2>
+      <h2 class="pt-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Agents</h2>
 
 
       <div x-data="{page: 0}"

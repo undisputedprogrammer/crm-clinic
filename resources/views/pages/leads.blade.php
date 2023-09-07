@@ -8,6 +8,7 @@
       {{-- page body --}}
 
 
+        <h1 class=" text-primary text-xl font-semibold bg-base-200 px-[3.3%] pt-2.5">Leads</h1>
 
       <div x-data="{
         convert: false
@@ -81,7 +82,7 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full flex justify-evenly">
+       class=" h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full flex justify-evenly">
 
 
 

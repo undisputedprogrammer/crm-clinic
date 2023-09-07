@@ -46,7 +46,7 @@
         </table>
 
         @else
-            <h1 class=" font-semibold text-lg text-neutral-content p-4">No follow ups for now</h1>
+            <h1 class=" font-semibold text-lg text-neutral-content p-4">No results found</h1>
         @endif
 
 

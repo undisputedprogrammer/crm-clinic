@@ -10,7 +10,11 @@
 
             <div class=" min-h-[calc(100vh-3.5rem)] pb-[2.8rem] w-full mx-auto  bg-base-100 ">
 
-                <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3 my-4">
+
+
+                <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3  flex flex-col">
+                    <h1 class=" text-xl font-semibold text-primary mb-3">Overview</h1>
+
                     <div class="flex space-x-3 justify-evenly items-center">
 
                         <div
@@ -77,7 +81,7 @@
                     {{-- import leads form --}}
                     @can('import-lead')
                         <div class="my-3 bg-base-200 p-3 rounded-xl w-fit">
-                            <h1 class="font-semibold mb-1 text-primary">Import leads from Excel</h1>
+                            <h1 class="font-semibold mb-2.5 text-primary">Import leads from Excel</h1>
                             <form x-data="{ doSubmit() {
                     let form = document.getElementById('import-form');
                     let formdata = new FormData(form);
@@ -108,7 +112,7 @@
 
                     @can('is-admin')
                         <div class="bg-base-200 rounded-xl my-3 p-3 w-fit">
-                            <h2 class="text-primary font-medium">More actions</h2>
+                            <h2 class="text-primary font-medium mb-2.5">More actions</h2>
 
                             <div class=" flex space-x-2 mt-1">
                                 <button class="btn btn-sm btn-secondary"

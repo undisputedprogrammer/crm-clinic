@@ -11,7 +11,7 @@
 
       <div class=" h-fit pt-2 pb-3  bg-base-200 w-full ">
 
-        <h1 class=" text-center font-semibold text-primary text-lg mb-2">Manage Questions</h1>
+        <h1 class=" xl:px-12 font-semibold text-primary text-lg mb-5 mt-2">Manage Questions</h1>
 
         <x-tables.questions-table :questions="$questions"/>
 
