@@ -1,13 +1,25 @@
 <div class="w-full flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
 
 
+    <div class="flex items-center space-x-3">
+    <button class=" md:hidden w-7 h-7 relative focus:outline-none " @click.prevent.stop="sidedrawer = !sidedrawer" >
+        <span class="sr-only">sidedrawer menu</span>
+        <div class="block w-5 absolute left-1/2 top-1/2 text-base-content  transform  -translate-x-1/2 -translate-y-1/2">
+            <span aria-hidden="true" class="block absolute h-0.5 w-5 bg-current transform transition duration-500 ease-in-out" :class="{'rotate-45': sidedrawer,' -translate-y-1.5': !sidedrawer }"></span>
+            <span aria-hidden="true" class="block absolute  h-0.5 w-5 bg-current   transform transition duration-500 ease-in-out" :class="{'opacity-0': sidedrawer } "></span>
+            <span aria-hidden="true" class="block absolute  h-0.5 w-5 bg-current transform  transition duration-500 ease-in-out" :class="{'-rotate-45': sidedrawer, ' translate-y-1.5': !sidedrawer}"></span>
+        </div>
+    </button>
+
+
     <a href="" @click.prevent.stop="$dispatch('linkaction',{link: '{{route('overview')}}', route: 'overview', fragment: 'page-content'})" class="text-xl font-bold flex items-center ">
         <img src="{{asset('images/CRAFT Hospital Logo_Final-cut.png')}}" class="h-12 mr-2" alt="crm-app Logo">
         <span class="self-center text-neutral-content whitespace-nowrap">CRAFT</span>
     </a>
+    </div>
 
 
-    <div>
+    <div class="hidden md:flex">
         <div class="tabs mx-auto font-medium">
 
             <a href=""
@@ -84,11 +96,11 @@
             this.show=true;
         }
 
-    }}" class="flex items-center md:order-2 relative w-36">
+    }}" class="flex items-center md:order-2 relative sm:w-36">
         <button @click.prevent.stop="toggle()" type="button" class="flex mr-3 text-sm text-neutral-content space-x-1 bg-neutral-focus items-center rounded-2xl p-1 md:mr-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
-          <span class="sr-only">Open user menu</span>
+          <span class="sr-only">sidedrawer user menu</span>
           <img class="w-8 h-8 rounded-full" src="{{asset('images/profile_3135715.png')}}" alt="user photo">
-          <span class="px-1.5 min-w-20">{{auth()->user()->name}}</span>
+          <span class="px-1.5 min-w-20 hidden sm:flex">{{auth()->user()->name}}</span>
         </button>
         <!-- Dropdown menu -->
         <div x-show="show" @click.outside="toggle()" x-transition class="z-50 absolute top-7 right-0 my-4 text-base list-none divide-y min-w-48  divide-gray-100 rounded-lg shadow "

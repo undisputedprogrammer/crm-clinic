@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->boolean('converted')->nullable();
             $table->boolean('consulted')->nullable();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->timestamps();
         });
     }

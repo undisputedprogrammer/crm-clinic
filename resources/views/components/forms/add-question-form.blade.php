@@ -21,11 +21,11 @@ x-data = "{ doSubmit() {
                         }
             $el.reset();
         }"
- id="add-question-form" action="" class="  p-2 bg-base-100 rounded-xl">
+ id="add-question-form" action="" class="  p-2 bg-base-100 rounded-xl max-w-sm lg:max-w-full mx-auto">
     <h1 class="  font-semibold text-secondary">Add new question</h1>
 
-    <div class="flex space-x-2 mt-1">
+    <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mt-1">
         <input type="text" required name="question" placeholder="New Question" class="input input-sm w-full max-w-md bg-base-200 text-base-content font-medium" />
-        <button type="submit" class=" btn-sm btn btn-success">Add question</button>
+        <button type="submit" class=" btn-sm btn btn-success w-fit">Add question</button>
     </div>
 </form>

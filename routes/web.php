@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Remarkcontroller;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TestController;
 use App\Models\Message;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +62,12 @@ Route::middleware('auth')->group(function () {
     Route::post('agents/{id}',[AgentController::class, 'update'])->name('agents.update');
     Route::get('/password/reset',[AgentController::class, 'reset'])->name('user-password.reset');
     Route::post('/password/reset',[AgentController::class, 'change'])->name('password.change');
+
+
+    Route::get('/templates',[TemplateController::class, 'index'])->name('template.index');
+    Route::post('/template',[TemplateController::class, 'store'])->name('template.store');
+    Route::get('/leads/reassign',[TemplateController::class, 'reassign'])->name('leads.reassign');
+    Route::post('/leads/reassign',[TemplateController::class, 'assign'])->name('leads.assign');
 });
 
 Route::get('/', [PageController::class, 'home']);

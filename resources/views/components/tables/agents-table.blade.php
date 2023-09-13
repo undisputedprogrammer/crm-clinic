@@ -1,5 +1,5 @@
 @props(['agents'])
-<div class="w-[55%]">
+<div class=" w-[96%] lg:w-[55%]">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($agents != null && count($agents)>0)
 

@@ -39,43 +39,98 @@
             <div x-show="mode=='add'" x-transition>
                 <h2 class="text-lg font-semibold text-secondary ">Add Message</h2>
                 <div class=" mt-2 flex flex-col space-y-2">
-                    <form id="message-add-form"
+                    <form id="template-add-form"
                         x-data="{
+                            showerror : false,
+                            variableCount : 0,
+                            variable_appender : document.getElementById('variable-appender'),
                             doSubmit() {
-                                let form = document.getElementById('message-add-form');
+                                let form = document.getElementById('template-add-form');
                                 let fd = new FormData(form);
-                                $dispatch('formsubmit', {url: '{{route('messages.store')}}', formData: fd, target: 'message-add-form'});
+                                $dispatch('formsubmit', {url: '{{route('template.store')}}', formData: fd, target: 'template-add-form'});
+                            },
+                            addInput() {
+                                if(this.variableCount != 0 && document.getElementById('var-'+this.variableCount).value == ''){
+                                    this.showerror = true;
+                                    setTimeout(() => {
+                                        this.showerror = false;
+                                      }, '2000');
+                                }
+                                else{
+                                    this.variableCount++;
+
+
+                                    let element = document.createElement('input');
+                                    let elementID = 'var-'+this.variableCount;
+                                    let elementName = 'var_'+this.variableCount;
+                                    element.classList = 'input input-bordered w-full max-w-xs mt-2';
+                                    element.placeholder = 'Enter variable name';
+                                    element.id = elementID;
+                                    element.name = elementName;
+                                    element.required = true;
+                                    this.variable_appender.append(element);
+                                }
+
+                            },
+                            removeInput() {
+                                let inputToRemove = document.getElementById('var-'+this.variableCount);
+                                this.variable_appender.removeChild(inputToRemove);
+                                this.variableCount--;
                             }
                         }"
-                        class="flex flex-col items-center"
+                        class="flex flex-col items-center "
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
+                        if($event.detail.target == $el.id){
                         console.log($event.detail);
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Message Added!'});$dispatch('linkaction', {link: '{{route('messages.index')}}', route: 'messages.index'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Template Created!'});
+                                console.log($event.detail.content.params);
+                                $el.reset();
+                                variableCount = 0;
+                                {{-- $dispatch('linkaction', {link: '{{route('messages.index')}}', route: 'messages.index'}); --}}
+                                while (variable_appender.firstChild) {
+                                    variable_appender.removeChild(variable_appender.firstChild);
+                                }
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to add message. Please make sure you have entered all details.'});
                             }
+                        }
                         "
                         >
+
                         <div class="form-control w-full max-w-xs">
                             <label class="label">
-                            <span class="label-text">Template</span>
+                            <span class="label-text font-medium">Template Name</span>
                             </label>
                             <input type="text" name="template" placeholder="Template name" class="input input-bordered w-full max-w-xs" />
                         </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                            <span class="label-text">Message</span>
-                            </label>
-                            <input type="text" name="message" placeholder="Message" class="input input-bordered w-full max-w-xs" />
+
+                        {{-- variable appender --}}
+                        <div id="variable-appender" class="form-control w-full max-w-xs flex flex-col space-y-2">
+
                         </div>
-                        <div class="text-center py-8">
-                            <button type="submit" class="btn btn-sm btn-primary">Add</button>
+                        <button @click.prevent.stop="removeInput()" x-show="variableCount > 0" class=" btn btn-link btn-xs text-error">Remove</button>
+
+                        <label for="" class="mt-1.5"><span x-show="showerror" x-transition class=" text-error text-sm">Fill the current input before adding another</span></label>
+
+                        <div class="text-center py-2 flex space-x-2">
+
+                            <button @click.prevent.stop="addInput()" class="btn btn-sm btn-secondary">Add new variable</button>
+
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
                         </div>
+
                     </form>
                 </div>
             </div>
+
+            {{-- **************************************************************************************
+            *                      create form ends                                              *
+            ************************************************************************************** --}}
+
+
+
             <div
                 x-data="{
                     id: '',
@@ -110,6 +165,7 @@
                         class="flex flex-col items-center"
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
+                        if($event.detail.target == $el.id){
                             if ($event.detail.content.success) {
                                 $dispatch('showtoast', {mode: 'success', message: 'Message Updated!'});
                                 let params = {
@@ -119,6 +175,7 @@
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to edit message. Please make sure you have entered all details.'});
                             }
+                        }
                         "
                         >
                         <div class="form-control w-full max-w-xs">

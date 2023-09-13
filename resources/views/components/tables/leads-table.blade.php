@@ -1,7 +1,7 @@
 @props(['leads'])
 
 {{-- {{dd($leads[0])}} --}}
-<div class="w-[55%]">
+<div class=" w-[96%] mx-auto md:w-[55%] overflow-x-scroll hide-scroll">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($leads != null && count($leads)>0)
 

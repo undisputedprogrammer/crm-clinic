@@ -22,27 +22,28 @@
 
       <!-- Header -->
       <x-display.header/>
-
+      <x-sections.side-drawer/>
       {{-- page body --}}
       <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Appointments</h2>
 
         <form id="appointments-search-form"
             action=""
             @submit.prevent.stop="doSubmit();"
-            class="flex flex-row w-full m-auto justify-center space-x-8 bg-base-200 items-end">
-            <div class="form-control max-w-xs">
-                <label class="label">
+            class="flex flex-col md:flex-row w-full m-auto justify-center space-y-3 md:space-y-0 md:space-x-8 bg-base-200 md:items-end items-start px-4">
+            <div class="form-control max-w-xs flex flex-row md:flex-col">
+                <label class="label w-12">
                   <span class="label-text">From</span>
                 </label>
                 <input x-model="from" name="from" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
             </div>
-            <div class="form-control max-w-xs">
-                <label class="label">
+            <div class="form-control max-w-xs flex flex-row md:flex-col">
+                <label class="label w-12">
                   <span class="label-text">To</span>
                 </label>
                 <input x-model="to" name="to" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
             </div>
-            <div>
+            <div class="flex flex-row ">
+                <label for="" class="w-12 md:hidden"></label>
                 <button type="submit" class="btn btn-md btn-secondary">Search</button>
             </div>
         </form>
@@ -70,7 +71,7 @@
                 params: params
             })"
 
-       class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
+       class=" lg:h-[calc(100vh-3.5rem)] pt-7 pb-12  bg-base-200 w-full flex flex-col lg:flex-row justify-evenly space-y-4 lg:space-y-0 items-center lg:items-start ">
 
 
         <x-tables.appointments-table :appointments="$appointments"/>
@@ -97,7 +98,7 @@
                     contentRecieved = true;
                 }
             "
-            class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+            class=" w-[96%] lg:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
 
             <p x-show="!contentRecieved" x-transition class=" text-lg font-medium text-base-content text-center">Select an appointment</p>
 

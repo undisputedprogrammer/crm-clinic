@@ -4,6 +4,7 @@
 
             <!-- Header -->
             <x-display.header />
+            <x-sections.side-drawer/>
             <!-- ./Header -->
 
 
@@ -12,13 +13,13 @@
 
 
 
-                <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3  flex flex-col">
-                    <h1 class=" text-xl font-semibold text-primary mb-3">Overview</h1>
+                <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3  flex flex-col space-y-6">
+                    <h1 class=" text-xl font-semibold text-primary ">Overview</h1>
 
-                    <div class="flex space-x-3 justify-evenly items-center">
+                    <div class="flex flex-col space-y-2 md:space-y-0 md:flex-row  md:space-x-3 justify-evenly md:items-center ">
 
                         <div
-                            class="flex flex-col space-y-1 bg-base-200 w-1/4 h-16 rounded-xl justify-center items-center ">
+                            class="flex flex-col space-y-1 bg-base-200 w-full lg:w-1/4 h-16 rounded-xl justify-center items-center py-4">
                             <label for=""
                                 class=" font-medium text-primary w-[90%] flex justify-between items-center">
                                 <span>Total leads this month</span>
@@ -27,7 +28,7 @@
                             {{-- <progress class="progress progress-success w-[90%] mx-auto" value="50" max="100"></progress> --}}
                         </div>
 
-                        <div class="flex flex-col space-y-1 bg-base-200 w-1/4 rounded-xl items-center py-4">
+                        <div class="flex flex-col space-y-1 bg-base-200 w-full lg:w-1/4 rounded-xl items-center py-4">
                             <label for="" class=" font-medium text-primary w-[90%] flex justify-between">
                                 <span>Lead followed up this month</span>
                                 <span
@@ -46,7 +47,7 @@
 
                         </div>
 
-                        <div class="flex flex-col space-y-1 bg-base-200 w-1/4 rounded-xl items-center py-4">
+                        <div class="flex flex-col space-y-1 bg-base-200 w-full lg:w-1/4 rounded-xl items-center py-4">
                             <label for="" class=" font-medium text-primary w-[90%] flex justify-between">
                                 <span>Leads converted this month</span>
                                 @php
@@ -65,7 +66,7 @@
                         </div>
 
                         <div
-                            class="flex flex-col space-y-1 bg-base-200 justify-center h-16 w-1/4 rounded-xl items-center py-4">
+                            class="flex flex-col space-y-1 bg-base-200 justify-center h-16 w-full lg:w-1/4 rounded-xl items-center py-4">
                             <label for=""
                                 class=" font-medium text-primary w-[90%] flex justify-between items-center">
                                 <span>Total scheduled follow ups pending</span>
@@ -80,7 +81,7 @@
 
                     {{-- import leads form --}}
                     @can('import-lead')
-                        <div class="my-3 bg-base-200 p-3 rounded-xl w-fit">
+                        <div class=" bg-base-200 p-3 rounded-xl w-fit">
                             <h1 class="font-semibold mb-2.5 text-primary">Import leads from Excel</h1>
                             <form x-data="{ doSubmit() {
                     let form = document.getElementById('import-form');
@@ -111,11 +112,11 @@
                     @endcan
 
                     @can('is-admin')
-                        <div class="bg-base-200 rounded-xl my-3 p-3 w-fit">
+                        <div class="bg-base-200 rounded-xl  p-3 w-fit">
                             <h2 class="text-primary font-medium mb-2.5">More actions</h2>
 
-                            <div class=" flex space-x-2 mt-1">
-                                <button class="btn btn-sm btn-secondary"
+                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 flex-wrap sm:space-x-2 mt-1">
+                                <button class="btn btn-sm btn-secondary lg:mb-2"
                                     @click.prevent.stop="$dispatch('linkaction',{
                                         link:'{{ route('manage-questions') }}',
                                         route:'manage-questions',
@@ -147,12 +148,20 @@
                                     })">Manage Messages
                                 </button>
 
-                                <button class="btn btn-sm btn-secondary"
+                                <button class="btn btn-sm btn-secondary "
                                     @click.prevent.stop="$dispatch('linkaction',{
                                         link:'{{ route('agents.index') }}',
                                         route:'agents.index',
                                         fragment:'page-content'
                                     })">Manage Agents
+                                </button>
+
+                                <button class="btn btn-sm btn-secondary "
+                                    @click.prevent.stop="$dispatch('linkaction',{
+                                        link:'{{ route('leads.reassign') }}',
+                                        route:'leads.reassign',
+                                        fragment:'page-content'
+                                    })">Re-assign Leads
                                 </button>
 
                             </div>

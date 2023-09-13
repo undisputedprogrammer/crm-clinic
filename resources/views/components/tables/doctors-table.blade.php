@@ -1,5 +1,5 @@
 @props(['doctors'])
-<div class="w-[55%]">
+<div class=" w-[96%] md:w-[55%]">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($doctors != null && count($doctors)>0)
 

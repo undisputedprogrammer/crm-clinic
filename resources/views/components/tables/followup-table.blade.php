@@ -1,5 +1,5 @@
 @props(['followups'])
-<div class="w-[40%]">
+<div class=" w-[96%] lg:w-[40%]">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($followups != null && count($followups)>0)
         <table class="table ">

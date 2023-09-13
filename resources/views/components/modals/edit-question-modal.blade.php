@@ -1,5 +1,5 @@
-<dialog id="edit_question_modal" class="modal z-40">
-    <div class=" modal-box" @click.outside="document.getElementById('edit-modal-close-btn').click();">
+<dialog id="edit_question_modal" class="modal z-40 ">
+    <div class=" modal-box " @click.outside="document.getElementById('edit-modal-close-btn').click();">
     <form
     x-data = "{ doSubmit() {
         let form = document.getElementById('edit-question-form');
@@ -25,12 +25,12 @@
                         }
             $el.reset();
         }"
-     class=" bg-base-100 text-base-content"
+     class=" bg-base-100 text-base-content flex flex-col"
      method=""
      action="">
       <h3 class="font-bold text-lg text-secondary">Edit Question</h3>
-      <input type="text" placeholder="" name="question" :value="edit_question" class="input input-sm w-full bg-base-200 max-w-md" />
-      <button class="btn btn-sm btn-success mt-2" type="submit">Save</button>
+      <input type="text" placeholder="" name="question" :value="edit_question" class="input input-sm w-full bg-base-200 max-w-xs md:max-w-md" />
+      <button class="btn btn-sm btn-success mt-2 w-fit" type="submit">Save</button>
     </form>
       <div class="flex space-x-2 mt-2.5">
 

@@ -18,16 +18,16 @@
 
     <x-modals.edit-question-modal />
 
-    <div class="overflow-x-auto w-fit mx-auto border border-primary rounded-xl mt-3">
+    <div class="overflow-auto w-[96%] xl:w-fit mx-auto border border-primary rounded-xl mt-3">
 
-        <table class="table w-fit mx-auto  ">
+        <table class="table overflow-auto mx-auto  ">
 
-            <thead>
-                <tr class=" text-secondary">
+            <thead class="">
+                <tr class=" text-secondary overflow-auto text-sm">
                     <th></th>
-                    <th>Question Code</th>
+                    <th>Code</th>
                     <th>Question</th>
-                    <th>Created at</th>
+                    <th class="hidden ">Created at</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -35,15 +35,15 @@
 
 
                 <template x-for="question in questions">
-                    <tr :id="question.question_code" class=" text-base-content hover:bg-base-100"
+                    <tr :id="question.question_code" class=" text-base-content hover:bg-base-100 overflow-auto"
                         @questionupdate.window="
         if($el.id == $event.detail.target){
             question.question = $event.detail.question;
         }">
                         <th x-text="question.id"></th>
-                        <td x-text="question.question_code"></td>
+                        <td x-text="question.question_code" class="text-center"></td>
                         <td x-text="question.question"></td>
-                        <td x-text="question.created_at"></td>
+                        <td x-text="question.created_at" class=" hidden"></td>
                         <td class="flex ">
                             <button class="w-6 h-6 p-1 hover:bg-base-200 rounded-md">
                             <svg @click.prevent.stop="

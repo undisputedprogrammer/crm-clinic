@@ -1,6 +1,7 @@
 <x-easyadmin::app-layout>
 <div class=" " >
     <x-display.header/>
+    <x-sections.side-drawer/>
     <div class=" bg-base-200 h-[calc(100vh-3.5rem)] flex flex-col justify-center ">
         <h1 class=" text-center text-primary font-semibold text-lg mb-2">Change Password</h1>
         <form

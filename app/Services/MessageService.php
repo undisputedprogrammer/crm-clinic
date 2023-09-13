@@ -30,5 +30,9 @@ class MessageService implements ModelViewConnector{
             'message' => ['required', 'string']
         ];
     }
+
+    // public function message($request){
+
+    // }
 }
 ?>

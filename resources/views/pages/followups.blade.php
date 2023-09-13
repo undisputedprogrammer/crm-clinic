@@ -33,11 +33,11 @@
 
       <!-- Header -->
       <x-display.header/>
-
+      <x-sections.side-drawer/>
       {{-- page body --}}
       <h1 class=" text-primary text-xl font-semibold bg-base-200 px-[3.3%] pt-2.5">Pending follow ups</h1>
 
-      <div class="h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex justify-evenly">
+      <div class="lg:h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex flex-col lg:flex-row justify-evenly items-center lg:items-start space-y-4 lg:space-y-0">
 
         {{-- followups table --}}
         <x-tables.followup-table :followups="$followups"/>
@@ -48,7 +48,7 @@
 
 
         }"
-        class="w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+        class=" w-[96%] lg:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
             <p x-show="!fpselected" class=" font-semibold text-base text-center mt-4">Select a follow up...</p>
 
@@ -56,7 +56,7 @@
                 <div
                 {{-- updating values in the details section --}}
                 @fpupdate.window="
-                console.log($event.detail);
+                {{-- console.log($event.detail.followup); --}}
                 showconsultform = false;
                 appointment = $event.detail.appointment;
                 if(fps[$event.detail.id] != null || fps[$event.detail.id] != undefined){
@@ -147,8 +147,13 @@
 
                         {{-- looping through history --}}
                         <template x-show="!historyLoading" x-for="item in history" >
-                            <div x-show="item.actual_date != null" class=" mt-2">
+                            <div x-data="{agent: item.user}" x-show="item.actual_date != null" class=" mt-2">
                                 <p class=" font-medium">Date : <span class=" text-primary" x-text="item.actual_date"></span></p>
+
+                                {{-- <template x-if=""> --}}
+                                    <p  class=" font-medium">Agent : <span class=" text-primary" x-text="agent != null ? agent.name : '' "></span></p>
+                                {{-- </template> --}}
+
                                 <p class="font-medium">Follow up remarks</p>
                                 <ul>
                                     <template x-if="item.remarks != undefined">

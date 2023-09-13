@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Followup;
 use App\Models\Remark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class FollowupController extends SmartController
@@ -58,6 +59,7 @@ class FollowupController extends SmartController
         $followup = Followup::find($request->followup_id);
         $followup->actual_date = date('Y-m-d');
         $followup->next_followup_date = $request->next_followup_date;
+        $followup->user_id = Auth::user()->id;
         $followup->save();
         $converted = null;
 

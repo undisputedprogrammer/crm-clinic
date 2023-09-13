@@ -43,8 +43,10 @@ currentroute=$event.detail.currentroute;"
             toDate : null,
             searchtype : 'scheduled_date',
             searchResults : null,
-            pagination_data: null,
+            pagination_data : null,
             searchFormState: [],
+            searchFilter : null,
+            sidedrawer : false,
 
 
         }" class="min-h-screen bg-base-200 flex flex-col">

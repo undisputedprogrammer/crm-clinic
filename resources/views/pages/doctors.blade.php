@@ -4,7 +4,7 @@
 
       <!-- Header -->
       <x-display.header/>
-
+      <x-sections.side-drawer/>
       {{-- page body --}}
       <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Doctors</h2>
 
@@ -23,7 +23,7 @@
                 fragment: 'page-content',
             })"
 
-       class=" h-[calc(100vh-3.5rem)] pt-7   bg-base-200 w-full flex justify-evenly">
+       class=" md:h-[calc(100vh-3.5rem)] pt-7 pb-12 md:pb-0  bg-base-200 w-full flex flex-col md:flex-row justify-evenly items-center md:items-start space-y-4 md:space-y-0">
 
 
         <x-tables.doctors-table :doctors="$doctors"/>
@@ -34,7 +34,7 @@
             x-data="{
                 mode: 'add',
             }"
-            class="w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+            class=" w-[96%] md:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div x-show="mode=='add'" x-transition>
                 <h2 class="text-lg font-semibold text-secondary ">Add Doctor</h2>
                 <div class=" mt-2 flex flex-col space-y-2">

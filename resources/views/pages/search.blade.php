@@ -31,7 +31,7 @@
 
       <!-- Header -->
       <x-display.header/>
-
+      <x-sections.side-drawer/>
       {{-- page body --}}
       <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
             <h1 class=" text-primary text-xl font-medium text-start px-9">Search follow ups</h1>
@@ -81,9 +81,9 @@
                             }
                         }"
             id="search-form"
-             action="" class=" flex justify-start border border-secondary w-[95.3%] mx-auto items-end flex-wrap  py-3 px-2 rounded-xl mt-3">
+             action="" class=" flex flex-col sm:flex-row justify-start border border-secondary w-[95.3%] mx-auto items-center sm:items-end flex-wrap  py-3 px-2 rounded-xl mt-3">
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="search-by" class="text-sm text-primary font-medium">Search by</label>
                     <select name="search_type" @change.prevent.stop="searchtype = $el.value;" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option disabled>--Search by--</option>
@@ -95,17 +95,17 @@
                     </select>
                 </div>
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="from-date" class="text-sm text-primary font-medium">Select from date</label>
                     <input id="from-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="from date" name="from_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="fromDate" :value="fromDate"/>
                 </div>
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="to-date" class=" text-sm text-primary font-medium">Select to date</label>
                     <input id="to-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="to date" name="to_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="toDate" :value="toDate" />
                 </div>
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select valid status</label>
                     <select class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content" name="is_valid">
                         <option value="null" :disabled="searchFormState.is_valid == null ? true : false"
@@ -118,7 +118,7 @@
                     </select>
                 </div>
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select genuine status</label>
                     <select name="is_genuine" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option value="null" :disabled="searchFormState.is_genuine == null ? true : false " :selected="searchFormState.is_genuine == null ? true : false ">--Not selected--</option>
@@ -130,7 +130,7 @@
                     </select>
                 </div>
 
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select lead status</label>
                     <select name="lead_status" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option value="null" :disabled="searchFormState.lead_status == null ? true : false " :selected="searchFormState.lead_status == null ? true : false " >--Not selected--</option>
@@ -145,7 +145,7 @@
                 </div>
 
                 @can('is-admin')
-                <div class="w-1/4 px-1 mt-1.5">
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select Agent</label>
                     <select name="agent" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
                         <option value="null" :disabled="searchFormState.agent == null ? true : false " :selected="searchFormState.agent == null ? true : false " >--Not selected--</option>
@@ -161,7 +161,7 @@
 
 
 
-                <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary" type="submit">Search</button>
+                <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary mt-2 lg:mt-0" type="submit">Search</button>
 
 
             </form>
@@ -169,7 +169,7 @@
 
             {{-- results section --}}
 
-            <div class="w-full flex justify-evenly items-start my-4">
+            <div class="w-full flex flex-col lg:flex-row space-y-4 lg:space-y-0 justify-evenly  my-4 items-center lg:items-start">
 
                 {{-- table displayer --}}
                 <div x-html="searchResults"
@@ -184,7 +184,7 @@
                     $el.innerHTML = searchResults;
                   }, '400');
                 "
-                id="result-table" class="w-[53%]">
+                id="result-table" class=" w-[96%] lg:w-[53%]">
 
                 </div>
 
@@ -197,7 +197,7 @@
 
 
                     }"
-                    class="w-[40%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-neutral-content rounded-xl p-3 xl:px-6 py-3">
+                    class=" w-[96%] lg:w-[40%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-neutral-content rounded-xl p-3 xl:px-6 py-3">
 
                     <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
 

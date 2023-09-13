@@ -23,4 +23,8 @@ class Followup extends Model
     // public function followups(){
     //     return $this->hasMany(Followup::class,'lead_id','lead_id');
     // }
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }
