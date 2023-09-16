@@ -18,7 +18,7 @@
                 <tr class="text-base-content hover:bg-base-100 relative">
                     {{-- <th>{{$loop->index + 1}}</th> --}}
                     <td>{{$message->template}}</td>
-                    <td>{{$message->message ?? 'Not defined'}}</td>
+                    <td>{{$message->payload ?? 'Not defined'}}</td>
                     <td>
                         <button @click.prevent.stop="
 

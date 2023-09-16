@@ -92,14 +92,36 @@
 
 
         <div x-data="{
-            selected_section: 'details'
-        }" class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+            selected_section: 'details',
+            messageLoading : false,
+            chats : [],
+            loadWhatsApp(){
+                this.selected_section = 'wp';
+                this.messageLoading = true;
+
+                axios.get('/api/get/chats',{
+                    params : {
+                        id : lead.id
+                    }
+                }).then((r)=>{
+                    console.log(r);
+                    this.chats = r.data.chats;
+                    this.messageLoading = false;
+
+                }).catch((e)=>{
+                    console.log(e);
+                });
+
+            }
+        }"
+
+        class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div class=" flex space-x-4">
                 <h2 @click="selected_section = 'details'" class="text-lg font-semibold text-secondary cursor-pointer" :class=" selected_section == 'details' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Lead details</h2>
 
                 <h2 @click="selected_section = 'qna'" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'qna' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">QNA</h2>
 
-                <h2 @click="selected_section = 'wp'" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
+                <h2 @click="loadWhatsApp();" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
             </div>
 
             <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
@@ -332,8 +354,14 @@
 
 
             {{-- Whatsapp section --}}
-            <div x-show="selected_section == 'wp' " class=" py-3">
-                <x-sections.whatsapp/>
+            <div x-show="selected_section == 'wp' " class=" py-3" :class="messageLoading ? ' flex w-full ' : '' ">
+                <x-sections.whatsapp :templates="$messageTemplates"/>
+
+                <div x-show="messageLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                    <span class="loading loading-bars loading-md "></span>
+                    <label for="">Please wait while we load messages...</label>
+                </div>
+
             </div>
 
         </div>

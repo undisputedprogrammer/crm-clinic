@@ -50,7 +50,7 @@
                                 $dispatch('formsubmit', {url: '{{route('template.store')}}', formData: fd, target: 'template-add-form'});
                             },
                             addInput() {
-                                if(this.variableCount != 0 && document.getElementById('var-'+this.variableCount).value == ''){
+                                if(this.variableCount != 0 && document.getElementById('var-'+this.variableCount).value == '' && document.getElementById('data-'+this.variableCount).value == ''){
                                     this.showerror = true;
                                     setTimeout(() => {
                                         this.showerror = false;
@@ -63,22 +63,37 @@
                                     let element = document.createElement('input');
                                     let elementID = 'var-'+this.variableCount;
                                     let elementName = 'var_'+this.variableCount;
-                                    element.classList = 'input input-bordered w-full max-w-xs mt-2';
+                                    element.classList = 'input input-bordered w-[45%] max-w-xs mt-2';
                                     element.placeholder = 'Enter variable name';
                                     element.id = elementID;
                                     element.name = elementName;
                                     element.required = true;
-                                    this.variable_appender.append(element);
+
+                                    let elementdata = document.createElement('input');
+                                    let elementdataID = 'data-'+this.variableCount;
+                                    let elementdataName = 'data_'+this.variableCount;
+                                    elementdata.classList ='input input-bordered w-1/2 max-w-xs mt-2';
+                                    elementdata.placeholder = 'Enter data reference';
+                                    elementdata.id = elementdataID;
+                                    elementdata.name = elementdataName;
+                                    elementdata.required = true;
+
+                                    let div = document.createElement('div');
+                                    div.classList = 'flex justify-between';
+                                    div.id = 'div-'+this.variableCount;
+                                    div.append(element);
+                                    div.append(elementdata);
+                                    this.variable_appender.append(div);
                                 }
 
                             },
                             removeInput() {
-                                let inputToRemove = document.getElementById('var-'+this.variableCount);
+                                let inputToRemove = document.getElementById('div-'+this.variableCount);
                                 this.variable_appender.removeChild(inputToRemove);
                                 this.variableCount--;
                             }
                         }"
-                        class="flex flex-col items-center "
+                        class="flex flex-col items-center w-full "
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
                         if($event.detail.target == $el.id){
@@ -99,15 +114,15 @@
                         "
                         >
 
-                        <div class="form-control w-full max-w-xs">
+                        <div class="form-control w-full max-w-sm">
                             <label class="label">
                             <span class="label-text font-medium">Template Name</span>
                             </label>
-                            <input type="text" name="template" placeholder="Template name" class="input input-bordered w-full max-w-xs" />
+                            <input type="text" name="template" placeholder="Template name" class="input input-bordered w-full max-w-sm" />
                         </div>
 
                         {{-- variable appender --}}
-                        <div id="variable-appender" class="form-control w-full max-w-xs flex flex-col space-y-2">
+                        <div id="variable-appender" class="form-control w-full max-w-sm flex flex-col space-y-2">
 
                         </div>
                         <button @click.prevent.stop="removeInput()" x-show="variableCount > 0" class=" btn btn-link btn-xs text-error">Remove</button>

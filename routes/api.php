@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\Remarkcontroller;
+use App\Http\Controllers\WhatsAppApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,8 @@ Route::get('/get/remarks',[Remarkcontroller::class, 'getRemarks']);
 
 Route::get('/followup',[Remarkcontroller::class, 'followup']);
 
+Route::get('/get/chats',[WhatsAppApiController::class, 'getChats']);
+
 Route::post('/convert',[FollowupController::class, 'convert']);
 
-
+Route::post('/msg91/webhook/callback',[WhatsAppApiController::class, 'recieve']);

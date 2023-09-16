@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             LeadSeeder::class,
             RemarkSeeder::class,
             AnswerSeeder::class,
-            MessageSeeder::class,
+            // MessageSeeder::class,
         ]);
 
 

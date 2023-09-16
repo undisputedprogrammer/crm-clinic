@@ -1,22 +1,23 @@
 <?php
 
-use App\Http\Controllers\AgentController;
-use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\FollowupController;
-use App\Http\Controllers\ImportController;
-use App\Http\Controllers\LeadController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\Remarkcontroller;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\TemplateController;
-use App\Http\Controllers\TestController;
 use App\Models\Message;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LeadController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\AgentController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\Remarkcontroller;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FollowupController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\WhatsAppApiController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('add-appointment');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/consulted',[AppointmentController::class, 'consulted'])->name('consulted.mark');
-    Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
+    // Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
     Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');
@@ -68,6 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/template',[TemplateController::class, 'store'])->name('template.store');
     Route::get('/leads/reassign',[TemplateController::class, 'reassign'])->name('leads.reassign');
     Route::post('/leads/reassign',[TemplateController::class, 'assign'])->name('leads.assign');
+    // whatsapp api routes
+    Route::post('/message/sent', [WhatsAppApiController::class, 'sent'])->name('message.sent');
 });
 
 Route::get('/', [PageController::class, 'home']);

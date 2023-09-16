@@ -26,7 +26,7 @@ class LeadFactory extends Factory
 
         return [
             'name'=>fake()->name(),
-            'phone'=>fake()->phoneNumber(),
+            'phone'=>8137033348,
             'email'=>fake()->email(),
             'city'=>fake()->city(),
             'is_valid'=>false,
@@ -49,15 +49,15 @@ class LeadFactory extends Factory
         }
     }
 
-    public function configure(): static
-    {
-        return $this->afterCreating(function (Lead $lead) {
-            $n = random_int(0, 1);
-            if ($n == 1) {
-                Appointment::factory()->create([
-                    'lead_id' => $lead->id
-                ]);
-            }
-        });
-    }
+    // public function configure(): static
+    // {
+    //     return $this->afterCreating(function (Lead $lead) {
+    //         $n = random_int(0, 1);
+    //         if ($n == 1) {
+    //             Appointment::factory()->create([
+    //                 'lead_id' => $lead->id
+    //             ]);
+    //         }
+    //     });
+    // }
 }
