@@ -26,9 +26,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DoctorSeeder::class,
             QuestionSeeder::class,
-            LeadSeeder::class,
-            RemarkSeeder::class,
-            AnswerSeeder::class,
+            // LeadSeeder::class,
+            // RemarkSeeder::class,
+            // AnswerSeeder::class,
             // MessageSeeder::class,
         ]);
 

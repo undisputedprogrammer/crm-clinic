@@ -14,12 +14,8 @@ class QuestionSeeder extends Seeder
     public function run(): void
     {
         $questions = [
-            'What is your favourite color ?',
-            'What is your favourite food ?',
-            'Do you like sports ?',
-            'How often do you exercise ?',
-            'How long have you been married',
-            'What is your occupation ?'
+            'ഏത്_തരം_കൺസൽട്ടേഷൻ_ആണ്_നോക്കുന്നത്_?',
+            'വിവാഹം_കഴിഞ്ഞിട്ട്_എത്ര_വർഷമായി?',
         ];
 
         foreach($questions as $qn){

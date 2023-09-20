@@ -4,7 +4,7 @@
 
             <!-- Header -->
             <x-display.header />
-            <x-sections.side-drawer/>
+            <x-sections.side-drawer />
             <!-- ./Header -->
 
 
@@ -16,7 +16,8 @@
                 <div class="w-[96%] mx-auto rounded-xl bg-base-100 p-3  flex flex-col space-y-6">
                     <h1 class=" text-xl font-semibold text-primary ">Overview</h1>
 
-                    <div class="flex flex-col space-y-2 md:space-y-0 md:flex-row  md:space-x-3 justify-evenly md:items-center ">
+                    <div
+                        class="flex flex-col space-y-2 md:space-y-0 md:flex-row  md:space-x-3 justify-evenly md:items-center ">
 
                         <div
                             class="flex flex-col space-y-1 bg-base-200 w-full lg:w-1/4 h-16 rounded-xl justify-center items-center py-4">
@@ -83,12 +84,17 @@
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
                             <h1 class="font-semibold mb-2.5 text-primary">Import leads from Excel</h1>
-                            <form x-data="{ doSubmit() {
-                    let form = document.getElementById('import-form');
-                    let formdata = new FormData(form);
+                            <form x-data="{
+                                fileName: '',
+                                doSubmit() {
+                                    let form = document.getElementById('import-form');
+                                    let formdata = new FormData(form);
 
-                    $dispatch('formsubmit',{url:'{{ route('import-leads') }}', route: 'import-leads',fragment: 'page-content', formData: formdata, target: 'import-form'});
-                }}" @submit.prevent.stop="doSubmit();"
+                                    $dispatch('formsubmit', { url: '{{ route('import-leads') }}', route: 'import-leads', fragment: 'page-content', formData: formdata, target: 'import-form' });
+                                    form.reset();
+                                    this.fileName = '';
+                                }
+                            }" @submit.prevent.stop="doSubmit();"
                                 @formresponse.window="
                 console.log($event.detail.content);
                 if ($event.detail.target == $el.id) {
@@ -96,6 +102,11 @@
                             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
 
                             $dispatch('formerrors', {errors: []});
+                            $dispatch('linkaction', {
+                                link: '{{route('overview')}}',
+                                route: 'overview',
+                                fresh: true
+                            })
                         } else if (typeof $event.detail.content.errors != undefined) {
                             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
@@ -104,9 +115,12 @@
                         }
                 }"
                                 id="import-form" class="flex space-x-3">
-                                <input type="file" name="sheet"
+                                <input type="file" name="sheet" @change="fileName = $el.files[0].name"
                                     class="file-input file-input-bordered file-input-success text-base-content file-input-sm w-full max-w-xs" />
-                                <button type="submit" class="btn btn-sm btn-success">Import</button>
+                                <button type="submit" class="btn btn-sm btn-success" :disabled="fileName == ''">Import</button>
+                                <div>
+                                    <button class="btn btn-sm btn-ghost text-base-content opacity-60" type="reset">Cancel</button>
+                                </div>
                             </form>
                         </div>
                     @endcan
@@ -121,7 +135,8 @@
                                         link:'{{ route('manage-questions') }}',
                                         route:'manage-questions',
                                         fragment:'page-content'
-                                        })">Manage Questions
+                                        })">Manage
+                                    Questions
                                 </button>
 
                                 <button class="btn btn-sm btn-secondary"
@@ -129,7 +144,8 @@
                                         link:'{{ route('appointments.index') }}',
                                         route:'appointments.index',
                                         fragment:'page-content'
-                                    })">Manage Appointments
+                                    })">Manage
+                                    Appointments
                                 </button>
 
                                 <button class="btn btn-sm btn-secondary"
@@ -137,7 +153,8 @@
                                         link:'{{ route('doctors.index') }}',
                                         route:'doctors.index',
                                         fragment:'page-content'
-                                    })">Manage Doctors
+                                    })">Manage
+                                    Doctors
                                 </button>
 
                                 {{-- <button class="btn btn-sm btn-secondary"
@@ -153,7 +170,8 @@
                                         link:'{{ route('agents.index') }}',
                                         route:'agents.index',
                                         fragment:'page-content'
-                                    })">Manage Agents
+                                    })">Manage
+                                    Agents
                                 </button>
 
                                 <button class="btn btn-sm btn-secondary "
@@ -161,7 +179,8 @@
                                         link:'{{ route('leads.reassign') }}',
                                         route:'leads.reassign',
                                         fragment:'page-content'
-                                    })">Re-assign Leads
+                                    })">Re-assign
+                                    Leads
                                 </button>
 
                             </div>
@@ -175,5 +194,5 @@
 
         </div>
     </div>
-<x-footer/>
+    <x-footer />
 </x-easyadmin::app-layout>

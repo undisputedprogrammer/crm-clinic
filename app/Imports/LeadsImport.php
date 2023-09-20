@@ -15,6 +15,8 @@ class LeadsImport implements ToArray, WithHeadingRow
     private $agents = [];
     private $x = 0;
     private $headings = [];
+    private $totalCount = 0;
+    private $importedCount = 0;
     public function __construct(array $headings)
     {
         $this->headings = $headings;
@@ -32,9 +34,17 @@ class LeadsImport implements ToArray, WithHeadingRow
         // info($this->headings);
         // $row = $row[0];
         foreach ($rows as $row) {
-            if($row['name'] == null){
-                return null;
+            if($row['full_name'] == null || $row['phone_number'] == null){
+                continue;
             }
+            $this->totalCount++;
+
+            $existing_count = Lead::where('phone', $row['phone_number'])->get()->count();
+            if($existing_count > 0){
+                continue;
+            }
+
+
             $lead = Lead::create([
                 'name' => $row['full_name'],
                 'phone' => $row['phone_number'],
@@ -62,9 +72,9 @@ class LeadsImport implements ToArray, WithHeadingRow
                     'answer' => $row[strtolower($qh)]
                 ]);
             }
+            $this->importedCount ++;
+            // return $lead;
         }
-
-        return $lead;
     }
 
     private function getQuestionHeaders()
@@ -76,5 +86,15 @@ class LeadsImport implements ToArray, WithHeadingRow
             }
         }
         return $h;
+    }
+
+    public function getImportedCount(): int
+    {
+        return $this->importedCount;
+    }
+
+    public function getTotalCount(): int
+    {
+        return $this->totalCount;
     }
 }

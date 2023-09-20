@@ -25,13 +25,23 @@ class ImportController extends SmartController
 
             $headings = (new HeadingRowImport)->toArray($request->file('sheet'));
 
-            Excel::import(new LeadsImport($headings[0][0]), request()->file('sheet'));
+            $import = new LeadsImport($headings[0][0]);
+            Excel::import($import, request()->file('sheet'));
 
-            return response()->json(['success' => true, 'message' => 'Success, Leads imported','headings'=>$headings[0][0]]);
+            $msg = "{$import->getImportedCount()} of {$import->getTotalCount()} leads imported";
+
+            return response()->json([
+                'success' => true,
+                'message' => $msg,
+                'headings'=>$headings[0][0],
+            ]);
         }
         else{
 
-            return response()->json(['success' => false, 'message' => 'Unprocessable file']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Unprocessable file'
+            ]);
 
         }
     }
