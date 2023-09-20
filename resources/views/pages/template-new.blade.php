@@ -171,11 +171,11 @@
                 <div class=" mt-2 flex flex-col space-y-2">
                     <form id="message-edit-form"
                         x-data="{
-                            doSubmit() {
+                            {{-- doSubmit() {
                                 let form = document.getElementById('message-edit-form');
                                 let fd = new FormData(form);
                                 $dispatch('formsubmit', {url: '{{route('messages.update', '_X_')}}'.replace('_X_', id), formData: fd, target: 'message-edit-form'});
-                            }
+                            } --}}
                         }"
                         class="flex flex-col items-center"
                         @submit.prevent.stop="doSubmit();"
@@ -186,7 +186,7 @@
                                 let params = {
                                     page: page
                                 };
-                                $dispatch('linkaction', {link: '{{route('messages.index')}}', route: 'messages.index', params: params, fresh: true});
+                                $dispatch('linkaction', {link: '{{route('template.index')}}', route: 'template.index', params: params, fresh: true});
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to edit message. Please make sure you have entered all details.'});
                             }

@@ -140,13 +140,13 @@
                                     })">Manage Doctors
                                 </button>
 
-                                <button class="btn btn-sm btn-secondary"
+                                {{-- <button class="btn btn-sm btn-secondary"
                                     @click.prevent.stop="$dispatch('linkaction',{
                                         link:'{{ route('messages.index') }}',
                                         route:'messages.index',
                                         fragment:'page-content'
                                     })">Manage Messages
-                                </button>
+                                </button> --}}
 
                                 <button class="btn btn-sm btn-secondary "
                                     @click.prevent.stop="$dispatch('linkaction',{

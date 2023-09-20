@@ -33,4 +33,8 @@ class Lead extends Model
     public function appointment(){
         return $this->hasOne(Appointment::class, 'lead_id', 'id');
     }
+
+    public function chats(){
+        return $this->hasMany(Chat::class, 'lead_id');
+    }
 }

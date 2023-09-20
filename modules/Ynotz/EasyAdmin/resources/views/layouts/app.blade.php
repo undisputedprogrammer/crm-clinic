@@ -30,7 +30,7 @@ currentroute=$event.detail.currentroute;"
         class="font-sans antialiased text-sm transition-colors hide-scroll ">
         <div x-data ="{
             selected : false,
-
+            allChats : {},
             name : '',
             leads : [],
             lead : [],
@@ -47,9 +47,45 @@ currentroute=$event.detail.currentroute;"
             searchFormState: [],
             searchFilter : null,
             sidedrawer : false,
-
-
-        }" class="min-h-screen bg-base-200 flex flex-col">
+            latest : null,
+            processing : false,
+            pollingID : setInterval(function(){
+                $dispatch('checkforupdates');
+            },5000)
+        }"
+        @checkforupdates.window="
+        if(latest != null && !processing){
+            processing = true;
+            axios.get('api/messages/poll',{
+                params:{
+                    user_id : '{{Auth::user()->id}}',
+                    latest : latest
+                }
+            }).then((r)=>{
+                console.log(r.data);
+                if(r.data.status == true){
+                    let newMessages = r.data.new_messages;
+                    newMessages.forEach((msg)=>{
+                        if(allChats[msg.lead_id] != null && allChats[msg.lead_id] != null){
+                            allChats[msg.lead_id].push(msg);
+                        }
+                        else{
+                            allChats[msg.id] = [];
+                            allChats[msg.id].push(msg);
+                        }
+                        latest = msg.id;
+                    })
+                    console.log(r.data.new_messages);
+                }
+                else{
+                    console.log('No new messages');
+                }
+            }).catch((e)=>{
+                console.log(e);
+            });
+            processing = false;
+        }"
+         class="min-h-screen bg-base-200 flex flex-col" >
 
             <main class="flex flex-col items-stretch  flex-grow w-full ">
                 <div x-data="{show: true}" x-show="show"

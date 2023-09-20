@@ -54,10 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('add-appointment');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/consulted',[AppointmentController::class, 'consulted'])->name('consulted.mark');
-    // Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
-    Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
-    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
-    Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');
+    Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
+    // Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
+    // Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    // Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');
     Route::get('/agents',[AgentController::class, 'index'])->name('agents.index');
     Route::post('/agents',[AgentController::class, 'store'])->name('agents.store');
     Route::post('agents/{id}',[AgentController::class, 'update'])->name('agents.update');
@@ -71,6 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/leads/reassign',[TemplateController::class, 'assign'])->name('leads.assign');
     // whatsapp api routes
     Route::post('/message/sent', [WhatsAppApiController::class, 'sent'])->name('message.sent');
+
+    Route::get('/messenger',[WhatsAppApiController::class, 'index'])->name('messenger');
 });
 
 Route::get('/', [PageController::class, 'home']);
