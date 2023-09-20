@@ -301,7 +301,7 @@
 
 
                 <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' "></span></p>
+                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " class="text-warning"></span></p>
                     {{-- <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.customer_segment" class=" text-secondary"></span><x-icons.down-arrow /></label>
 
