@@ -6,7 +6,7 @@
       <x-display.header/>
       <x-sections.side-drawer/>
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Messages</h2>
+      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Templates</h2>
 
 
       <div x-data="{page: 0}"
@@ -26,7 +26,7 @@
        class=" h-[calc(100vh-3.5rem)] pt-7 pb-3  bg-base-200 w-full flex justify-evenly">
 
 
-        <x-tables.messages-table :messages="$messages"/>
+        {{-- <x-tables.messages-table :messages="$messages"/> --}}
 
 
 
