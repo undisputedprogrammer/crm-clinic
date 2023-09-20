@@ -47,6 +47,47 @@
         });
         }"
 
+        {{-- Change Questions --}}
+        @changequestion.window="
+        if($event.detail.current == $event.detail.q_answer){
+            console.log('cannot change answer');
+        }
+        else{
+
+        ajaxLoading = true;
+        axios.get($event.detail.link,{
+            params: {
+                lead_id : lead.id,
+                q_answer : $event.detail.q_answer,
+                question : $event.detail.question
+            }
+        }).then(function(response){
+            console.log(response);
+            if(response.data.q_visit != undefined){
+                if(response.data.q_visit == null || response.data.q_visit == 'null'){
+                    lead.q_visit = null;
+                }
+                else{
+                    lead.q_visit = response.data.q_visit;
+                }
+            }
+            if(response.data.q_decide != undefined){
+                if(response.data.q_decide == null || response.data.q_decide == 'null'){
+                    lead.q_decide = null;
+                }
+                else{
+                    lead.q_decide = response.data.q_decide;
+                }
+            }
+            lead.customer_segment = response.data.customer_segment;
+            ajaxLoading = false;
+            $dispatch('showtoast', {message: response.data.message, mode: 'success'});
+        }).catch(function(error){
+            console.log(error);
+            ajaxLoading = false;
+        });
+        }"
+
         {{-- change is_valid status --}}
         @changevalid.window="
         ajaxLoading = true;
@@ -189,9 +230,79 @@
                     });" type="checkbox" name="is_genuine" :checked=" lead.is_genuine == 1 ? true : false " class="checkbox checkbox-sm checkbox-success focus:ring-0" />
                 </div>
 
-                <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Lead Segment : </p>
+                {{-- Questions for lead segment --}}
+
+                {{-- question visit within a week --}}
+                <div class="flex items-center space-x-2">
+                    <p class=" text-base font-medium">Will they visit within a week ? : </p>
                     <div class="dropdown">
+                        <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_visit == null || lead.q_visit == 'null' ? 'Not selected' : lead.q_visit " class=" text-secondary"></span><x-icons.down-arrow /></label>
+
+                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_visit,
+                                    q_answer : 'null',
+                                    question : 'q_visit'
+                                });" class=" " :class="lead.q_visit == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_visit,
+                                    q_answer : 'yes',
+                                    question : 'q_visit'
+                                });" class=" " :class="lead.q_visit == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_visit,
+                                    q_answer : 'no',
+                                    question : 'q_visit'
+                                });" class="" :class="lead.q_visit == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
+                        </ul>
+
+                      </div>
+                </div>
+
+
+                {{-- question decide within a week --}}
+                <div x-show="lead.q_visit == 'no'" class="flex items-center space-x-2">
+                    <p class=" text-base font-medium">Will they decide within a week ? : </p>
+                    <div class="dropdown">
+                        <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_decide == null || lead.q_decide == 'null' ? 'Not selected' : lead.q_decide " class=" text-secondary"></span><x-icons.down-arrow /></label>
+
+                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_decide,
+                                    q_answer : 'null',
+                                    question : 'q_decide'
+                                });" class=" " :class="lead.q_decide == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_decide,
+                                    q_answer : 'yes',
+                                    question : 'q_decide'
+                                });" class=" " :class="lead.q_decide == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
+                            <li><a @click.prevent.stop="
+                                $dispatch('changequestion',{
+                                    link: '{{route('lead.answer')}}',
+                                    current: lead.q_decide,
+                                    q_answer : 'no',
+                                    question : 'q_decide'
+                                });" class="" :class="lead.q_decide == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
+                        </ul>
+
+                      </div>
+                </div>
+
+
+                <div class=" flex items-center space-x-2">
+                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' "></span></p>
+                    {{-- <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.customer_segment" class=" text-secondary"></span><x-icons.down-arrow /></label>
 
                         <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
@@ -215,7 +326,7 @@
                                 });" class="" :class="lead.customer_segment == 'cold' ? ' text-primary hover:text-primary' : '' ">Cold</a></li>
                         </ul>
 
-                      </div>
+                      </div> --}}
                 </div>
 
                 <div class=" flex flex-col">

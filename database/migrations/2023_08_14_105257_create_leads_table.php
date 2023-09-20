@@ -20,6 +20,8 @@ return new class extends Migration
             $table->boolean('is_valid');
             $table->boolean('is_genuine');
             $table->text('history');
+            $table->text('q_visit')->nullable();
+            $table->text('q_decide')->nullable();
             $table->enum('customer_segment',['hot','warm','cold'])->nullable();
             $table->enum('status',['Created','Validated','Converted','Closed','Consulted'])->default('Created');
             $table->boolean('followup_created')->default(false);

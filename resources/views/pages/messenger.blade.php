@@ -26,10 +26,14 @@
             }
         }" class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black "
         x-init="
-        console.log('{{$latest->id}}');
-        if(latest == null){
+        @if (isset($latest))
+            console.log('{{$latest->id}}');
+            if(latest == null){
             latest = {{$latest->id}};
-        }">
+            }
+        @endif
+
+        ">
 
             <!-- Header -->
             <x-display.header />

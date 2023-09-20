@@ -52,4 +52,56 @@ class LeadController extends SmartController
 
         return response('Something went wrong',400);
     }
+
+    public function answer(Request $request){
+        $lead = Lead::find($request->lead_id);
+
+        if($lead == null){
+            return response()->json(['success'=>false,'message'=>'Lead not found']);
+        }
+
+        if($request->question == 'q_visit'){
+
+            if($request->q_answer == 'null'){
+                $lead->q_visit = null;
+            }
+            $lead->q_visit = $request->q_answer;
+
+            if($lead->q_visit == 'yes'){
+                $lead->customer_segment = 'hot';
+            }elseif($lead->q_visit == 'no'){
+                $lead->customer_segment = 'cold';
+            }elseif($lead->q_visit == null || $lead->q_visit == 'null'){
+                $lead->customer_segment = null;
+            }
+            $lead->save();
+
+            return response()->json(['success'=>true, 'message'=>'Response Marked','q_visit'=>$lead->q_visit,'customer_segment'=>$lead->customer_segment,'answer'=>$request->q_answer]);
+        }
+
+        if($request->question == 'q_decide'){
+            if($request->q_answer == 'null'){
+                $lead->q_decide = null;
+            }
+            else{
+                $lead->q_decide = $request->q_answer;
+            }
+
+            if($lead->q_decide == 'yes'){
+                $lead->customer_segment = 'warm';
+            }
+            if($lead->q_decide == null || $lead->q_decide == 'null'){
+                $lead->customer_segment = 'cold';
+            }
+            if($lead->q_decide == 'no'){
+                $lead->customer_segment = 'cold';
+            }
+
+            $lead->save();
+
+            return response()->json(['success'=>true, 'message'=>'Response Marked','q_decide'=>$lead->q_decide,'customer_segment'=>$lead->customer_segment,'answer'=>$request->q_answer]);
+
+
+        }
+    }
 }
