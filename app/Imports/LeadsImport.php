@@ -28,16 +28,16 @@ class LeadsImport implements ToArray, WithHeadingRow
 
     public function array(array $rows)
     {
-        info('showing headings');
-        info($this->headings);
+        // info('showing headings');
+        // info($this->headings);
         // $row = $row[0];
         foreach ($rows as $row) {
             if($row['name'] == null){
                 return null;
             }
             $lead = Lead::create([
-                'name' => $row['name'],
-                'phone' => $row['phone'],
+                'name' => $row['full_name'],
+                'phone' => $row['phone_number'],
                 'email' => $row['email'],
                 'city' => $row['city'],
                 'is_valid' => false,
