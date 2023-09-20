@@ -104,4 +104,18 @@ class LeadController extends SmartController
 
         }
     }
+
+    public function close(Request $request){
+        $lead = Lead::find($request->lead_id);
+
+        if($lead ==  null){
+            return response()->json(['success'=>false,'message'=>'Lead not found']);
+        }
+
+        $lead->status = 'Closed';
+
+        $lead->save();
+
+        return response()->json(['success'=>true, 'message'=>'Lead closed successfully']);
+    }
 }

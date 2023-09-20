@@ -198,14 +198,6 @@
             }
             convert = false;
 
-
-
-            {{-- lead = JSON.parse($event.detail.lead);
-            remarks = JSON.parse($event.detail.remarks);
-            name = lead.name;
-            leads[lead.id] = lead;
-            leads[lead.id].remarks = remarks;
-            console.log(leads); --}}
             " class=" mt-2 flex flex-col space-y-2">
                 <p class="text-base font-medium">Name : <span x-text="lead.name"> </span></p>
                 <p class="text-base font-medium">City : <span x-text="lead.city"> </span></p>
@@ -301,32 +293,8 @@
 
 
                 <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " class="text-warning"></span></p>
-                    {{-- <div class="dropdown">
-                        <label tabindex="0" class="btn btn-sm" ><span x-text="lead.customer_segment" class=" text-secondary"></span><x-icons.down-arrow /></label>
+                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' "></span></p>
 
-                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
-                            <li><a @click.prevent.stop="
-                                $dispatch('changesegment',{
-                                    link: '{{route('change-segment')}}',
-                                    current: lead.customer_segment,
-                                    new : 'hot'
-                                });" class=" " :class="lead.customer_segment == 'hot' ? ' text-primary hover:text-primary' : '' ">Hot</a></li>
-                            <li><a @click.prevent.stop="
-                                $dispatch('changesegment',{
-                                    link: '{{route('change-segment')}}',
-                                    current: lead.customer_segment,
-                                    new : 'warm'
-                                });" class=" " :class="lead.customer_segment == 'warm' ? ' text-primary hover:text-primary' : '' ">Warm</a></li>
-                            <li><a @click.prevent.stop="
-                                $dispatch('changesegment',{
-                                    link: '{{route('change-segment')}}',
-                                    current: lead.customer_segment,
-                                    new : 'cold'
-                                });" class="" :class="lead.customer_segment == 'cold' ? ' text-primary hover:text-primary' : '' ">Cold</a></li>
-                        </ul>
-
-                      </div> --}}
                 </div>
 
                 <div class=" flex flex-col">
@@ -386,7 +354,7 @@
 
                 </div>
 
-                <x-forms.message-form :templates="$messageTemplates"/>
+                {{-- <x-forms.message-form :templates="$messageTemplates"/> --}}
 
                 {{-- <x-sections.qna /> --}}
 
@@ -405,7 +373,7 @@
 
                     <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>
 
-                    <form x-show="lead.followup_created == 0 "
+                    {{-- <form x-show="lead.followup_created == 0 "
                     x-data = "{ doSubmit() {
                         let form = document.getElementById('initiate-followup-form');
                         let formdata = new FormData(form);
@@ -442,16 +410,32 @@
                     <label for="scheduled-date" class="text-sm font-medium">Schedule a date for follow up</label>
                     <input id="scheduled-date" name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
                     <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Initiate follow up</button>
-                    </form>
+                    </form> --}}
 
                     {{-- convert checkbox --}}
-                    <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
+                    {{-- <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
 
                         <input @click="convert = $el.checked" :disabled=" lead.followup_created == true || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" x-model="convert" class="checkbox checkbox-success checkbox-xs" />
                         <span class="label-text">Schedule appointment</span>
-                    </label>
+                    </label> --}}
 
-                    <x-forms.add-appointment-form :doctors="$doctors"/>
+                    {{-- <x-forms.add-appointment-form :doctors="$doctors"/> --}}
+
+                </div>
+
+
+                {{-- pwl --}}
+                <div x-data="{
+                    selected_action : 'Initiate Followup'
+                }" class="pt-2.5">
+
+                <x-dropdowns.leads-action-dropdown/>
+
+                <x-forms.followup-initiate-form/>
+
+                <x-forms.add-appointment-form :doctors="$doctors"/>
+
+                <x-forms.lead-close-form/>
 
                 </div>
 

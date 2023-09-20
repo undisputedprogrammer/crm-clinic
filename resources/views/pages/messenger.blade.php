@@ -24,7 +24,9 @@
                     return `${month} ${day} ${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
                 }
             }
-        }" class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black "
+        }"
+        @newmessage.window="console.log($event.detail);"
+         class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black "
         x-init="
         @if (isset($latest))
             console.log('{{$latest->id}}');

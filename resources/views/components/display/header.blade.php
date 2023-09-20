@@ -104,11 +104,11 @@
             </svg>
 
         </label>
-        <a href="/messenger"
-        {{-- @click.prevent.stop="
+        <a href=""
+        @click.prevent.stop="
             $dispatch('linkaction', {
                 link: '{{route('messenger')}}', route: 'messenger', fresh: true
-            });"  --}}
+            });"
             class="text-base-100 inline-block h-6 w-6">
             <img src="/images/whatsapp.png">
         </a>

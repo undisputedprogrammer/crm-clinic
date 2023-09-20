@@ -346,6 +346,6 @@ class WhatsAppApiController extends SmartController
         $leads = $q->get();
         $templates = Message::all();
         // dd(['leads'=>$leads,'latest'=>$latest]);
-        return view('pages.messenger', compact('leads', 'templates', 'latest'));
+        return $this->buildResponse('pages.messenger', compact('leads', 'templates', 'latest'));
     }
 }

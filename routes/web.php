@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lead/change/valid', [LeadController::class, 'changevalid'])->name('change-valid');
     Route::get('/lead/change/genuine', [LeadController::class, 'changeGenuine'])->name('change-genuine');
     Route::get('/lead/answer',[LeadController::class, 'answer'])->name('lead.answer');
+    Route::post('lead/close',[LeadController::class, 'close'])->name('lead.close');
     Route::get('/followups', [PageController::class, 'followUps'])->name('followups');
     Route::post('/followup/initiate', [FollowupController::class, 'initiate'])->name('initiate-followup');
     Route::post('/followup/store', [FollowupController::class, 'store'])->name('process-followup');

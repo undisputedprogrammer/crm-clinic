@@ -33,7 +33,7 @@ class LeadFactory extends Factory
             'is_genuine'=>false,
             'history'=>fake()->paragraph(),
             'customer_segment'=> $customer_segment[array_rand($customer_segment)],
-            'status'=> $status[array_rand($status)],
+            'status'=> null,
             'followup_created'=>false,
             'assigned_to'=>$this->getAgent(),
         ];

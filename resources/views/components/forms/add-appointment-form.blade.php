@@ -1,6 +1,19 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
-<form x-show="convert && lead.status != 'Converted' && lead.followup_created == false" x-cloak x-transition
+<div x-show="selected_action == 'Schedule Appointment'">
+<template x-if="lead.followup_created != 0">
+    <p class=" text-primary font-medium py-4">Follow up is initiated for this lead. You can only perform further actions in the followups page.</p>
+</template>
+
+<template x-if="lead.status == 'Converted' ">
+    <p class=" text-primary font-medium py-4">Appointment is scheduled already scheduled for this lead</p>
+</template>
+
+<template x-if="lead.status == 'Closed' ">
+    <p class=" text-error text-base font-medium py-4">This lead is closed!</p>
+</template>
+
+<form x-show=" lead.status != 'Converted' && lead.followup_created == false && lead.status != 'Closed'" x-cloak x-transition
 x-data ="
 { doSubmit() {
     let form = document.getElementById('appointment-form');
@@ -71,3 +84,4 @@ id="appointment-form"
     <button :disabled=" lead.status == 'Converted' ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
 
 </form>
+</div>
