@@ -340,7 +340,7 @@ class WhatsAppApiController extends SmartController
             $q->where('assigned_to', $request->user()->id);
             $latest = Chat::whereIn('lead_id', $user_ids)->latest()->get()->first();
         } else {
-            $latest = Chat::where('lead_id', '!=', null)->latest()->get()->fisrt();
+            $latest = Chat::where('lead_id', '!=', null)->latest()->get()->first();
         }
 
         $leads = $q->get();

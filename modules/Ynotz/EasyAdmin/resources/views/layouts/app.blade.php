@@ -65,6 +65,9 @@ currentroute=$event.detail.currentroute;"
                 console.log(r.data);
                 if(r.data.status == true){
                     let newMessages = r.data.new_messages;
+                    if (r.data.new_messages) {
+                        $dispatch('showtoast', {mode: success, message: 'Alert: New incoming messages.'});
+                    }
                     newMessages.forEach((msg)=>{
                         if(allChats[msg.lead_id] != null && allChats[msg.lead_id] != null){
                             allChats[msg.lead_id].push(msg);
