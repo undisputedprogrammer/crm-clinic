@@ -128,10 +128,15 @@
                     <div class="mt-2.5">
                         <p class=" text-base font-medium text-secondary">Lead remarks</p>
 
-                        <ul class=" list-disc text-sm list-outside font-normal">
+                        <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal">
                             <template x-for="remark in leadremarks">
 
-                                <li x-text="remark.remark"></li>
+                                <li class=" space-x-2">
+                                    <span x-text="remark.remark"></span>
+                                    <span>-</span>
+                                    <span x-text="formatDate(remark.created_at)"></span>
+
+                                </li>
 
                             </template>
                         </ul>
@@ -148,7 +153,7 @@
                         {{-- looping through history --}}
                         <template x-show="!historyLoading" x-for="item in history" >
                             <div x-data="{agent: item.user}" x-show="item.actual_date != null" class=" mt-2">
-                                <p class=" font-medium">Date : <span class=" text-primary" x-text="item.actual_date"></span></p>
+                                <p class=" font-medium">Date : <span class=" text-primary" x-text="formatDate(item.actual_date)"></span></p>
 
                                 {{-- <template x-if=""> --}}
                                     <p  class=" font-medium">Agent : <span class=" text-primary" x-text="agent != null ? agent.name : '' "></span></p>
@@ -334,177 +339,21 @@
 
                         </form>
 
-                        {{-- whatsapp message form --}}
-                        <div class="my-4">
-                            <x-forms.message-form :templates="$messageTemplates"/>
+                        {{-- ********************************************************************
+                        Schedule appointment and close lead action dropdown
+                        ****************************************************************** --}}
+
+                        <div x-data="{
+                            selected_action : 'Schedule Appointment'
+                        }" class="pt-6">
+
+                        <x-dropdowns.followups-action-dropdown/>
+
+                        <x-forms.followup-add-appointment-form :doctors="$doctors"/>
+
+                        <x-forms.lead-close-form/>
+
                         </div>
-
-                        <label x-show="fp.converted == null" class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
-
-                            <input @click="convert = $el.checked" :disabled="fp.next_followup_date != null || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" class="checkbox checkbox-success checkbox-xs" />
-                            <span class="label-text">Schedule appointment</span>
-                        </label>
-
-                        <div x-show="fp.converted && !showconsultform && fp.consulted != true" class="mt-4">
-                            <p class=" text-success font-medium">Appointment Scheduled</p>
-                            <button @click.prevent.stop="showconsultform = true" class=" btn btn-xs btn-secondary mt-1">Mark Consulted</button>
-                        </div>
-
-                        <div x-show="fp.consulted != null" class="mt-4">
-                            <p class=" text-success font-medium">Consult completed on <span x-text="lead.appointment != null ? lead.appointment.appointment_date : '' "></span></p>
-                            <label @click.prevent.stop="showconsultform = true" class=" text-base-content font-medium mt-1" x-text="lead.appointment != null && lead.appointment.remarks != null ? lead.appointment.remarks : 'No remark made' "></label>
-                        </div>
-
-
-                        {{-- mark consulted form --}}
-                        <form
-                        x-data="{
-                            doSubmit() {
-                                let form = document.getElementById('mark-consulted-form');
-                                let formdata = new FormData(form);
-                                formdata.append('followup_id',fp.id);
-                                formdata.append('lead_id',fp.lead.id);
-                                $dispatch('formsubmit',{url:'{{route('consulted.mark')}}', route: 'consulted.mark',fragment: 'page-content', formData: formdata, target: 'mark-consulted-form'});
-                            }
-                        }"
-
-                        @submit.prevent.stop="doSubmit()"
-
-                        @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            {{-- console.log($event.detail.content); --}}
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-                                if($event.detail.content.lead != null || $event.detail.content.lead != undefined){
-                                    lead.status = $event.detail.content.lead.status;
-                                    console.log(lead.status);
-                                }
-
-                                if($event.detail.content.followup != null || $event.detail.content.followup != undefined){
-                                    fp.consulted = $event.detail.content.followup.consulted;
-                                    console.log(fp.consulted);
-                                }
-
-                                if($event.detail.content.appointment != null && $event.detail.content != undefined){
-                                    lead.appointment.remarks = $event.detail.content.appointment.remarks;
-                                }
-
-
-                                  $dispatch('formerrors', {errors: []});
-                            }
-
-                            else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
-                            }
-                        }
-                        "
-                         x-show="showconsultform && fp.consulted == null" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-4 rounded-xl">
-                            <h1 class=" text-secondary font-medium text-base mb-1">Mark consulted</h1>
-
-                            <textarea name="remark" class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
-
-                            <div class=" flex space-x-2 mt-1">
-                                <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
-
-                                <button @click.prevent.stop="showconsultform = false" class=" btn btn-error btn-xs">Hide</button>
-                            </div>
-
-
-                        </form>
-
-
-                        {{-- schedule appointment form --}}
-                        <form x-show="convert && fp.converted != true" x-cloak x-transition
-                        x-data ="
-                        { doSubmit() {
-                            let form = document.getElementById('appointment-form');
-                            let formdata = new FormData(form);
-                            formdata.append('followup_id',fp.id);
-                            formdata.append('lead_id',fp.lead.id);
-                            $dispatch('formsubmit',{url:'{{route('add-appointment')}}', route: 'add-appointment',fragment: 'page-content', formData: formdata, target: 'appointment-form'});
-                        }}"
-                        @submit.prevent.stop="doSubmit();"
-
-                        @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-                                if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
-                                {
-
-                                fp.lead.status = $event.detail.content.lead.status;
-                                fp.actual_date = $event.detail.content.followup.actual_date;
-                                fp.converted = $event.detail.content.followup.converted;
-
-                                }
-
-                                if($event.detail.content.appointment != null && $event.detail.content.appointment != undefined){
-                                    lead.appointment = $event.detail.content.appointment;
-                                    fp.lead.appointment = $event.detail.content.appointment;
-                                }
-
-                                if($event.detail.content.followup_remark != null || $event.detail.content.followup_remark != undefined)
-                                {
-                                    fp.remarks.push($event.detail.content.followup_remark);
-
-                                }
-
-                                historyLoading = true;
-                                axios.get('/api/followup',{
-                                    params: {
-                                    id: fp.id,
-                                    lead_id: fp.lead.id
-
-                                    }
-                                  }).then(function (response) {
-                                    history = response.data.followup;
-                                    console.log(response.data.followup);
-                                    historyLoading = false;
-
-                                  }).catch(function (error){
-                                    console.log(error);
-                                    historyLoading = false;
-                                  });
-
-                                  $dispatch('formerrors', {errors: []});
-                            }
-
-                            else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
-                            }
-                        }
-                        "
-                        id="appointment-form"
-                         x-show="lead.status != 'Converted' && fp.next_followup_date == null" action="" class=" mt-1.5">
-
-                            <div>
-                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium text-secondary mb-1">Schedule appointment</label>
-
-                                <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor">
-                                    <option disabled>Choose Doctor</option>
-                                    @foreach ($doctors as $doctor)
-                                        <option value="{{$doctor->id}}">{{$doctor->name}}</option>
-                                    @endforeach
-
-                                </select>
-
-                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="next-followup-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
-                            </div>
-
-                            <button :disabled=" fp.converted == true ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
-
-                        </form>
-
 
                 </div>
             </div>

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Followup;
+use App\Models\Lead;
 use GuzzleHttp\Client;
 
 
@@ -81,5 +83,112 @@ class WhatsAppApiService
         $message = str_replace(array_keys($placeholderMap), array_values($placeholderMap), $template_body);
 
         return $message;
+    }
+
+
+    public static function bulkMessage($lead_id, $template){
+
+        // Fetching lead or follow up details
+        if ($lead_id) {
+            $lead = Lead::where('id', $lead_id)->with(['followups', 'appointment'])->get()->first();
+            $recipient = $lead->phone;
+        }
+
+
+
+        $params = json_decode($template->payload);
+
+        if (count($params) == 0) {
+            $components = [];
+        } else {
+            $components = array();
+            array_push($components, array(
+                'type' => 'body',
+                'parameters' => array()
+            ));
+            foreach ($params as $param) {
+                foreach ($param as $component => $data) {
+                    $temp = explode('.', $data);
+                    if ($temp[0] == 'Lead') {
+                        array_shift($temp);
+                        $data = $lead;
+                        foreach ($temp as $i) {
+                            if ($data[$i] == null) {
+                                return response()->json(['status' => 'fail', 'message' => 'Invalid argument found']);
+                            }
+                            $data = $data[$i];
+                        }
+
+                        // return response($lead);
+                    } elseif ($temp[0] == 'Followup') {
+                        $followup = Followup::where('lead_id',$lead_id)->with('lead')->get()->first();
+                        array_shift($temp);
+                        $data = $followup;
+                        foreach ($temp as $i) {
+                            if ($data[$i] == null) {
+                                return response()->json(['status' => 'fail', 'message' => 'Invalid argument found']);
+                            }
+                            $data = $data[$i];
+                        }
+                    }
+                    // dd($temp);
+                    array_push($components[0]['parameters'], array('type' => 'text', 'text' => $data));
+                }
+            }
+        }
+
+        // return response($components);
+        // $recipient = $lead->phone;
+
+        $payload = array(
+            "to" => $recipient,
+            "type" => "template",
+            "template" => array(
+                "name" => $template->template,
+                "language" => array(
+                    "code" => "en",
+                    "policy" => "deterministic"
+                ),
+                "components" => json_encode($components)
+            ),
+            "messaging_product" => "whatsapp"
+        );
+
+
+        $postfields = array(
+            "integrated_number" => "918075473813",
+            "lead_id" => $lead->id,
+            "content_type" => "template",
+            "payload" => $payload,
+            "messaging_product" => "whatsapp"
+
+        );
+
+        $json_postfields = json_encode($postfields);
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $json_postfields,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'authkey: 405736ABdKIenjmHR6501a01aP1',
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+
+
+        // return redirect('/leads');
+        info('Message is sent to '.$lead->name);
+        return true;
     }
 }

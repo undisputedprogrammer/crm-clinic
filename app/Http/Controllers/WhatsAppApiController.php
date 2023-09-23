@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendBulkMessage;
 use Exception;
 use App\Models\Chat;
 use App\Models\Lead;
@@ -347,5 +348,19 @@ class WhatsAppApiController extends SmartController
         $templates = Message::all();
         // dd(['leads'=>$leads,'latest'=>$latest]);
         return $this->buildResponse('pages.messenger', compact('leads', 'templates', 'latest'));
+    }
+
+    public function bulkMessage(Request $request){
+        $numbers = json_decode(json_encode($request->numbers),true);
+
+        $lead_ids = array_keys($numbers);
+
+        $template = Message::find($request->template);
+
+        foreach($lead_ids as $lead_id){
+            SendBulkMessage::dispatch($lead_id, $template);
+        }
+
+        return response()->json(['numbers'=>array_keys($numbers),'template'=>$template]);
     }
 }

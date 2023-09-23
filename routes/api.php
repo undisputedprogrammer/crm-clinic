@@ -21,16 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/get/remarks',[Remarkcontroller::class, 'getRemarks']);
 
-Route::get('/followup',[Remarkcontroller::class, 'followup']);
-
-Route::get('/get/chats',[WhatsAppApiController::class, 'getChats']);
-
-Route::post('/convert',[FollowupController::class, 'convert']);
-
-Route::post('/msg91/webhook/callback',[WhatsAppApiController::class, 'recieve']);
-
-Route::get('/messages/new',[WhatsAppApiController::class, 'unread']);
-
-Route::get('/messages/poll',[WhatsAppApiController::class, 'poll']);

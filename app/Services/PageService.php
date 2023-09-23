@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class PageService
 {
 
-    public function getLeads($user)
+    public function getLeads($user, $selectedLeads)
     {
 
         $leadsQuery = Lead::where('status', '!=', 'Consulted')->with([
@@ -34,7 +34,12 @@ class PageService
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
 
-        return compact('leads', 'doctors', 'messageTemplates');
+        if($selectedLeads != null){
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads');
+        }else{
+            return compact('leads', 'doctors', 'messageTemplates');
+        }
+
     }
 
     public function getOverviewData()

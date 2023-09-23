@@ -51,7 +51,31 @@ currentroute=$event.detail.currentroute;"
             processing : false,
             pollingID : setInterval(function(){
                 $dispatch('checkforupdates');
-            },5000)
+            },5000),
+            formatDate(timestamp){
+                    let date = new Date(timestamp);
+
+                    let today = new Date();
+
+                    let hours = date.getHours();
+                    let amOrpm = 'AM'
+                    if(hours > 12){
+                        amOrpm = 'PM';
+                        hours = hours % 12 || 12;
+                    }
+                    minutes = date.getMinutes();
+
+                    if(date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear())
+                    {
+                        return 'Today '+`${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
+                    }else{
+                        let day = date.getDate();
+                        let month = date.toLocaleString('en-US',{month:'short'});
+                        let year = date.getFullYear();
+                        return `${day} ${month} ${year} ${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
+                    }
+                }
+
         }"
         @checkforupdates.window="
         if(latest != null && !processing){
@@ -90,7 +114,7 @@ currentroute=$event.detail.currentroute;"
         }"
          class="min-h-screen bg-base-200 flex flex-col" >
 
-            <main class="flex flex-col items-stretch  flex-grow w-full ">
+            <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full ">
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {

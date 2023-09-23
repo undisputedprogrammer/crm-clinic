@@ -38,8 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/lead/change/segment', [LeadController::class, 'change'])->name('change-segment');
     Route::get('/lead/change/valid', [LeadController::class, 'changevalid'])->name('change-valid');
     Route::get('/lead/change/genuine', [LeadController::class, 'changeGenuine'])->name('change-genuine');
-    Route::get('/lead/answer',[LeadController::class, 'answer'])->name('lead.answer');
-    Route::post('lead/close',[LeadController::class, 'close'])->name('lead.close');
+    Route::get('/lead/answer', [LeadController::class, 'answer'])->name('lead.answer');
+    Route::post('lead/close', [LeadController::class, 'close'])->name('lead.close');
     Route::get('/followups', [PageController::class, 'followUps'])->name('followups');
     Route::post('/followup/initiate', [FollowupController::class, 'initiate'])->name('initiate-followup');
     Route::post('/followup/store', [FollowupController::class, 'store'])->name('process-followup');
@@ -55,26 +55,42 @@ Route::middleware('auth')->group(function () {
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('add-appointment');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
-    Route::post('/consulted',[AppointmentController::class, 'consulted'])->name('consulted.mark');
+    Route::post('/consulted', [AppointmentController::class, 'consulted'])->name('consulted.mark');
     Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
     // Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
     // Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     // Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');
-    Route::get('/agents',[AgentController::class, 'index'])->name('agents.index');
-    Route::post('/agents',[AgentController::class, 'store'])->name('agents.store');
-    Route::post('agents/{id}',[AgentController::class, 'update'])->name('agents.update');
-    Route::get('/password/reset',[AgentController::class, 'reset'])->name('user-password.reset');
-    Route::post('/password/reset',[AgentController::class, 'change'])->name('password.change');
+    Route::get('/agents', [AgentController::class, 'index'])->name('agents.index');
+    Route::post('/agents', [AgentController::class, 'store'])->name('agents.store');
+    Route::post('agents/{id}', [AgentController::class, 'update'])->name('agents.update');
+    Route::get('/password/reset', [AgentController::class, 'reset'])->name('user-password.reset');
+    Route::post('/password/reset', [AgentController::class, 'change'])->name('password.change');
 
 
-    Route::get('/templates',[TemplateController::class, 'index'])->name('template.index');
-    Route::post('/template',[TemplateController::class, 'store'])->name('template.store');
-    Route::get('/leads/reassign',[TemplateController::class, 'reassign'])->name('leads.reassign');
-    Route::post('/leads/reassign',[TemplateController::class, 'assign'])->name('leads.assign');
+    Route::get('/templates', [TemplateController::class, 'index'])->name('template.index');
+    Route::post('/template', [TemplateController::class, 'store'])->name('template.store');
+    Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
+    Route::post('/leads/reassign', [TemplateController::class, 'assign'])->name('leads.assign');
     // whatsapp api routes
     Route::post('/message/sent', [WhatsAppApiController::class, 'sent'])->name('message.sent');
 
-    Route::get('/messenger',[WhatsAppApiController::class, 'index'])->name('messenger');
+    Route::get('/messenger', [WhatsAppApiController::class, 'index'])->name('messenger');
+
+    Route::post('/message/bulk/sent',[WhatsAppApiController::class, 'bulkMessage'])->name('message.bulk');
+
+    Route::get('/api/get/remarks', [Remarkcontroller::class, 'getRemarks']);
+
+    Route::get('/api/followup', [Remarkcontroller::class, 'followup']);
+
+    Route::get('/api/get/chats', [WhatsAppApiController::class, 'getChats']);
+
+    Route::post('/api/convert', [FollowupController::class, 'convert']);
+
+    Route::post('/api/msg91/webhook/callback', [WhatsAppApiController::class, 'recieve']);
+
+    Route::get('/api/messages/new', [WhatsAppApiController::class, 'unread']);
+
+    Route::get('/api/messages/poll', [WhatsAppApiController::class, 'poll']);
 });
 
 Route::get('/', [PageController::class, 'home']);

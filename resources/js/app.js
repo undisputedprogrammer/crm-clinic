@@ -5,6 +5,8 @@ import persist from '@alpinejs/persist'
 import page from '@/components/page';
 import utils from '@/components/utils';
 import progressbar from '@/components/progressbar';
+import main from './components/pages/main';
+import leads from './components/pages/leads';
 
 Alpine.plugin(persist)
 
@@ -22,6 +24,8 @@ Alpine.store('app', {
 
 Alpine.data('initPage', page);
 Alpine.data('progressBar', progressbar);
+Alpine.data('x_main', main);
+Alpine.data('x_leads', leads);
 
 Alpine.start();
 

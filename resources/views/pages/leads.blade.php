@@ -1,5 +1,8 @@
 <x-easyadmin::app-layout>
-<div >
+<div x-data="x_leads" x-init="
+@isset($selectedLeads)
+    console.log('{{$selectedLeads}}');
+@endisset">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
@@ -7,8 +10,13 @@
       <x-sections.side-drawer/>
       {{-- page body --}}
 
+        <div class=" flex bg-base-200 items-center justify-between px-[3.3%]">
+            <h1 class=" text-primary text-xl font-semibold bg-base-200  pt-2.5">Leads</h1>
+            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span></button>
+        </div>
 
-        <h1 class=" text-primary text-xl font-semibold bg-base-200 px-[3.3%] pt-2.5">Leads</h1>
+        <x-modals.template-select-modal :templates="$messageTemplates"/>
+        <x-display.sending/>
 
       <div x-data="{
         convert: false
@@ -20,7 +28,7 @@
         $dispatch('linkaction',{
             link: $event.detail.link,
             route: currentroute,
-            fragment: 'page-content',
+            fragment: 'page-content'
         })"
 
         {{-- Event handler to handle the change cutomer segment event --}}
@@ -293,18 +301,28 @@
 
 
                 <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' "></span></p>
+                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " :class="lead.customer_segment != null ? ' uppercase' : '' "></span></p>
 
                 </div>
 
+
+                {{-- *********************************************************************************
+                Remark area
+                ********************************************************************************* --}}
                 <div class=" flex flex-col">
 
                     <p class=" text-base font-medium text-secondary">Remarks</p>
 
-                    <ul class=" list-disc text-sm list-inside font-normal">
+                    <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal">
                         <template x-for="remark in remarks">
 
-                        <li x-text="remark.remark"></li>
+                            <li class="">
+                                <span x-text="remark.remark"></span>
+
+                                <span>-</span>
+                                <span x-text="formatDate(remark.created_at)"></span>
+
+                            </li>
 
                         </template>
                     </ul>
@@ -354,9 +372,8 @@
 
                 </div>
 
-                {{-- <x-forms.message-form :templates="$messageTemplates"/> --}}
+                {{-- **************************************************************** --}}
 
-                {{-- <x-sections.qna /> --}}
 
                 <div>
                     <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
@@ -372,54 +389,6 @@
                     </p>
 
                     <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>
-
-                    {{-- <form x-show="lead.followup_created == 0 "
-                    x-data = "{ doSubmit() {
-                        let form = document.getElementById('initiate-followup-form');
-                        let formdata = new FormData(form);
-                        formdata.append('lead_id',lead.id);
-
-                        $dispatch('formsubmit',{url:'{{route('initiate-followup')}}', route: 'initiate-followup',fragment: 'page-content', formData: formdata, target: 'initiate-followup-form'});
-                    }}"
-
-                    @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-                                followups.push($event.detail.content.followup);
-                                leads[lead.id].followups = followups;
-
-
-                                lead.followup_created = 1;
-                                leads[lead.id].followup_created = lead.followup_created;
-
-
-                                $dispatch('formerrors', {errors: []});
-                            } else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
-                            }
-                        }"
-                    id="initiate-followup-form"
-                    @submit.prevent.stop="doSubmit();"
-                     action="" class="bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
-                    <label for="scheduled-date" class="text-sm font-medium">Schedule a date for follow up</label>
-                    <input id="scheduled-date" name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
-                    <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Initiate follow up</button>
-                    </form> --}}
-
-                    {{-- convert checkbox --}}
-                    {{-- <label class="cursor-pointer label justify-start p-0 space-x-2 mt-5">
-
-                        <input @click="convert = $el.checked" :disabled=" lead.followup_created == true || lead.status == 'Converted' ? true : false" type="checkbox" name="convert" x-model="convert" class="checkbox checkbox-success checkbox-xs" />
-                        <span class="label-text">Schedule appointment</span>
-                    </label> --}}
-
-                    {{-- <x-forms.add-appointment-form :doctors="$doctors"/> --}}
 
                 </div>
 

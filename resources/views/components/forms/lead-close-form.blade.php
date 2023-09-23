@@ -3,8 +3,11 @@
     <template x-if="lead.status == 'Closed'">
         <p class=" font-medium text-error py-4 text-base">This lead is closed</p>
     </template>
+    <template x-if="lead.status == 'Consulted'">
+        <p class=" font-medium text-error py-4 text-base">This lead is Consulted</p>
+    </template>
 
-    <form x-show="lead.status != 'Closed' " x-data="{
+    <form x-show="lead.status != 'Closed' && lead.status != 'Consulted' " x-data="{
         doSubmit() {
             let form = document.getElementById('lead-close-form');
             let formdata = new FormData(form);
