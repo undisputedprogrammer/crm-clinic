@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('answers', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('question_id')->references('id')->on('questions');
-            $table->foreignId('lead_id')->references('id')->on('leads');
-            $table->string('question_code');
-            $table->string('answer');
-            $table->timestamps();
-        });
+        // Schema::create('answers', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('question_id')->references('id')->on('questions');
+        //     $table->foreignId('lead_id')->references('id')->on('leads');
+        //     $table->string('question_code');
+        //     $table->string('answer');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('answers');
+        // Schema::dropIfExists('answers');
     }
 };

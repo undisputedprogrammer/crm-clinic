@@ -2,15 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Hospital extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'main_cols' => 'array'
+    ];
+
+    // protected $appends = [
+    //     'main_cols'
+    // ];
+
     public function centers(){
         return $this->hasMany(Center::class, 'hospital_id','id');
+    }
+
+    public function mainCols(): Attribute
+    {
+        return Attribute::make(
+            get: function ($val) {
+                return json_decode($val);
+            }
+        );
     }
 
     public function leads(){

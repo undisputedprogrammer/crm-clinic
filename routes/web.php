@@ -18,6 +18,7 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\WhatsAppApiController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\BreakController;
 
 /*
@@ -92,6 +93,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/messages/new', [WhatsAppApiController::class, 'unread']);
 
     Route::get('/api/messages/poll', [WhatsAppApiController::class, 'poll']);
+
+    Route::get('/hospotal/centers', [
+        HospitalController::class, 'centers'
+    ])->name('hospital.centers');
 
     Route::get('/break-in',[BreakController::class, 'breakIn'])->name('break.in');
 
