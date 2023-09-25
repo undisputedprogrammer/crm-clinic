@@ -38,6 +38,7 @@ class PageController extends SmartController
         $data = $this->pageService->getLeads($request->user(),$request->selectedLeads);
 
         return $this->buildResponse('pages.leads', $data);
+
     }
 
     public function destroy(Request $request)

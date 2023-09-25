@@ -138,12 +138,13 @@ currentroute=$event.detail.currentroute;"
                 @endfragment
 
                 </div>
-
+                <x-display.break-screen/>
             </main>
         </div>
         <x-easyadmin::display.notice />
         <x-easyadmin::display.toast />
         <x-display.loading/>
+
 
         @stack('js')
 
