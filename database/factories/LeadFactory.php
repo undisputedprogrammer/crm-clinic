@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Appointment;
+use App\Models\Hospital;
 use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,8 +24,12 @@ class LeadFactory extends Factory
     {
          $customer_segment = ['hot','warm','cold'];
          $status = ['Created'];
+         $hospital = Hospital::all()->random();
+         $center_id = $hospital->centers->random()->id;
 
         return [
+            'hospital_id' => $hospital->id,
+            'center_id' => $center_id,
             'name'=>fake()->name(),
             'phone'=>8137033348,
             'email'=>fake()->email(),

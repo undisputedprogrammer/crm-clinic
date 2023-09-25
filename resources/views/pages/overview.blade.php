@@ -84,40 +84,100 @@
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
                             <h1 class="font-semibold mb-2.5 text-primary">Import leads from Excel</h1>
-                            <form x-data="{
-                                fileName: '',
-                                doSubmit() {
-                                    let form = document.getElementById('import-form');
-                                    let formdata = new FormData(form);
-
-                                    $dispatch('formsubmit', { url: '{{ route('import-leads') }}', route: 'import-leads', fragment: 'page-content', formData: formdata, target: 'import-form' });
-                                    form.reset();
-                                    this.fileName = '';
-                                }
-                            }" @submit.prevent.stop="doSubmit();"
+                            <form
+                                x-data="{
+                                    fileName: '',
+                                    hospital: '',
+                                    center: '',
+                                    hospitals: [],
+                                    centers: [],
+                                    fetchCenters() {
+                                        axios.get(
+                                            '{{route('hospital.centers')}}',
+                                            {
+                                                params: { 'hospital': this.hospital }
+                                            }
+                                        ).then(
+                                            (r) => {
+                                                this.centers = r.data.centers;
+                                            }
+                                        ).catch(
+                                            (e) => {
+                                                console.log(e);
+                                            }
+                                        );
+                                    },
+                                    isDisabled() {
+                                        return this.fileName == ''
+                                            || this.hospital == ''
+                                            || this.center =='';
+                                    },
+                                    doSubmit() {
+                                        let form = document.getElementById('import-form');
+                                        let formdata = new FormData(form);
+console.log('fd');
+console.log(formdata);
+                                        $dispatch('formsubmit', { url: '{{ route('import-leads') }}', route: 'import-leads', fragment: 'page-content', formData: formdata, target: 'import-form' });
+                                        form.reset();
+                                        this.fileName = '';
+                                    }
+                                }"
+                                x-init="
+                                    hospitals={{Js::from($hospitals)}};
+                                    $watch('hospital', (h) => {
+                                        center = '';
+                                        fetchCenters();
+                                    });
+                                "
+                                @submit.prevent.stop="doSubmit();"
                                 @formresponse.window="
-                console.log($event.detail.content);
-                if ($event.detail.target == $el.id) {
-                    if ($event.detail.content.success) {
-                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                if ($event.detail.target == $el.id) {
+                                    if ($event.detail.content.success) {
+                                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
 
-                            $dispatch('formerrors', {errors: []});
-                            $dispatch('linkaction', {
-                                link: '{{route('overview')}}',
-                                route: 'overview',
-                                fresh: true
-                            })
-                        } else if (typeof $event.detail.content.errors != undefined) {
-                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+                                            $dispatch('formerrors', {errors: []});
+                                            $dispatch('linkaction', {
+                                                link: '{{route('overview')}}',
+                                                route: 'overview',
+                                                fresh: true
+                                            })
+                                        } else if (typeof $event.detail.content.errors != undefined) {
+                                            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
-                        } else{
-                            $dispatch('formerrors', {errors: $event.detail.content.errors});
-                        }
-                }"
-                                id="import-form" class="flex space-x-3">
+                                        } else{
+                                            $dispatch('formerrors', {errors: $event.detail.content.errors});
+                                        }
+                                }"
+                                id="import-form" class="flex flex-col space-y-3 items-center"
+                                >
                                 <input type="file" name="sheet" @change="fileName = $el.files[0].name"
-                                    class="file-input file-input-bordered file-input-success text-base-content file-input-sm w-full max-w-xs" />
-                                <button type="submit" class="btn btn-sm btn-success" :disabled="fileName == ''">Import</button>
+                                    class="file-input file-input-bordered file-input-success text-base-content file-input-sm w-full max-w-xs" accept=".xlsx" />
+
+                                <div class="form-control w-full max-w-xs">
+                                    <label class="label">
+                                        <span class="label-text">Hospital</span>
+                                    </label>
+                                    <select name="hospital" x-model="hospital" class="select select-bordered text-base-content">
+                                        <option disabled value="">Pick one</option>
+                                        <template x-for="h in hospitals">
+                                        <option :value="h.id" x-text="h.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+
+                                <div class="form-control w-full max-w-xs">
+                                    <label class="label">
+                                        <span class="label-text">Center</span>
+                                    </label>
+                                    <select name="center" x-model="center" class="select select-bordered text-base-content">
+                                        <option disabled value="">Pick one</option>
+                                        <template x-for="c in centers">
+                                        <option :value="c.id" x-text="c.name"></option>
+                                        </template>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-sm btn-success" :disabled="isDisabled()">Import</button>
                                 <div>
                                     <button class="btn btn-sm btn-ghost text-base-content opacity-60" type="reset">Cancel</button>
                                 </div>

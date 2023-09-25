@@ -10,6 +10,6 @@ class Center extends Model
     use HasFactory;
 
     public function hospital(){
-        return $this->hasOne(Hospital::class, 'id');
+        return $this->hasOne(Hospital::class, 'hospital_id', 'id');
     }
 }

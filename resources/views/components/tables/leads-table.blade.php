@@ -23,8 +23,7 @@
                         <tr x-data="{ questions: null }" class="text-base-content hover:bg-base-100"
                             :class=" name == `{{ $lead->name }}` ? 'bg-base-100 font-medium' : ''"
                             @click="
-                                console.log({{ $lead->remarks }});
-                                $dispatch('detailsupdate',{lead : {{ json_encode($lead) }}, remarks: {{ json_encode($lead->remarks) }}, id: {{ $lead->id }}, followups: {{ $lead->followups }}, answers: {{ json_encode($lead->answers) }}})">
+                                $dispatch('detailsupdate',{lead : {{ json_encode($lead) }}, remarks: {{ json_encode($lead->remarks) }}, id: {{ $lead->id }}, followups: {{ $lead->followups }}, qnas: {{ json_encode($lead->qnas) }}})">
 
                             <th><input type="checkbox" :checked="selectedLeads[{{$lead->id}}] != null ? true : false " @click="selectLead($el,{{$lead}})" class="checkbox checkbox-secondary checkbox-sm"></th>
 

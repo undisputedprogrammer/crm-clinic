@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('hospital_id')->constrained('hospitals', 'id');
+            $table->foreignId('center_id')->constrained('centers', 'id');
             $table->string('name');
             $table->string('phone');
-            $table->string('email');
-            $table->string('city');
+            $table->string('email')->nullable();
+            $table->string('city')->nullable();
+            $table->json('qnas')->nullable();
             $table->boolean('is_valid');
             $table->boolean('is_genuine');
             $table->text('history');

@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Doctor;
 use App\Models\Message;
 use App\Models\Followup;
+use App\Models\Hospital;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -20,7 +21,6 @@ class PageService
             'remarks' => function ($q) {
                 return $q->orderBy('created_at', 'desc');
             },
-            'answers',
             'appointment'
         ]);;
 
@@ -57,12 +57,14 @@ class PageService
 
         $lcm = Lead::where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
+        $hospitals = Hospital::all();
+
         $pf = Followup::whereHas('lead', function ($query) {
             $query->where('status', '!=', 'Converted');
         })->where('next_followup_date', null)
         ->where('consulted',null)->count();
 
-        return compact('lpm', 'ftm', 'lcm', 'pf');
+        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals');
     }
 
     public function getFollowupData($user)

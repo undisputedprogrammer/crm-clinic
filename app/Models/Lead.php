@@ -12,7 +12,11 @@ class Lead extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','phone','email','city','is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
+    protected $casts = [
+        'qnas' => 'array'
+    ];
+
+    protected $fillable = ['name','phone','email','city', 'qnas', 'is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
 
     public function remarks(){
         return $this->morphMany(Remark::class,'remarkable');
@@ -22,9 +26,9 @@ class Lead extends Model
         return $this->hasMany(Followup::class, 'lead_id')->orderBy('created_at');
     }
 
-    public function answers(){
-        return $this->hasMany(Answer::class, 'lead_id');
-    }
+    // public function answers(){
+    //     return $this->hasMany(Answer::class, 'lead_id');
+    // }
 
     public function assigned(){
         return $this->hasOne(User::class,'id','assigned_to');

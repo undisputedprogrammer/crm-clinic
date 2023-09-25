@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('location');
+            $table->string('ho_location');
             $table->string('email');
             $table->string('phone');
+            $table->json('main_cols');
             $table->timestamps();
         });
     }

@@ -143,6 +143,7 @@
         <div x-data="{
             selected_section: 'details',
             messageLoading : false,
+            qnas: [],
             chats : [],
             loadWhatsApp(){
                 this.selected_section = 'wp';
@@ -187,12 +188,12 @@
                 lead = $event.detail.lead;
                 remarks = $event.detail.remarks;
                 followups = $event.detail.followups;
-                answers = $event.detail.answers;
+                qnas = $event.detail.qnas;
                 name = lead.name;
                 leads[lead.id] = lead;
                 leads[lead.id].remarks = remarks;
                 leads[lead.id].followups = followups;
-                leads[lead.id].answers = answers;
+                leads[lead.id].qnas = qnas;
 
             }
             else{
@@ -200,7 +201,7 @@
                 remarks = leads[$event.detail.id].remarks;
                 followups = leads[$event.detail.id].followups;
                 name = lead.name;
-                answers = lead.answers;
+                qnas = lead.qnas;
 
 
             }

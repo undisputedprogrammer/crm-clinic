@@ -21,9 +21,10 @@ class HospitalFactory extends Factory
     {
         return [
             'name'=>fake()->company(),
-            'location'=>fake()->city(),
+            'ho_location'=>fake()->city(),
             'email'=>fake()->email(),
-            'phone'=>fake()->phoneNumber()
+            'phone'=>fake()->phoneNumber(),
+            'main_cols' => json_encode([])
         ];
     }
 }

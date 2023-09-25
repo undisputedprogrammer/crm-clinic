@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Center;
+use App\Models\Hospital;
 use App\Imports\LeadsImport;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -24,8 +26,9 @@ class ImportController extends SmartController
         if($request->file('sheet')) {
 
             $headings = (new HeadingRowImport)->toArray($request->file('sheet'));
-
-            $import = new LeadsImport($headings[0][0]);
+            $hospital = Hospital::find($request->input('hospital'));
+            $center = Center::find($request->input('center'));
+            $import = new LeadsImport($headings[0][0], $hospital, $center);
             Excel::import($import, request()->file('sheet'));
 
             $msg = "{$import->getImportedCount()} of {$import->getTotalCount()} leads imported";

@@ -6,20 +6,29 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Answer;
 use App\Models\Question;
+use Hamcrest\Type\IsNumeric;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+
+use function PHPUnit\Framework\isNan;
 
 class LeadsImport implements ToArray, WithHeadingRow
 {
     private $agents = [];
     private $x = 0;
+    private $hospital = null;
+    private $center = null;
     private $headings = [];
+    private $mainCols = [];
     private $totalCount = 0;
     private $importedCount = 0;
-    public function __construct(array $headings)
+    public function __construct(array $headings, $hospital, $center)
     {
         $this->headings = $headings;
+        $this->hospital = $hospital;
+        $this->center = $center;
+        $this->mainCols = $hospital->main_cols;
         $this->agents = User::havingRoles(['agent'])->get()->pluck('id');
     }
     /**
@@ -44,12 +53,26 @@ class LeadsImport implements ToArray, WithHeadingRow
                 continue;
             }
 
+            /*** */
+            $qarr = [];
+            foreach ($this->headings as $colName) {
+                if (!in_array($colName, [
+                    $this->mainCols->name,
+                    $this->mainCols->phone,
+                    $this->mainCols->email,
+                    $this->mainCols->city
+                ]) && $colName != '' && !is_numeric($colName)) {
+                    $qarr[$colName] = $row[$colName];
+                }
+            }
+            /*** */
 
             $lead = Lead::create([
-                'name' => $row['full_name'],
-                'phone' => $row['phone_number'],
-                'email' => $row['email'],
-                'city' => $row['city'],
+                'name' => $row[$this->mainCols->name],
+                'phone' => $row[$this->mainCols->phone],
+                'email' => $row[$this->mainCols->email] ?? '',
+                'city' => $row[$this->mainCols->city] ?? '',
+                'qnas' => $qarr,
                 'is_valid' => false,
                 'is_genuine' => false,
                 'history' => $row['history'] ?? '',
@@ -58,20 +81,23 @@ class LeadsImport implements ToArray, WithHeadingRow
                 'followup_created' => false,
                 'assigned_to' => $this->agents[$this->x]
             ]);
+
+
+
             $this->x++;
             if ($this->x == count($this->agents)) {
                 $this->x = 0;
             }
 
-            foreach ($this->getQuestionHeaders() as $qh) {
-                $q = Question::where('question_code', $qh)->get()->first();
-                $ans = Answer::create([
-                    'question_id' => $q->id,
-                    'lead_id' => $lead->id,
-                    'question_code' => $qh,
-                    'answer' => $row[strtolower($qh)]
-                ]);
-            }
+            // foreach ($this->getQuestionHeaders() as $qh) {
+            //     $q = Question::where('question_code', $qh)->get()->first();
+            //     $ans = Answer::create([
+            //         'question_id' => $q->id,
+            //         'lead_id' => $lead->id,
+            //         'question_code' => $qh,
+            //         'answer' => $row[strtolower($qh)]
+            //     ]);
+            // }
             $this->importedCount ++;
             // return $lead;
         }
