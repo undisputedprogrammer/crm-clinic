@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Audit;
 use Carbon\Carbon;
 use App\Models\Lead;
 use App\Models\User;
@@ -43,12 +44,21 @@ class PageController extends SmartController
 
     public function destroy(Request $request)
     {
+        $user = Auth::user();
 
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        $audit = Audit::where('user_id',$user->id)->where('logout',null)->get()->first();
+
+        if($audit != null){
+            $audit->logout = Carbon::now();
+
+            $audit->save();
+        }
 
         return redirect('/login');
     }

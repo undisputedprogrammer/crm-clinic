@@ -49,6 +49,10 @@ class User extends Authenticatable
     }
 
     public function center(){
-        return $this->hasOne(Center::class, 'id');
+        return $this->belongsToMany(Center::class, 'user_has_centers');
+    }
+
+    public function hospital(){
+        return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
 }

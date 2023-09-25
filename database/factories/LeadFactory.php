@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Center;
+use App\Models\Hospital;
+use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,8 +25,11 @@ class LeadFactory extends Factory
     {
          $customer_segment = ['hot','warm','cold'];
          $status = ['Created'];
-
+        $hospital = Hospital::get()->random();
+        $center = Center::where('hospital_id',$hospital->id)->has('agents')->with('agents')->get()->random();
         return [
+            'hospital_id'=>$hospital->id,
+            'center_id'=>$center->id,
             'name'=>fake()->name(),
             'phone'=>8137033348,
             'email'=>fake()->email(),
@@ -35,7 +40,7 @@ class LeadFactory extends Factory
             'customer_segment'=> null,
             'status'=> 'Created',
             'followup_created'=>false,
-            'assigned_to'=>$this->getAgent(),
+            'assigned_to'=>$center->agents->random(),
         ];
     }
 

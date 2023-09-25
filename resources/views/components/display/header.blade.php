@@ -147,6 +147,12 @@
 
                     <li>
                         <a href=""
+                            @click.prevent.stop="setBreakStartTime('{{route('break.in')}}')"
+                            class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Take break</a>
+                    </li>
+
+                    <li>
+                        <a href=""
                             @click.prevent.stop="$dispatch('linkaction',{link:'{{ route('user-password.reset') }}', route: 'user-password.reset', fragment: 'page-content'})"
                             class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Change password</a>
                     </li>

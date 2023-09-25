@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamp('login');
-            $table->timestamp('logout');
-            $table->timestamp('break_in');
-            $table->timestamp('break_out');
+            $table->timestamp('logout')->nullable();
+            $table->timestamp('break_in')->nullable();
+            $table->timestamp('break_out')->nullable();
             $table->timestamps();
         });
     }

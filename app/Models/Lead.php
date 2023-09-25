@@ -37,4 +37,8 @@ class Lead extends Model
     public function chats(){
         return $this->hasMany(Chat::class, 'lead_id');
     }
+
+    public function hospital(){
+        return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
+    }
 }

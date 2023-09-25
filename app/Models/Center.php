@@ -12,4 +12,8 @@ class Center extends Model
     public function hospital(){
         return $this->hasOne(Hospital::class, 'id');
     }
+
+    public function agents(){
+        return $this->belongsToMany(User::class, 'user_has_centers');
+    }
 }

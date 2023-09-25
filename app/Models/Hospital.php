@@ -12,4 +12,12 @@ class Hospital extends Model
     public function centers(){
         return $this->hasMany(Center::class, 'hospital_id','id');
     }
+
+    public function leads(){
+        return $this->hasMany(Lead::class, 'hospital_id', 'id');
+    }
+
+    public function users(){
+        return $this->hasMany(User::class, 'hospital_id','id');
+    }
 }

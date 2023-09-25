@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('hospital_id')->references('id')->on('hospitals');
+            $table->foreignId('center_id')->references('id')->on('centers');
             $table->string('name');
             $table->string('phone');
             $table->string('email');

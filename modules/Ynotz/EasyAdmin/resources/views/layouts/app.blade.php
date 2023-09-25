@@ -114,7 +114,7 @@ currentroute=$event.detail.currentroute;"
         }"
          class="min-h-screen bg-base-200 flex flex-col" >
 
-            <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full ">
+            <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full " x-init="isBreak = '{{Auth::user()->in_break}}'; console.log(isBreak)">
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {

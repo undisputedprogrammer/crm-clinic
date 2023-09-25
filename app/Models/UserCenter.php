@@ -10,4 +10,12 @@ class UserCenter extends Model
     use HasFactory;
 
     public $table = 'user_has_centers';
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function center(){
+        return $this->hasOne(Center::class, 'id','center_id');
+    }
 }
