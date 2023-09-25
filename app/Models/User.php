@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function leads(){
         return $this->hasMany(Lead::class,'assigned_to','id');
     }
+
+    public function center(){
+        return $this->hasOne(Center::class, 'id');
+    }
 }

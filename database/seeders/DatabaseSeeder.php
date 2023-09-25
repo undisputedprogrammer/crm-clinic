@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         Role::create(['name'=>'agent']);
 
         $this->call([
+            HospitalSeeder::class,
+            CenterSeeder::class,
             UserSeeder::class,
             DoctorSeeder::class,
             QuestionSeeder::class,
@@ -30,6 +32,7 @@ class DatabaseSeeder extends Seeder
             // RemarkSeeder::class,
             // AnswerSeeder::class,
             // MessageSeeder::class,
+
         ]);
 
 

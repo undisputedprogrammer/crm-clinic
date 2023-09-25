@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Center;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'name' => 'admin',
             'email' => 'admin@demo.com',
+            'center_id' => null,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
             'remember_token' => Str::random(10),
@@ -34,6 +36,7 @@ class UserSeeder extends Seeder
         $agent = User::create([
             'name' => 'Muhammed Ali',
             'email' => 'ali@demo.com',
+            'center_id'=> Center::get()->random()->id,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
             'remember_token' => Str::random(10),
