@@ -146,6 +146,10 @@
                 <ul class="py-2 text-base-content" aria-labelledby="user-menu-button">
 
                     <li>
+                        <a href="" class="block px-4 py-2 text-sm hover:text-primary hover:bg-base-100">Profile</a>
+                    </li>
+
+                    <li>
                         <a href=""
                             @click.prevent.stop="setBreakStartTime('{{route('break.in')}}')"
                             class="block px-4 py-2 text-sm hover:bg-base-100 hover:text-primary ">Take break</a>

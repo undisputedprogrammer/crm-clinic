@@ -38,7 +38,6 @@ class AgentService implements ModelViewConnector
             'center_id'=>$request->center
         ]);
 
-
         $agent->assignRole('agent');
 
         return ['success'=>true, 'message'=>'Agent Added'];

@@ -34,6 +34,7 @@
               <th>Lead ID</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Agent</th>
             </tr>
           </thead>
           <tbody>
@@ -56,6 +57,7 @@
                     <td>{{$lead->id}}</td>
                     <td>{{$lead->name}}</td>
                     <td>{{$lead->email}}</td>
+                    <td>{{$lead->assigned->name}}</td>
                 </tr>
 
             @endforeach

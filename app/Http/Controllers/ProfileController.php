@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Ynotz\EasyAdmin\Traits\HasMVConnector;
+use App\Http\Requests\ProfileUpdateRequest;
+use Ynotz\SmartPages\Http\Controllers\SmartController;
 
-class ProfileController extends Controller
+class ProfileController extends SmartController
 {
+    use HasMVConnector;
+
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+    }
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request)
     {
-        return view('profile.edit', [
+        return $this->buildResponse('pages.profile', [
             'user' => $request->user(),
         ]);
     }

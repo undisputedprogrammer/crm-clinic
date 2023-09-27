@@ -3,15 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Ynotz\MediaManager\Traits\OwnsMedia;
+use Ynotz\AccessControl\Traits\WithRoles;
+use Ynotz\MediaManager\Contracts\MediaOwner;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Ynotz\AccessControl\Traits\WithRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MediaOwner
 {
-    use HasApiTokens, HasFactory, Notifiable, WithRoles;
+    use HasApiTokens, HasFactory, Notifiable, WithRoles, OwnsMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -40,10 +45,30 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $appends = ['user_picture'];
+
+    public function getMediaStorage(): array
+    {
+        return ['user_picture' => [
+            'disc' => 'local',
+            'folder' => '/images/user_picture'
+        ]];
+    }
+
+    public function userPicture(): Attribute
+    {
+        return Attribute::make(
+            get: function(){
+                return $this->getSingleMediaForDisplay('user_picture');
+            }
+        );
+    }
 
     public function leads(){
         return $this->hasMany(Lead::class,'assigned_to','id');

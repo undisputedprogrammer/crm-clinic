@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Center;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Services\MessageService;
@@ -51,17 +52,28 @@ class TemplateController extends SmartController
     // The below 2 functions has to be moved to LeadController
     public function reassign(Request $request)
     {
-        if ($request->filter != null && $request->filter != 0) {
-            $leads = Lead::where('assigned_to', $request->filter)->paginate(10);
-        } else {
-            $leads = Lead::paginate(10);
+        $leadQuery = Lead::where('hospital_id',$request->user()->hospital_id)->with(['assigned'=>function($q){
+            return $q->with('center');
+        }]);
+
+        if($request->center != null && $request->center != 'all'){
+            $leadQuery->where('center_id',$request->center);
         }
 
-        $agents = User::whereHas('roles', function ($q) {
+        if ($request->filter != null && $request->filter != 'all') {
+            $leadQuery->where('assigned_to', $request->filter);
+        }
+
+        $leads = $leadQuery->paginate(10);
+
+        $agents = User::where('hospital_id',$request->user()->hospital_id)->whereHas('roles', function ($q) {
             $q->where('name', 'agent');
         })->get();
 
-        return $this->buildResponse('pages.reassign-lead', compact('leads', 'agents'));
+        $centers = Center::where('hospital_id',$request->user()->hospital_id)->get();
+
+        $selectedCenter = $request->center;
+        return $this->buildResponse('pages.reassign-lead', compact('leads', 'agents', 'centers', 'selectedCenter'));
     }
 
     public function assign(Request $request)

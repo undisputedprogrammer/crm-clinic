@@ -32,6 +32,7 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'name' => 'admin',
             'email' => 'admin@demo.com',
+            'designation' => 'Administrator',
             'hospital_id'=> 1,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
@@ -43,6 +44,7 @@ class UserSeeder extends Seeder
         $secondadmin = User::create([
             'name' => 'admin',
             'email' => 'secondadmin@demo.com',
+            'designation' => 'Administrator',
             'hospital_id'=> 2,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
@@ -54,6 +56,7 @@ class UserSeeder extends Seeder
         $agent = User::create([
             'name' => 'Muhammed Ali',
             'email' => 'ali@demo.com',
+            'designation' => 'Marketing Agent',
             'hospital_id' => 1,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
@@ -63,7 +66,7 @@ class UserSeeder extends Seeder
         $agent->assignRole('agent');
         UserCenter::create([
             'user_id'=>$agent->id,
-            'center_id'=>Center::get()->random()->id
+            'center_id'=>Center::where('hospital_id',$agent->hospital_id)->get()->random()->id
         ]);
 
     }

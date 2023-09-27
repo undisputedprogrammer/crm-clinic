@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
-
+use Ynotz\MediaManager\MediaManagerProvider;
 
 return [
 
@@ -176,6 +176,7 @@ return [
          Ynotz\SmartPages\SmartPagesProvider::class,
          Ynotz\EasyAdmin\EasyAdminProvider::class,
          Ynotz\AccessControl\AccessControlProvider::class,
+         MediaManagerProvider::class
     ])->toArray(),
 
     /*

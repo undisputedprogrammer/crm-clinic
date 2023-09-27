@@ -22,11 +22,8 @@
         {{-- pagination event handler --}}
         @pageaction.window="
         console.log($event.detail);
-        $dispatch('nextpage',{link: $event.detail.link, page:$event.detail.page});
+        $dispatch('nextpage',{link: $event.detail.link, page:$event.detail.page});">
 
-        "
-
-        >
     <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
@@ -38,7 +35,6 @@
 
             <form
             x-data = "{ doSubmit() {
-
                 let form = document.getElementById('search-form');
                 let formdata = new FormData(form);
                 formdata.append('search_type',searchtype);
@@ -48,35 +44,32 @@
                 searchFormState.is_genuine = formdata.get('is_genuine');
                 searchFormState.lead_status = formdata.get('lead_status');
                 searchFormState.agent = formdata.get('agent');
+                searchFormState.center = formdata.get('center');
                 $dispatch('formsubmit',{url:'{{route('get-results')}}', route: 'get-results',fragment: 'page-content', formData: formdata, target: 'search-form'});
             }}"
 
             @nextpage.window="
             console.log('going to link'+$event.detail.link);
             fpselected = false;
-            {{-- let form = document.getElementById('search-form');
-            let formdata = new FormData(form);
-            formdata.append('search_type',pagination_type); --}}
             $dispatch('formsubmit',{url:$event.detail.link, route: 'get-results',fragment: 'page-content', formData: pagination_data, target: 'search-form'});
             "
 
             @submit.prevent.stop="doSubmit();"
 
             @formresponse.window="
-
-                        console.log($event.detail.content);
                         if ($event.detail.target == $el.id) {
                             if ($event.detail.content.success) {
-
-                                {{-- $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'}); --}}
 
                                 $dispatch('resultupdate',{html: $event.detail.content.table_html});
                                 pagination_type = $event.detail.content.pagination_type;
                                 $dispatch('formerrors', {errors: []});
+
                             } else if (typeof $event.detail.content.errors != undefined) {
+
                                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
                             } else{
+
                                 $dispatch('formerrors', {errors: $event.detail.content.errors});
                             }
                         }"
@@ -151,7 +144,22 @@
                         <option value="null" :disabled="searchFormState.agent == null ? true : false " :selected="searchFormState.agent == null ? true : false " >--Not selected--</option>
 
                         @foreach ($agents as $agent)
-                            <option :selected="searchFormState.agent == '{{$agent->id}}' ? true : false " value="{{$agent->id}}">{{$agent->name}}</option>
+                            <template x-if="searchFormState.center == undefined || searchFormState.center == '{{$agent->center[0]->id}}' || searchFormState.center == 'null' ">
+                                <option :selected="searchFormState.agent == '{{$agent->id}}' ? true : false " value="{{$agent->id}}">{{$agent->name}}</option>
+                            </template>
+                        @endforeach
+
+
+                    </select>
+                </div>
+
+                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
+                    <label for="" class=" text-sm text-primary font-medium">Select Center</label>
+                    <select name="center" @change="searchFormState.center = $el.value" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
+                        <option value="null" :disabled="searchFormState.center == null ? true : false " :selected="searchFormState.center == null ? true : false " >--Not selected--</option>
+
+                        @foreach ($centers as $center)
+                            <option :selected="searchFormState.center == '{{$center->id}}' ? true : false " value="{{$center->id}}">{{$center->name}}</option>
                         @endforeach
 
 
@@ -159,9 +167,7 @@
                 </div>
                 @endcan
 
-
-
-                <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary mt-2 lg:mt-0" type="submit">Search</button>
+                <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary mt-2 lg:mt-2" type="submit">Search</button>
 
 
             </form>
@@ -285,9 +291,6 @@
                                     </template>
                                 </ul>
                             </div>
-
-
-
                         </div>
 
                         <div class=" w-1/2 px-1 mt-1.5.5">
@@ -302,9 +305,7 @@
                                 {{-- looping through history --}}
                                 <template x-show="!historyLoading" x-for="item in history" >
                                     <div>
-
-
-                                    <div x-show="item.actual_date != null" class=" mt-2">
+                                        <div x-show="item.actual_date != null" class=" mt-2">
                                         <p class=" font-medium">Date : <span class=" text-primary" x-text="item.actual_date"></span></p>
                                         <p class="font-medium">Follow up remarks</p>
                                         <ul>
@@ -314,21 +315,11 @@
                                                 </template>
                                             </template>
                                         </ul>
+                                        </div>
 
-
+                                        <p x-show="item.actual_date == null" class="font-medium">Next follow up date : <span class=" text-error" x-text="item.scheduled_date"></span></p>
 
                                     </div>
-
-                                    <p x-show="item.actual_date == null" class="font-medium">Next follow up date : <span class=" text-error" x-text="item.scheduled_date"></span></p>
-
-                                </div>
-
-
-
-
-
-
-
                                 </template>
 
                                 <p x-show="!historyLoading" class=" text-error" x-text=" history.length == 1 ? 'No follow ups completed yet' : '' "></p>

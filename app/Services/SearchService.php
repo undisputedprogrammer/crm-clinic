@@ -33,7 +33,8 @@ class SearchService
             'is_valid' => 'is_valid',
             'is_genuine' => 'is_genuine',
             'lead_status' => 'status',
-            'agent' => 'assigned_to'
+            'agent' => 'assigned_to',
+            'center' => 'center_id'
         ];
 
         foreach ($filters as $param => $column) {

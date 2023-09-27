@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Audit;
 use Carbon\Carbon;
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Center;
 use App\Models\Doctor;
 use App\Models\Message;
 use App\Models\Followup;
@@ -78,10 +79,12 @@ class PageController extends SmartController
 
     public function searchIndex(Request $request)
     {
-        $agents = User::whereHas('roles',function($q){
+        $agents = User::where('hospital_id',$request->user()->hospital_id)->whereHas('roles',function($q){
             $q->where('name','agent');
-        })->get();
-        return $this->buildResponse('pages.search', compact('agents'));
+        })->with('center')->get();
+        $centers = Center::where('hospital_id', $request->user()->hospital_id)->get();
+
+        return $this->buildResponse('pages.search', compact('agents','centers'));
     }
 
     public function questionIndex(Request $request)

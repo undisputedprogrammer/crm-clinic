@@ -1,5 +1,8 @@
 <x-easyadmin::app-layout>
-<div >
+<div x-data="{center : null, agent : null}" x-init="
+@if(isset($selectedCenter))
+center = '{{$selectedCenter}}';
+@endif">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
@@ -41,11 +44,13 @@
                 <h1 class=" font-semibold text-sm text-base-content pb-1">Filter by Agent</h1>
                 <form
                 x-data="{
+                    selectedCenter : center,
                     doFilter(){
                         ajaxLoading = true;
                         axios.get('/leads/reassign',{
                             params : {
-                                filter : document.getElementById('select-filter').value
+                                filter : document.getElementById('select-filter').value,
+                                center : document.getElementById('select_center').value
                             },
                             headers: {
                                 'X-Fr' : 'page-content'
@@ -64,18 +69,32 @@
                         })
                     }
                 }"
-                 class="flex space-x-3" id="filter-form" @submit.prevent.stop="doFilter()" >
-                    <select @change="searchFilter = $el.value" name="filter" id="select-filter" required class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
+                 class="flex flex-col space-y-3" id="filter-form" @submit.prevent.stop="doFilter()" >
+
+                    <select name="center" @change="center = $el.value" required id="select_center" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
+                        <option value="all" selected >All Centers</option>
+                        @foreach ($centers as $center)
+                            <option :selected="center == '{{$center->id}}' " value="{{$center->id}}">{{$center->name}}</option>
+                        @endforeach
+                    </select>
+
+                    <select @change="searchFilter = $el.value" name="filter" id="select-filter" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
                         <option value="" disabled selected >Select Agent</option>
-                        <option value="0">All agents</option>
+                        <option value="all">All agents</option>
                         @if ($agents != null && count($agents) > 0)
                            @foreach ($agents as $agent)
-                            <option :selected = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
+
+                           <template x-if="center == null || center == 'all' || center == '{{$agent->center[0]->id}}' ">
+
+                                <option :selected = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
+
+                           </template>
+
                            @endforeach
                         @endif
 
                     </select>
-                    <button type="submit" class="btn btn-primary ">Filter</button>
+                    <button type="submit" class="btn btn-primary w-fit">Filter</button>
                 </form>
                </div>
 
@@ -112,8 +131,12 @@
                         <option value="" disabled selected >Select Agent</option>
 
                         @if ($agents != null && count($agents) > 0)
+
                            @foreach ($agents as $agent)
-                            <option :disabled = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
+                           <template x-if = "center == '{{$agent->center[0]->id}}' ">
+                                <option :disabled = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
+                           </template>
+
                            @endforeach
                         @endif
 

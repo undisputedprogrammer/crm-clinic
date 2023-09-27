@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-base-content">
             {{ __('Profile Information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-base-content">
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
@@ -13,9 +13,26 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6 flex">
         @csrf
         @method('patch')
+
+        <div>
+            @php
+                $element = [
+                'key' => 'user_picture',
+                'label' => 'Profile Picture',
+                'authorised' => true,
+                'validations' => [
+                    'max_size' => '200 kb',
+                    'mime_types' => ['image/jpg', 'image/jpeg', 'image/png']
+                    ]
+                ];
+            @endphp
+            <x-easyadmin::inputs.imageuploader :element="$element"/>
+        </div>
+
+        <div>
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -46,6 +63,8 @@
                 </div>
             @endif
         </div>
+
+    </div>
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>

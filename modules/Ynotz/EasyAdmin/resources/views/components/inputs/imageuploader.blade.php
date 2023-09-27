@@ -10,7 +10,7 @@
     $name = $element['key'];
     $authorised = $element['authorised'];
     $label = $element['label'];
-    $validations = $element['validations'];
+    $validations = $element['validations'] ?? [];
     $width = $element['width'] ?? 'full';
     $placeholder = $element["placeholder"] ?? null;
     $wrapper_styles = $element["wrapper_styles"] ?? null;
