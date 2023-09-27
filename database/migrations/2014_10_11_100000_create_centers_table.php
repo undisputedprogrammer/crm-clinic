@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('location');
             $table->string('email');
             $table->string('phone');
+            $table->string('chat_room_id', 12)->unique();
             $table->timestamps();
         });
     }
