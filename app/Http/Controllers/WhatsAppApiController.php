@@ -150,7 +150,7 @@ class WhatsAppApiController extends SmartController
     public function recieve(Request $request)
     {
 
-        return response()->json(['message'=>'Recieved request']);
+
         // Storing inbound messages
         if ($request->sender != null) {
 
