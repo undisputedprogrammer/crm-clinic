@@ -1,7 +1,8 @@
 <x-easyadmin::app-layout>
 <div x-data="x_leads" x-init="
-@isset($selectedLeads)
-    console.log('{{$selectedLeads}}');
+selectedCenter = null;
+@isset($selectedCenter)
+    selectedCenter = {{$selectedCenter}};
 @endisset">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
@@ -11,8 +12,22 @@
       {{-- page body --}}
 
         <div class=" flex bg-base-200 items-center justify-between px-[3.3%]">
-            <h1 class=" text-primary text-xl font-semibold bg-base-200  pt-2.5">Leads</h1>
-            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span></button>
+
+            <div class=" flex space-x-2 items-center justify-start pt-1.5">
+                <h1 class=" text-primary text-xl font-semibold bg-base-200 ">Leads</h1>
+                <div>
+                    @can('is-admin')
+                        @php
+                        $route = "fresh-leads";
+                        @endphp
+                        <x-forms.filter-leads :route="$route" :centers="$centers"/>
+                    @endcan
+                </div>
+
+            </div>
+
+            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span>
+            </button>
         </div>
 
         <x-modals.template-select-modal :templates="$messageTemplates"/>
@@ -21,6 +36,7 @@
       <div x-data="{
         convert: false
       }"
+
 
         {{-- pagination event handler --}}
         @pageaction.window="
@@ -373,8 +389,6 @@
 
                 </div>
 
-                {{-- **************************************************************** --}}
-
 
                 <div>
                     <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
@@ -393,8 +407,6 @@
 
                 </div>
 
-
-                {{-- pwl --}}
                 <div x-data="{
                     selected_action : 'Initiate Followup'
                 }" class="pt-2.5">

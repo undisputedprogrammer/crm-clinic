@@ -1,12 +1,28 @@
 <x-easyadmin::app-layout>
-<div >
+<div x-init="
+    selectedCenter = null;
+    @isset($selectedCenter)
+        selectedCenter = {{$selectedCenter}};
+    @endisset">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
       <x-display.header/>
       <x-sections.side-drawer/>
       {{-- page body --}}
-      <h2 class="pt-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Agents</h2>
+
+      <div class=" flex justify-start items-center space-x-2 bg-base-200 pt-4 lg:px-14">
+        <h2 class=" text-lg font-semibold text-primary bg-base-200">Manage Agents</h2>
+        <div>
+            @can('is-admin')
+                @php
+                $route = "agents.index";
+                @endphp
+                <x-forms.filter-leads :route="$route" :centers="$centers"/>
+            @endcan
+        </div>
+      </div>
+
 
 
       <div x-data="{page: 0}"
@@ -89,6 +105,19 @@
                             <input type="password" name="password_confirmation" placeholder="Confirm password" class="input input-bordered w-full max-w-xs" />
                         </div>
 
+
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                            <span class="label-text">Select Center</span>
+                            </label>
+                            <select name="center" id="agent-center" required class=" select text-base-content w-full max-w-xs select-bordered">
+                                <option value="" disabled selected>-- choose center --</option>
+                                @foreach ($centers as $center)
+                                    <option value="{{$center->id}}">{{$center->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="text-center py-8">
                             <button type="submit" class="btn btn-sm btn-primary">Add</button>
                         </div>
@@ -100,10 +129,12 @@
                     id: '',
                     name: '',
                     email: '',
+                    center_id: '',
                     reset() {
                         this.id = '';
                         this.name = '';
                         this.email = '';
+                        this.center_id = '';
                         mode = 'add';
                     }
                 }"
@@ -112,6 +143,7 @@
                     id = $event.detail.id;
                     name = $event.detail.name;
                     email = $event.detail.email;
+                    center_id = $event.detail.center_id;
                     mode='edit';
                 "  x-transition>
                 <h2 class="text-lg font-semibold text-primary ">Edit Agent</h2>
@@ -135,7 +167,7 @@
                                 };
                                 $dispatch('linkaction', {link: '{{route('agents.index')}}', route: 'agents.index', params: params, fresh: true});
                             } else {
-                                $dispatch('showtoast', {mode: 'error', message: 'Failed to add doctor. Please make sure you have entered all details.'});
+                                $dispatch('showtoast', {mode: 'error', message: 'Failed to update agent. Please make sure you have entered all details.'});
                             }
                         }
                         "
@@ -152,6 +184,9 @@
                             </label>
                             <input type="email" name="email" x-model="email" placeholder="Email" class="input input-bordered w-full max-w-xs" />
                         </div>
+
+
+
                         <div class="text-center py-8">
                             <button type="submit" class="btn btn-sm btn-secondary bg-secondary">Update</button><br/><br/>
                             <button @click.prevent.stop="reset();" type="button" class="btn btn-ghost btn-xs">Cancel</button>

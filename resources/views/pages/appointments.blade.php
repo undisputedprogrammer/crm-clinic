@@ -1,12 +1,17 @@
 <x-easyadmin::app-layout>
-<div >
+<div x-data="x_leads" x-init="
+    selectedCenter = null;
+    @isset($selectedCenter)
+        selectedCenter = '{{$selectedCenter}}';
+    @endisset">
     <div
         x-data="{
             from: '',
             to: '',
+            center: null,
             doSubmit() {
                 $dispatch('linkaction', {link: '{{route('appointments.index')}}',
-                route: 'appointments.index', fresh: true, params: {from: this.from, to: this.to}});
+                route: 'appointments.index', fresh: true, params: {from: this.from, to: this.to, center: this.center}});
             }
         }"
         x-init="
@@ -17,6 +22,10 @@
             @if (isset(request()->to))
                 to = '{{request()->to}}';
             @endif
+
+            @if (isset(request()->center))
+                center = '{{request()->center}}';
+            @endif
         "
         class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
@@ -24,8 +33,11 @@
       <x-display.header/>
       <x-sections.side-drawer/>
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Appointments</h2>
+      <div class=" flex items-center space-x-2 py-4 px-12 bg-base-200">
+        <h2 class=" text-lg font-semibold text-primary bg-base-200">Manage Appointments</h2>
+      </div>
 
+        {{-- Appointment search form --}}
         <form id="appointments-search-form"
             action=""
             @submit.prevent.stop="doSubmit();"
@@ -34,14 +46,27 @@
                 <label class="label w-12">
                   <span class="label-text">From</span>
                 </label>
-                <input x-model="from" name="from" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+                <input x-model="from" name="from" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" />
             </div>
             <div class="form-control max-w-xs flex flex-row md:flex-col">
                 <label class="label w-12">
                   <span class="label-text">To</span>
                 </label>
-                <input x-model="to" name="to" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" required/>
+                <input x-model="to" name="to" type="date" class="input input-bordered w-full max-w-xs" placeholder="dd-mm-yyyy" />
             </div>
+            {{-- Select center, optional --}}
+            <div class="form-control max-w-xs flex flex-row md:flex-col">
+                <label class="label w-12">
+                  <span class="label-text">Center</span>
+                </label>
+                <select x-model="center" name="center" id="select_center" class="select bg-base-100 text-base-content">
+                    <option :selected="selectedCenter == null || selectedCenter != 'all' " value="all">All centers</option>
+                    @foreach ($centers as $center)
+                        <option :selected="selectedCenter == '{{$center->id}}' " value="{{$center->id}}">{{$center->name}}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="flex flex-row ">
                 <label for="" class="w-12 md:hidden"></label>
                 <button type="submit" class="btn btn-md btn-secondary">Search</button>

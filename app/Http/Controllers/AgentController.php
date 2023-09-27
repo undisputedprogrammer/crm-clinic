@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Center;
 use Illuminate\Http\Request;
 use App\Services\AgentService;
 use Ynotz\EasyAdmin\Traits\HasMVConnector;
@@ -21,10 +22,24 @@ class AgentController extends SmartController
 
     public function index(Request $request)
     {
-        $agents = User::whereHas('roles', function($query){
+        $selectedCenter = $request->center;
+
+        $agentsQuery = User::whereHas('roles', function($query){
             $query->where('name','agent');
-        })->paginate(10);
-        return $this->buildResponse('pages.agents',compact('agents'));
+        });
+
+        if($selectedCenter != null && $selectedCenter != 'all'){
+            $agentsQuery->whereHas('center', function($q) use($selectedCenter){
+                $c = Center::find($selectedCenter);
+                return $q->where('name', $c->name);
+            });
+        }
+
+        $agents = $agentsQuery->paginate(10);
+
+        $centers = Center::where('hospital_id',$request->user()->hospital_id)->get();
+
+        return $this->buildResponse('pages.agents',compact('agents','centers','selectedCenter'));
     }
 
     public function store(Request $request)

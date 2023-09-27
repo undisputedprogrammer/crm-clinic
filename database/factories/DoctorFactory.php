@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Center;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,8 @@ class DoctorFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name()
+            'name' => $this->faker->name(),
+            'center_id'=>Center::get()->random()->id
         ];
     }
 }

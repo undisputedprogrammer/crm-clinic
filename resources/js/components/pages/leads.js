@@ -1,5 +1,6 @@
 export default ()=>({
     showTemplateModal : false,
+    selectedCenter : null,
     toggleTemplateModal(){
         this.showTemplateModal = !this.showTemplateModal;
     },
@@ -7,4 +8,5 @@ export default ()=>({
         let formdata = new FormData(el);
         console.log(formdata);
     }
+
 });

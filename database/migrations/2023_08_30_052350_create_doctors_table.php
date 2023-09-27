@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('department')->nullable();
+            $table->foreignId('center_id')->constrained('centers','id');
             $table->timestamps();
         });
     }

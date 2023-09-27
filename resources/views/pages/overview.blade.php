@@ -115,8 +115,8 @@
                                     doSubmit() {
                                         let form = document.getElementById('import-form');
                                         let formdata = new FormData(form);
-console.log('fd');
-console.log(formdata);
+                                        console.log('fd');
+                                        console.log(formdata);
                                         $dispatch('formsubmit', { url: '{{ route('import-leads') }}', route: 'import-leads', fragment: 'page-content', formData: formdata, target: 'import-form' });
                                         form.reset();
                                         this.fileName = '';
@@ -190,14 +190,6 @@ console.log(formdata);
                             <h2 class="text-primary font-medium mb-2.5">More actions</h2>
 
                             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 flex-wrap sm:space-x-2 mt-1">
-                                <button class="btn btn-sm btn-secondary lg:mb-2"
-                                    @click.prevent.stop="$dispatch('linkaction',{
-                                        link:'{{ route('manage-questions') }}',
-                                        route:'manage-questions',
-                                        fragment:'page-content'
-                                        })">Manage
-                                    Questions
-                                </button>
 
                                 <button class="btn btn-sm btn-secondary"
                                     @click.prevent.stop="$dispatch('linkaction',{

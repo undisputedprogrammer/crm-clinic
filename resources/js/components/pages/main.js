@@ -5,6 +5,7 @@ export default () => ({
     loading : false,
     selectedLeads: {},
     isBreak : false,
+    selectedCenter: null,
     selectLead(el, lead) {
         if (el.checked) {
             this.selectedLeads[lead.id] = lead.phone;
@@ -57,6 +58,18 @@ export default () => ({
             this.loading = false;
         },500);
 
+
+    },
+
+    filterByCenter(el,link){
+        let center = document.getElementById('select-center');
+        this.selectedCenter = center.value;
+        // let fromdata = new FormData(el);
+        if(this.selectedCenter == 'all'){
+            this.$dispatch('linkaction',{link: link, route: link, fragment: 'page-content'});
+        }else{
+            this.$dispatch('linkaction',{link: link, route: link, fragment: 'page-content', params: { center: this.selectedCenter}});
+        }
 
     }
 });

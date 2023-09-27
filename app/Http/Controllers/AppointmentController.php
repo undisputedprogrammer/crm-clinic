@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Lead;
+use App\Models\Center;
 use App\Models\Remark;
 use App\Models\Followup;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Services\AppointmentService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -31,10 +32,14 @@ class AppointmentController extends SmartController
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $query = Appointment::with(['lead' => function ($query) {
-            return $query->with('remarks');
+        $selectedCenter = $request->center;
+
+        $query = Appointment::whereHas('lead', function($q) use($request){
+            return $q->where('hospital_id',$request->user()->hospital_id);
+        })->with(['lead' => function ($q) {
+            return $q->with('remarks');
         }, 'doctor'])->orderBy('appointment_date', 'asc');
 
         if (isset($this->request->from)) {
@@ -45,9 +50,19 @@ class AppointmentController extends SmartController
             $query->where('appointment_date', '<=', $this->request->to);
         }
 
-        $appointments = $query->paginate(10);
+        if(isset($this->request->center)) {
+            if($selectedCenter != null && $selectedCenter != 'all'){
+                $query->whereHas('lead', function ($q) use($selectedCenter){
+                    return $q->where('center_id', $selectedCenter);
+                });
+            }
+        }
 
-        return $this->buildResponse('pages.appointments', ['appointments' => $appointments]);
+
+        $appointments = $query->paginate(10);
+        $centers = Center::where('hospital_id',$request->user()->hospital_id)->get();
+
+        return $this->buildResponse('pages.appointments', ['appointments' => $appointments, 'centers'=>$centers,'selectedCenter'=>$selectedCenter]);
     }
 
     public function consulted(Request $request)

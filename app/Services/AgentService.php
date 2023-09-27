@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\UserCenter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -28,8 +29,15 @@ class AgentService implements ModelViewConnector
         $agent = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
+            'hospital_id'=>$request->user()->hospital_id,
             'password'=>Hash::make($request->password)
         ]);
+
+        UserCenter::create([
+            'user_id'=>$agent->id,
+            'center_id'=>$request->center
+        ]);
+
 
         $agent->assignRole('agent');
 
@@ -40,13 +48,15 @@ class AgentService implements ModelViewConnector
     {
         $details = $request->validate([
             'name'=>'required|string',
-            'email'=>'required|email'
+            'email'=>'required|email',
+
         ]);
 
         $agent = User::find($id);
 
         $agent->name = $request->name;
         $agent->email = $request->email;
+        // $agent->center_id = $request->center_id;
         $agent->save();
 
         return ['success'=>true, 'message'=>'Agent details updated'];

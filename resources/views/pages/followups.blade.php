@@ -18,6 +18,11 @@
             showconsultform: false,
 
         }"
+        x-init="
+        selectedCenter = null;
+        @isset($selectedCenter)
+            selectedCenter = {{$selectedCenter}};
+        @endisset"
 
         {{-- pagination event handler --}}
         @pageaction.window="
@@ -35,7 +40,20 @@
       <x-display.header/>
       <x-sections.side-drawer/>
       {{-- page body --}}
-      <h1 class=" text-primary text-xl font-semibold bg-base-200 px-[3.3%] pt-2.5">Pending follow ups</h1>
+      <div class=" flex justify-start items-center w-full bg-base-200 pt-1.5 pl-[3.3%] space-x-2">
+        <h1 class=" text-primary text-xl font-semibold bg-base-200 ">Pending follow ups</h1>
+
+        <div>
+            @can('is-admin')
+                @php
+                $route = "followups";
+                @endphp
+                <x-forms.filter-leads :route="$route" :centers="$centers"/>
+            @endcan
+        </div>
+
+      </div>
+
 
       <div class="lg:h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem] bg-base-200 w-full flex flex-col lg:flex-row justify-evenly items-center lg:items-start space-y-4 lg:space-y-0">
 
@@ -121,7 +139,7 @@
                         <input  type="checkbox" name="is_genuine"  :checked=" isGenuine == 1 ? true : false " class="checkbox checkbox-sm cursor-not-allowed pointer-events-none checkbox-success focus:ring-0" />
                     </div>
 
-                    <p class="font-medium">Lead Segment : <span class=" uppercase !text-warning" x-text="fp.lead != undefined ? fp.lead.customer_segment : '' "></span></p>
+                    <p class="font-medium">Lead Segment : <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.customer_segment != null ? fp.lead.customer_segment : 'Unknown' "></span></p>
 
 
 

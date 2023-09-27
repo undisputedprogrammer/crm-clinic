@@ -10,4 +10,8 @@ class Doctor extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function center(){
+        return $this->belongsTo(Center::class, 'center_id','id');
+    }
 }

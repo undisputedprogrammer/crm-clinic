@@ -20,7 +20,7 @@
                     <td>{{$doctor->name}}</td>
                     <td>{{$doctor->department ?? 'Not specified'}}</td>
                     <td>
-                        <button @click.prevent.stop="$dispatch('doctoredit', {id: {{$doctor->id}}, name: '{{$doctor->name}}', department: '{{$doctor->department}}'});" class="btn btn-ghost btn-xs text-warning" type="button">
+                        <button @click.prevent.stop="$dispatch('doctoredit', {id: {{$doctor->id}}, name: '{{$doctor->name}}', department: '{{$doctor->department}}', center_id: '{{$doctor->center_id}}'});" class="btn btn-ghost btn-xs text-warning" type="button">
                             <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>
                         </button>
                     </td>

@@ -16,4 +16,8 @@ class Center extends Model
     public function agents(){
         return $this->belongsToMany(User::class, 'user_has_centers');
     }
+
+    public function doctors(){
+        return $this->hasMany(Doctor::class, 'center_id','id');
+    }
 }

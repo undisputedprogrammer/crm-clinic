@@ -16,7 +16,7 @@ class Lead extends Model
         'qnas' => 'array'
     ];
 
-    protected $fillable = ['name','phone','email','city', 'qnas', 'is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
+    protected $fillable = ['hospital_id','center_id','name','phone','email','city', 'qnas', 'is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
 
     public function remarks(){
         return $this->morphMany(Remark::class,'remarkable');
@@ -45,4 +45,6 @@ class Lead extends Model
     public function hospital(){
         return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
+
+
 }

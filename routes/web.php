@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/api/convert', [FollowupController::class, 'convert']);
 
-    Route::post('/api/msg91/webhook/callback', [WhatsAppApiController::class, 'recieve']);
+
 
     Route::get('/api/messages/new', [WhatsAppApiController::class, 'unread']);
 
@@ -102,6 +102,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/break-out',[BreakController::class, 'breakOut'])->name('break.out');
 });
+
+Route::post('/api/msg91/webhook/callback', [WhatsAppApiController::class, 'recieve']);
 
 Route::get('/', [PageController::class, 'home']);
 

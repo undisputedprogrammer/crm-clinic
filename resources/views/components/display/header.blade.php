@@ -1,4 +1,4 @@
-<div class="w-full flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
+<div class="w-full  top-0 left-0 flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
 
 
     <div class="flex items-center space-x-3">

@@ -1,12 +1,28 @@
 <x-easyadmin::app-layout>
-<div >
+<div x-init="
+        selectedCenter = null;
+        @isset($selectedCenter)
+            selectedCenter = {{$selectedCenter}};
+        @endisset">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
       <x-display.header/>
       <x-sections.side-drawer/>
       {{-- page body --}}
-      <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Doctors</h2>
+
+      <div class=" flex items-center space-x-2 py-4 px-12 bg-base-200">
+        <h2 class=" text-lg font-semibold text-primary bg-base-200">Manage Doctors</h2>
+        <div>
+            @can('is-admin')
+                @php
+                $route = "doctors.index";
+                @endphp
+                <x-forms.filter-leads :route="$route" :centers="$centers"/>
+            @endcan
+        </div>
+      </div>
+
 
 
       <div x-data="{page: 0}"
@@ -69,6 +85,19 @@
                             </label>
                             <input type="text" name="department" placeholder="Department" class="input input-bordered w-full max-w-xs" />
                         </div>
+
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                            <span class="label-text">Select Center</span>
+                            </label>
+                            <select name="center_id" id="agent-center" required class=" select text-base-content w-full max-w-xs select-bordered">
+                                <option value="" disabled selected>-- choose center --</option>
+                                @foreach ($centers as $center)
+                                    <option value="{{$center->id}}">{{$center->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="text-center py-8">
                             <button type="submit" class="btn btn-sm btn-primary">Add</button>
                         </div>
@@ -80,10 +109,12 @@
                     id: '',
                     name: '',
                     department: '',
+                    center_id: '',
                     reset() {
                         this.id = '';
                         this.name = '';
                         this.department = '';
+                        this.center_id = '';
                         mode = 'add';
                     }
                 }"
@@ -92,6 +123,7 @@
                     id = $event.detail.id;
                     name = $event.detail.name;
                     department = $event.detail.department;
+                    center_id = $event.detail.center_id;
                     mode='edit';
                 "  x-transition>
                 <h2 class="text-lg font-semibold text-primary ">Edit Doctor</h2>
@@ -130,6 +162,19 @@
                             </label>
                             <input type="text" name="department" x-model="department" placeholder="Department" class="input input-bordered w-full max-w-xs" />
                         </div>
+
+                        <div class="form-control w-full max-w-xs">
+                            <label class="label">
+                            <span class="label-text">Select Center</span>
+                            </label>
+                            <select name="center_id" id="agent-center" required class=" select text-base-content w-full max-w-xs select-bordered">
+                                {{-- <option value="" disabled>-- choose center --</option> --}}
+                                @foreach ($centers as $center)
+                                    <option :selected="center_id == '{{$center->id}}' " value="{{$center->id}}">{{$center->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="text-center py-8">
                             <button type="submit" class="btn btn-sm btn-secondary bg-secondary">Update</button><br/><br/>
                             <button @click.prevent.stop="reset();" type="button" class="btn btn-ghost btn-xs">Cancel</button>

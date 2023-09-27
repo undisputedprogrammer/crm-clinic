@@ -11,17 +11,15 @@
     @formresponse.window="
     if($event.detail.target == $el.id){
         if ($event.detail.content.success) {
-            $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-
-            isBreak = $event.detail.content.isBreak;
-
-            $dispatch('formerrors', {errors: []});
+                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                isBreak = $event.detail.content.isBreak;
+                $dispatch('formerrors', {errors: []});
             } else if (typeof $event.detail.content.errors != undefined) {
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
                 error = $event.detail.content.message;
-                } else{
-                    $dispatch('formerrors', {errors: $event.detail.content.errors});
-                    }
+            } else{
+                $dispatch('formerrors', {errors: $event.detail.content.errors});
+            }
         $el.reset();
     }"
     id="break-out-form" @submit.prevent.stop="doSubmit()" action="" class=" flex flex-col items-start space-y-2">

@@ -11,6 +11,8 @@ class SearchService
 
     public function getResults($request)
     {
+        $user = $request->user();
+
         if ($request->search_type == 'actual_date')
         {
             $query = Followup::where('actual_date', '!=', null);
@@ -47,6 +49,10 @@ class SearchService
         if(!$request->user()->hasRole('admin')){
             $query->whereHas('lead', function ($query) use ($request){
                 $query->where('assigned_to',Auth::user()->id);
+            });
+        }elseif($request->user()->hasRole('admin')){
+            $query->whereHas('lead', function($q) use($user){
+                return $q->where('hospital_id',$user->hospital_id);
             });
         }
 

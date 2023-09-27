@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Lead;
+use App\Models\Center;
 use App\Models\Doctor;
 use App\Models\Message;
 use App\Models\Followup;
@@ -14,30 +15,35 @@ use Illuminate\Support\Facades\Auth;
 class PageService
 {
 
-    public function getLeads($user, $selectedLeads)
+    public function getLeads($user, $selectedLeads, $selectedCenter)
     {
 
-        $leadsQuery = Lead::where('status', '!=', 'Consulted')->with([
+        $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('status', '!=', 'Consulted')->with([
             'remarks' => function ($q) {
                 return $q->orderBy('created_at', 'desc');
             },
             'appointment'
-        ]);;
+        ]);
 
         $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
             return $query->where('assigned_to', $user->id);
 
         });
 
+        if($selectedCenter != null && $selectedCenter != 'all'){
+            $leadsQuery->where('center_id',$selectedCenter);
+        }
+
         $leads = $leadsQuery->paginate(10);
 
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
+        $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
         if($selectedLeads != null){
-            return compact('leads', 'doctors', 'messageTemplates','selectedLeads');
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter');
         }else{
-            return compact('leads', 'doctors', 'messageTemplates');
+            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter');
         }
 
     }
@@ -59,18 +65,22 @@ class PageService
 
         $hospitals = Hospital::all();
 
+        $centers = Center::all();
+
         $pf = Followup::whereHas('lead', function ($query) {
             $query->where('status', '!=', 'Converted');
         })->where('next_followup_date', null)
         ->where('consulted',null)->count();
 
-        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals');
+        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers');
     }
 
-    public function getFollowupData($user)
+    public function getFollowupData($user, $selectedCenter)
     {
 
-        $followupsQuery = Followup::with(['lead'=>function($q){
+        $followupsQuery = Followup::whereHas('lead', function ($qr) use ($user) {
+            return $qr->where('hospital_id',$user->hospital_id);
+        })->with(['lead'=>function($q) use($user){
             return $q->with('appointment');
         }, 'remarks'])
             ->where('scheduled_date', '<=', date('Y-m-d'))
@@ -83,10 +93,17 @@ class PageService
             });
         }
 
+        if($selectedCenter != null && $selectedCenter != 'all' && $user->hasRole('admin')){
+            $followupsQuery->whereHas('lead', function ($qry) use($selectedCenter) {
+                return $qry->where('center_id', $selectedCenter);
+            });
+        }
+
         $followups = $followupsQuery->paginate(10);
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
+        $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
-        return compact('followups', 'doctors','messageTemplates');
+        return compact('followups', 'doctors','messageTemplates','centers','selectedCenter');
     }
 }

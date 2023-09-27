@@ -36,7 +36,7 @@ class PageController extends SmartController
     public function leadIndex(Request $request)
     {
 
-        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads);
+        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center);
 
         return $this->buildResponse('pages.leads', $data);
 
@@ -55,6 +55,7 @@ class PageController extends SmartController
         $audit = Audit::where('user_id',$user->id)->where('logout',null)->get()->first();
 
         if($audit != null){
+
             $audit->logout = Carbon::now();
 
             $audit->save();
@@ -70,7 +71,7 @@ class PageController extends SmartController
 
     public function followUps(Request $request)
     {
-        $data = $this->pageService->getFollowupData($request->user());
+        $data = $this->pageService->getFollowupData($request->user(),$request->center);
 
         return $this->buildResponse('pages.followups', $data);
     }

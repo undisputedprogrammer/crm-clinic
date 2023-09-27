@@ -72,8 +72,11 @@ id="appointment-form"
 
         <select class="select select-bordered w-full max-w-sm bg-base-200 text-base-content" name="doctor">
             <option disabled>Choose Doctor</option>
+
             @foreach ($doctors as $doctor)
-                <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                <template x-if="lead.center_id == '{{$doctor->center_id}}' ">
+                    <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                </template>
             @endforeach
 
         </select>

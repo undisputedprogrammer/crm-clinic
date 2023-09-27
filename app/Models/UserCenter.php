@@ -11,6 +11,8 @@ class UserCenter extends Model
 
     public $table = 'user_has_centers';
 
+    protected $fillable = ['user_id','center_id'];
+
     public function user(){
         return $this->hasOne(User::class, 'id', 'user_id');
     }
