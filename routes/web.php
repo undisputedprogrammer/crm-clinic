@@ -108,9 +108,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/msg91/webhook/callback', [WhatsAppApiController::class, 'recieve']);
-
-
 Route::get('/', [PageController::class, 'home']);
 
 require __DIR__ . '/auth.php';
