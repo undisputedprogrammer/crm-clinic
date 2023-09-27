@@ -103,7 +103,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/break-out',[BreakController::class, 'breakOut'])->name('break.out');
 });
 
-Route::post('/api/msg91/webhook/callback', [WhatsAppApiController::class, 'recieve']);
+
 
 Route::get('/', [PageController::class, 'home']);
 
