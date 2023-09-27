@@ -151,6 +151,7 @@ class WhatsAppApiController extends SmartController
     {
 info('webhook received:');
 info($request->all());
+info($request->headers());
 
         // Storing inbound messages
         if ($request->sender != null) {
