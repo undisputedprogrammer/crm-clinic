@@ -12,7 +12,7 @@ use Ynotz\AccessControl\Traits\WithRoles;
 use Ynotz\MediaManager\Contracts\MediaOwner;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -43,7 +43,7 @@ class User extends Authenticatable implements MediaOwner
     ];
 
     protected $appends = [
-        'chat_room_ids'
+        'chat_room_ids','user_picture'
     ];
 
     /**
@@ -57,7 +57,7 @@ class User extends Authenticatable implements MediaOwner
         'password' => 'hashed',
     ];
 
-    protected $appends = ['user_picture'];
+
 
     public function getMediaStorage(): array
     {
