@@ -37,7 +37,7 @@
         }"
         @formresponse.window="
         if($el.id == $event.detail.target){
-            console.log($event.detail.content.message);
+            console.log($event.detail.content);
 
             if($event.detail.content.status == 'success'){
                 $dispatch('showtoast', {message: 'Message sent successfully', mode: 'success'});

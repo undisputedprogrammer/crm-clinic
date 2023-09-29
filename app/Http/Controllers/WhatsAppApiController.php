@@ -96,17 +96,14 @@ class WhatsAppApiController extends SmartController
         // $recipient = $lead->phone;
 
         $payload = array(
-            "to" => $recipient,
-            "type" => "template",
-            "template" => array(
-                "name" => $template->template,
-                "language" => array(
-                    "code" => "en",
-                    "policy" => "deterministic"
-                ),
-                "components" => json_encode($components)
+
+
+            "name" => $template->template,
+            "language" => array(
+                "code" => "en",
+                "policy" => "deterministic"
             ),
-            "messaging_product" => "whatsapp"
+            "components" => json_encode($components),
         );
 
 
@@ -114,16 +111,18 @@ class WhatsAppApiController extends SmartController
             "integrated_number" => "918075473813",
             "lead_id" => $lead->id,
             "content_type" => "template",
-            "payload" => $payload,
-            "messaging_product" => "whatsapp"
-
+            "type" => "template",
+            "template" => $payload,
+            "messaging_product" => "whatsapp",
+            "recipient_type" => "individual",
+            "to" => $recipient
         );
 
         $json_postfields = json_encode($postfields);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/',
+            CURLOPT_URL => 'https://graph.facebook.com/v17.0/123563487508047/messages/',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -135,6 +134,7 @@ class WhatsAppApiController extends SmartController
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'authkey: 405736ABdKIenjmHR6501a01aP1',
+                'Authorization: Bearer EAAMk25QApioBOzUh8upIrIzvSs65oKs7rGUCBEWvZCXcv2qj7WwncpPDIXY7OrHp41Gpw6m52K4UoIVSwQCZAfA5bmud4x3qqiYnN5UXWUiah2v7SeUWU2s7VrLcDuSyRkLbjvOnM7guocYRMgUNzpHuEWdYrhuq56waaN3oPH3iw4DZAHRkaL9lLAtuT7ouNwiqTiI2FKBuZBsJILwZB7ZAZCP4pPZC'
             ),
         ));
         $response = curl_exec($curl);

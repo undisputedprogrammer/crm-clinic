@@ -16,7 +16,9 @@ return new class extends Migration
             $table->text('message');
             $table->string('direction');
             $table->foreignId('lead_id')->references('id')->on('leads')->nullable();
-            // $table->foreignId('user_id')->references('id')->on('users')->nullable();
+            $table->enum('status',['submitted','sent','delivered','read','received','viewed']);
+            $table->text('wamid');
+            $table->foreignId('template_id')->constrained('messages','id');
             $table->timestamps();
         });
     }
