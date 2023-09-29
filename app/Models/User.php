@@ -95,7 +95,7 @@ class User extends Authenticatable implements MediaOwner
                 $arr = [];
                 array_push($arr, $this->id);
                 array_push($arr, $this->hospital->chat_room_id);
-                array_merge($arr, $this->centers->pluck('id')->toArray());
+                array_merge($arr, $this->centers->pluck('chat_room_id')->toArray());
                 return $arr;
             }
         );

@@ -147,7 +147,7 @@ class WhatsAppApiController extends SmartController
     }
 
 
-    public function recieve(Request $request)
+    public function receive(Request $request)
     {
 info('webhook received:');
 info($request->all());
@@ -156,16 +156,10 @@ info($request->header());
         // Storing inbound messages
         if ($request->sender != null) {
 
-            $lead = Lead::where('phone', $request->sender)->get()->first();
+            $lead = Lead::where('phone', $request->sender)
+                ->orWhere('phone', '91'.$request->sender)->get()->first();
 
             if ($lead == null) {
-
-                $phone = 910000000000 + $request->sender;
-                $lead = Lead::where('phone', $phone)->get()->first();
-            }
-
-            if ($lead == null) {
-
                 $phone = $request->sender - 910000000000;
                 $lead = Lead::where('phone', $phone)->get()->first();
             }
@@ -200,7 +194,7 @@ info($request->header());
                 }
             }
 
-            return response([$chat, $lead_id]);
+            return response()->json('ok');
         }
 
         // Storing outbound messages
@@ -365,5 +359,16 @@ info($request->header());
         }
 
         return response()->json(['numbers'=>array_keys($numbers),'template'=>$template]);
+    }
+
+    public function verify()
+    {
+        $token = $this->request->input('hub_verify_token');
+        $challenge = null;
+        if ($token == config('appSettings.webhook_token')) {
+            $challenge = $this->request->input('hub_challenge');
+        }
+
+        return $challenge;
     }
 }

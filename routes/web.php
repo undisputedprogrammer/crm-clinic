@@ -112,6 +112,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/', [PageController::class, 'home']);
 
-Route::post('/webhook/wa', [WhatsAppApiController::class, 'recieve'])->name('webhook.wa');
+Route::post('/webhook/wa', [WhatsAppApiController::class, 'receive'])->name('webhook.wa');
+Route::get('/webhook/wa', [WhatsAppApiController::class, 'verify'])->name('webhook.wa.verify');
 
 require __DIR__ . '/auth.php';

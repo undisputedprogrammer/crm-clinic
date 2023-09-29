@@ -14,15 +14,17 @@ class InternalChatController extends Controller
         $this->icService = $icService;
     }
 
+
+
     public function postMessage(Request $request)
     {
-        
+
     }
 
-    public function oldMessages(Request $request)
+    public function olderMessages(Request $request)
     {
         return response()->json(
-            $this->icService->getMessages(
+            $this->icService->olderMessages(
                 $request->input('room_id'),
                 $request->input('timestamp')
             )
