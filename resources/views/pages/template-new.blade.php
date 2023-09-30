@@ -121,6 +121,13 @@
                             <input type="text" name="template" placeholder="Template name" class="input input-bordered w-full max-w-sm" />
                         </div>
 
+                        <div class="form-control w-full max-w-sm">
+                            <label class="label">
+                            <span class="label-text font-medium">Template Body</span>
+                            </label>
+                            <textarea name="templatebody" class=" textarea textarea-bordered w-full max-w-sm" id="" required></textarea>
+                        </div>
+
                         {{-- variable appender --}}
                         <div id="variable-appender" class="form-control w-full max-w-sm flex flex-col space-y-2">
 

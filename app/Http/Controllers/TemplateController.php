@@ -43,6 +43,7 @@ class TemplateController extends SmartController
         }
         $template = Message::create([
             'template'=>$this->request->template,
+            'body'=>$this->request->templatebody,
             'payload'=>json_encode($vars)
         ]);
         return response()->json(['success' => true, 'message' => 'Template Created !!', 'params' => $template]);

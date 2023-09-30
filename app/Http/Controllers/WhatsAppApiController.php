@@ -45,9 +45,9 @@ class WhatsAppApiController extends SmartController
         // Checking and sending non template message
         if ($request->template == 'custom' && $request->message != null) {
 
-            $response = $this->connectorService->message($request, $recipient);
+            $response = $this->connectorService->message($request, $recipient, $lead);
 
-            return response($response->getBody(), 200);
+            return response($response, 200);
         }
 
         // Sending template message
@@ -139,28 +139,51 @@ class WhatsAppApiController extends SmartController
         ));
         $response = curl_exec($curl);
         curl_close($curl);
+        $data = json_decode($response, true);
 
+        if($data['messages'] != null){
+            info('Message is submitted');
+            info($data);
+            $message_params = $components[0]['parameters'];
+            $placeholders = $this->connectorService->getVariables($template->body);
+            $rendered_message = $this->connectorService->renderMessage($template->body, $placeholders, $message_params);
+            info($rendered_message);
+            $chat = Chat::create([
+                'message'=>$rendered_message,
+                'direction'=>'Outbound',
+                'lead_id'=>$lead->id,
+                'status'=>'submitted',
+                'wamid'=>$data['messages'][0]['id'],
+                // 'template_id'=>$template->id
+            ]);
 
+            $data['status'] = 'success';
+        }
 
-        // return redirect('/leads');
-        return response($response, 200);
+        return response(json_encode($data), 200);
     }
 
 
     public function receive(Request $request)
     {
-info('webhook received:');
-info($request->all());
-info($request->header());
+        info('webhook received:');
+        info($request->all());
+        info($request->header());
 
         // Storing inbound messages
-        if ($request->sender != null) {
+        if (isset($request['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id']))
+         {
+            $sender = $request['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'];
 
-            $lead = Lead::where('phone', $request->sender)
-                ->orWhere('phone', '91'.$request->sender)->get()->first();
+            $wamid = $request['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+
+            $body = $request['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
+
+            $lead = Lead::where('phone', $sender)
+                ->orWhere('phone', '91'.$sender)->get()->first();
 
             if ($lead == null) {
-                $phone = $request->sender - 910000000000;
+                $phone = $sender - 910000000000;
                 $lead = Lead::where('phone', $phone)->get()->first();
             }
 
@@ -171,11 +194,14 @@ info($request->header());
                 $lead_id = $lead->id;
             }
             $chat = Chat::create([
-                'message' => $request->text,
+                'message' => $body,
                 'direction' => 'Inbound',
-                'lead_id' => $lead_id
+                'lead_id' => $lead_id,
+                'status' => 'received',
+                'wamid' => $wamid
             ]);
 
+            // return response($chat);
             // Adding new inbound message to the unread messages table
             if ($lead != null) {
                 $unread_message = UnreadMessages::where('lead_id', $lead->id)->latest()->get()->first();
@@ -197,83 +223,30 @@ info($request->header());
             return response()->json('ok');
         }
 
-        // Storing outbound messages
-        if ($request->status == "sent") {
+        // updating outbound messages
+        $status = null;
 
-            if (array_key_exists('text', $request->content)) {
-                $lead = Lead::where('phone', $request->customer_number)->get()->first();
-                if ($lead != null) {
-                    Chat::create([
-                        'message' => $request->content['text'],
-                        'direction' => 'Outbound',
-                        'lead_id' => $lead->id
-                    ]);
-                } else {
-                    Chat::create([
-                        'message' => $request->content['text'],
-                        'direction' => 'Outbound',
-                        'lead_id' => null
-                    ]);
-                }
-                return response('Message sent to ' . $lead->name);
-            } else {
-                $parameters = $this->connectorService->getParameters($request->content);
+        if(isset($request['entry'][0]['changes'][0]['value']['statuses'][0]['status'])){
 
-                $template = $this->connectorService->gettemplate($request->content['template']['name']);
-
-                $template_body = $template['data'][0]['languages'][0]['code'][0]['text'];
-
-                $vars = $this->connectorService->getVariables($template_body);
-
-                $message = $this->connectorService->renderMessage($template_body, $vars, $parameters);
-
-                $lead = Lead::where('phone', $request->customer_number)->get()->first();
-
-                if ($lead != null) {
-                    $chat = Chat::create([
-                        'message' => $message,
-                        'direction' => 'Outbound',
-                        'lead_id' => $lead->id
-                    ]);
-                } else {
-                    $chat = Chat::create([
-                        'message' => $message,
-                        'direction' => 'Outbound',
-                        'lead_id' => null
-                    ]);
-                }
-
-                return response(['vars' => $vars, 'parameters' => $parameters, 'message' => $template_body, 'chat' => $chat]);
-            }
-
-            $parameters = $this->connectorService->getParameters($request->content);
-            return response($parameters);
-
-            $lead = Lead::where('phone', $request->customer_number)->get()->first();
-
-            $template = $this->connectorService->gettemplate($request->content['template']['name']);
-
-            $template_body = $template['data'][0]['languages'][0]['code'][0]['text'];
-
-            $vars = $this->connectorService->getVariables($template_body);
-
-            return response($vars);
-            if ($lead != null) {
-                Chat::create([
-                    'message' => $request->content->text,
-                    'direction' => 'Outbound',
-                    'lead_id' => $lead->id
-                ]);
-            } else {
-                Chat::create([
-                    'message' => $request->content->text,
-                    'direction' => 'Outbound',
-                    'lead_id' => null
-                ]);
-            }
-
-            return response('message sent to ' . $lead->name . ' and recorded');
+            $status = $request['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
+            $wamid = $request['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
         }
+        $chat = Chat::where('wamid',$wamid)->get()->first();
+        if ($status == "sent") {
+            $chat->status = 'sent';
+            $chat->save();
+            return true;
+        }elseif($status == "delivered") {
+            $chat->status = 'delivered';
+            $chat->save();
+            return true;
+        }elseif($status == 'read'){
+            $chat->status = 'read';
+            $chat->save();
+            return true;
+        }
+
+        return false;
     }
 
     public function getChats(Request $request)

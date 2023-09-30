@@ -2,30 +2,74 @@
 
 namespace App\Services;
 
-use App\Models\Followup;
+use App\Models\Chat;
 use App\Models\Lead;
 use GuzzleHttp\Client;
+use App\Models\Followup;
 
 
 
 class WhatsAppApiService
 {
-    public function message($request, $recipient)
+    public function message($request, $recipient, $lead)
     {
         $message = $request->message;
         $client = new Client();
 
-        $url = 'https://control.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/?integrated_number=918075473813&recipient_number=' . $recipient . '&content_type=text&text=' . $message;
+        // $url = 'https://control.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/?integrated_number=918075473813&recipient_number=' . $recipient . '&content_type=text&text=' . $message;
 
-        $response = $client->request('POST', $url, [
-            'headers' => [
-                'accept' => 'application/json',
-                'authkey' => '405736ABdKIenjmHR6501a01aP1',
-                'content-type' => 'application/json',
-            ],
-        ]);
+        // $response = $client->request('POST', $url, [
+        //     'headers' => [
+        //         'accept' => 'application/json',
+        //         'authkey' => '405736ABdKIenjmHR6501a01aP1',
+        //         'content-type' => 'application/json',
+        //     ],
+        // ]);
+        $postfields = array(
+            "messaging_product"=> "whatsapp",
+            "recipient_type"=> "individual",
+            "to"=> $recipient,
+            "type"=>"text",
+            "text"=>array(
+                "preview_url"=> false,
+                "body"=>$message
+            )
+        );
+        $json_postfields = json_encode($postfields);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://graph.facebook.com/v18.0/123563487508047/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $json_postfields,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'authkey: 405736ABdKIenjmHR6501a01aP1',
+                'Authorization: Bearer EAAMk25QApioBOzUh8upIrIzvSs65oKs7rGUCBEWvZCXcv2qj7WwncpPDIXY7OrHp41Gpw6m52K4UoIVSwQCZAfA5bmud4x3qqiYnN5UXWUiah2v7SeUWU2s7VrLcDuSyRkLbjvOnM7guocYRMgUNzpHuEWdYrhuq56waaN3oPH3iw4DZAHRkaL9lLAtuT7ouNwiqTiI2FKBuZBsJILwZB7ZAZCP4pPZC'
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $data = json_decode($response, true);
+        if($data['messages'] != null){
+            $chat = Chat::create([
+                'message'=>$message,
+                'direction'=>'Outbound',
+                'lead_id'=>$lead->id,
+                'status'=>'submitted',
+                'wamid'=>$data['messages'][0]['id'],
 
-        return $response;
+            ]);
+            $data['status'] = 'success';
+            return $data;
+        }else{
+            return $response;
+        }
     }
 
     public function gettemplate($template_name)
