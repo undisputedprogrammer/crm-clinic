@@ -161,23 +161,66 @@ selectedCenter = null;
             messageLoading : false,
             qnas: [],
             chats : [],
+            expiry_timestamp: null,
+            custom_enabled: false,
             loadWhatsApp(){
                 this.selected_section = 'wp';
                 this.messageLoading = true;
-
+                $dispatch('resetselect');
                 axios.get('/api/get/chats',{
                     params : {
                         id : lead.id
                     }
                 }).then((r)=>{
-                    console.log(r);
+                    this.expiry_timestamp = r.data.expiration_time;
+                    this.checkExpiry(this.expiry_timestamp);
                     this.chats = r.data.chats;
                     this.messageLoading = false;
-
+                    this.markasread();
                 }).catch((e)=>{
                     console.log(e);
                 });
 
+            },
+            checkExpiry(timestamp){
+                if(timestamp == null){
+                    this.custom_enabled = false;
+                }
+                else{
+                    const date = new Date(timestamp * 1000);
+                    const options = {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZone: 'Asia/Kolkata',
+                    };
+
+                    const formattedDate = new Intl.DateTimeFormat('en-IN', options).format(date);
+                    console.log(formattedDate);
+                    const currentDate = new Date();
+                    const timeDifference = currentDate - date;
+                    const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
+                    if (timeDifference >= twentyFourHoursInMillis) {
+                        this.custom_enabled = false;
+                    } else {
+                        this.custom_enabled = true;
+                    }
+                }
+            },
+            markasread(){
+                axios.get('/mark/read',{
+                    params:{
+                        lead_id: lead.id
+                    }
+                }).then((r)=>{
+                    console.log('marked messages as read');
+                }).catch((e)=>{
+                    console.log('could not mark messages as read');
+                });
             }
         }"
 

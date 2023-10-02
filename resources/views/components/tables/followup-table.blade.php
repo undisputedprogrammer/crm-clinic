@@ -19,7 +19,7 @@
             @foreach ($followups as $followup)
 
             {{-- fpupdate event is used to display followup detail to the details section --}}
-                <tr class="text-base-content hover:bg-base-100" :class=" fpname == `{{$followup->lead->name}}` ? 'bg-base-100 font-medium' : '' " @click.prevent.stop="
+                <tr class="text-base-content hover:bg-base-100 cursor-pointer" :class=" fpname == `{{$followup->lead->name}}` ? 'bg-base-100 font-medium' : '' " @click.prevent.stop="
 
 
                     $dispatch('fpupdate',{followup : {{json_encode($followup)}}, lead: {{json_encode($followup->lead)}}, remarks: {{json_encode($followup->remarks)}}, id: {{$followup->id}}, lead_remarks: {{json_encode($followup->lead->remarks)}}, appointment: {{json_encode($followup->lead->appointment)}} })"

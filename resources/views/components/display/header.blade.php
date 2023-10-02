@@ -109,7 +109,8 @@
             $dispatch('linkaction', {
                 link: '{{route('messenger')}}', route: 'messenger', fresh: true
             });"
-            class="text-base-100 inline-block h-6 w-6">
+            class="text-base-100 inline-block h-6 w-6 indicator">
+            <span class="indicator-item badge-xs animate-pulse badge badge-secondary text-base-content font-medium" x-text="unread_message_count"></span>
             <img src="/images/whatsapp.png">
         </a>
 

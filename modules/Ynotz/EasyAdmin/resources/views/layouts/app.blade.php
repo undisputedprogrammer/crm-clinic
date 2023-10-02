@@ -31,6 +31,7 @@ currentroute=$event.detail.currentroute;"
         <div x-data ="{
             selected : false,
             allChats : {},
+            allLeads : null,
             name : '',
             leads : [],
             lead : [],
@@ -49,6 +50,7 @@ currentroute=$event.detail.currentroute;"
             sidedrawer : false,
             latest : null,
             processing : false,
+            unread_message_count : 0,
             pollingID : setInterval(function(){
                 $dispatch('checkforupdates');
             },5000),
@@ -74,9 +76,29 @@ currentroute=$event.detail.currentroute;"
                         let year = date.getFullYear();
                         return `${day} ${month} ${year} ${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
                     }
-                }
+                },
+                fetchLatest(){
+                    if(this.latest == null){
+                        axios.get('/fetch/latest').then((r)=>{
+                            console.log('fetch latest response is ');
+                            console.log(r.data);
+                            if(r.data != null){
+                                this.latest = r.data.latest;
+                            }else{
+                                console.log('latest is null');
+                                setTimeout(()=>{
+                                    this.fetchLatest();
+                                },5000);
+                            }
+                            this.unread_message_count = r.data.unread_message_count;
+                        }).catch((c)=>{
+                            console.log(c);
+                        })
+                    }
+            }
 
         }"
+        x-init="fetchLatest();"
         @checkforupdates.window="
         if(latest != null && !processing){
             processing = true;
@@ -89,16 +111,24 @@ currentroute=$event.detail.currentroute;"
                 console.log(r.data);
                 if(r.data.status == true){
                     let newMessages = r.data.new_messages;
-                    if (r.data.new_messages) {
-                        $dispatch('showtoast', {mode: success, message: 'Alert: New incoming messages.'});
+                    if (r.data.new_messages.length > 0) {
+                        unread_message_count += r.data.new_messages.length;
+                        $dispatch('showtoast', {mode: 'success', message: 'Alert: New incoming messages.'});
                     }
                     newMessages.forEach((msg)=>{
-                        if(allChats[msg.lead_id] != null && allChats[msg.lead_id] != null){
+                        $dispatch('notify',{lead_id: msg.lead_id, msg: msg});
+                        if(allChats[msg.lead_id] != null && allChats[msg.lead_id] != undefined){
                             allChats[msg.lead_id].push(msg);
                         }
                         else{
-                            allChats[msg.id] = [];
-                            allChats[msg.id].push(msg);
+                            allChats[msg.lead_id] = [];
+                            allChats[msg.lead_id].push(msg);
+                            if(allLeads != null){
+                                let foundLead = allLeads.find(lead => lead.id == msg.lead_id);
+                                if(!foundLead){
+                                    allLeads[msg.lead_id] = msg.lead;
+                                }
+                            }
                         }
                         latest = msg.id;
                     })
@@ -112,9 +142,10 @@ currentroute=$event.detail.currentroute;"
             });
             processing = false;
         }"
+
          class="min-h-screen bg-base-200 flex flex-col" >
 
-            <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full " x-init="isBreak = '{{Auth::user()->in_break}}'; console.log(isBreak)">
+            <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full " x-init="isBreak = '{{Auth::user()->in_break}}';">
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {

@@ -7,6 +7,7 @@ import utils from '@/components/utils';
 import progressbar from '@/components/progressbar';
 import main from './components/pages/main';
 import leads from './components/pages/leads';
+import messenger from './components/pages/messenger';
 
 Alpine.plugin(persist)
 
@@ -26,6 +27,7 @@ Alpine.data('initPage', page);
 Alpine.data('progressBar', progressbar);
 Alpine.data('x_main', main);
 Alpine.data('x_leads', leads);
+Alpine.data('x_messenger', messenger);
 
 Alpine.start();
 

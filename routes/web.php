@@ -16,6 +16,7 @@ use App\Http\Controllers\FollowupController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\WhatsAppApiController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\HospitalController;
@@ -78,6 +79,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/messenger', [WhatsAppApiController::class, 'index'])->name('messenger');
 
+    Route::get('/fetch/latest',[WhatsAppApiController::class, 'fetchLatest'])->name('latest.fetch');
+
     Route::post('/message/bulk/sent',[WhatsAppApiController::class, 'bulkMessage'])->name('message.bulk');
 
     Route::get('/api/get/remarks', [Remarkcontroller::class, 'getRemarks']);
@@ -88,11 +91,13 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/api/convert', [FollowupController::class, 'convert']);
 
-
+    Route::get('/fetch/audits',[AuditController::class, 'fetch'])->name('audits.fetch');
 
     Route::get('/api/messages/new', [WhatsAppApiController::class, 'unread']);
 
     Route::get('/api/messages/poll', [WhatsAppApiController::class, 'poll']);
+
+    Route::get('/mark/read',[WhatsAppApiController::class, 'markRead'])->name('mark.read');
 
     Route::get('/hospotal/centers', [
         HospitalController::class, 'centers'

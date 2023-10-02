@@ -50,12 +50,15 @@ class WhatsAppApiService
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBOzUh8upIrIzvSs65oKs7rGUCBEWvZCXcv2qj7WwncpPDIXY7OrHp41Gpw6m52K4UoIVSwQCZAfA5bmud4x3qqiYnN5UXWUiah2v7SeUWU2s7VrLcDuSyRkLbjvOnM7guocYRMgUNzpHuEWdYrhuq56waaN3oPH3iw4DZAHRkaL9lLAtuT7ouNwiqTiI2FKBuZBsJILwZB7ZAZCP4pPZC'
+                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
             ),
         ));
         $response = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($response, true);
+        if(isset($data['error'])){
+            return ['status'=>'fail','message'=>'Cannot sent custom message'];
+        }
         if($data['messages'] != null){
             $chat = Chat::create([
                 'message'=>$message,
@@ -66,9 +69,10 @@ class WhatsAppApiService
 
             ]);
             $data['status'] = 'success';
+            $data['chat'] = $chat;
             return $data;
         }else{
-            return $response;
+            return ['status'=>'fail','message'=>'Cannot sent message'];
         }
     }
 

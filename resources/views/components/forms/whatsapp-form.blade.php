@@ -22,6 +22,8 @@
         console.log($event.detail.content.message);
 
         if($event.detail.content.status == 'success'){
+            chats.push($event.detail.content.chat);
+            allChats[lead.id].push($event.detail.content.chat);
             $dispatch('showtoast', {message: 'Message sent successfully', mode: 'success'});
             $el.reset();
         }
@@ -37,7 +39,7 @@
      class="flex justify-center space-x-3 py-3" id="wp-message-form" action="{{route('message.sent')}}" method="POST" @submit.prevent.stop="doSubmit()">
     @csrf
 
-        <select @change.prevent.stop="validate()" :required="!custom ? true : false " x-model="value" x-show="!custom" name="template" id="" class=" select select-info bg-white w-[78%] lg:w-[80%] focus:ring-0 focus:outline-none" >
+        <select @change.prevent.stop="validate()" :required="!custom ? true : false " x-model="value" x-show="!custom" name="template" id="select-template" class=" select select-info bg-white w-[78%] lg:w-[80%] focus:ring-0 focus:outline-none" >
             <option value="" disabled selected>-- Select template  --</option>
             @foreach ($templates as $template)
                 <option value="{{$template->id}}">{{$template->template}}</option>

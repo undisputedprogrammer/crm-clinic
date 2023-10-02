@@ -9,9 +9,13 @@ class Chat extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['message','direction','lead_id','status','wamid','template_id'];
+    protected $fillable = ['message','direction','lead_id','status','wamid','expiration_time'];
 
     public function template() {
         return $this->belongsTo(Message::class,'template_id','id');
+    }
+
+    public function lead(){
+        return $this->belongsTo(Lead::class, 'lead_id', 'id');
     }
 }

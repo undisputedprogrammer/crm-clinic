@@ -1,30 +1,6 @@
 <x-easyadmin::app-layout>
     <div>
-        <div x-data="{
-
-            convertTime(timestamp){
-                let date = new Date(timestamp);
-
-                let today = new Date();
-
-                let hours = date.getHours();
-                let amOrpm = 'AM'
-                if(hours > 12){
-                    amOrpm = 'PM';
-                    hours = hours % 12 || 12;
-                }
-                minutes = date.getMinutes();
-
-                if(date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear())
-                {
-                    return `${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
-                }else{
-                    let day = date.getDate();
-                    let month = date.toLocaleString('en-US',{month:'short'});
-                    return `${month} ${day} ${hours}:${minutes.toLocaleString('en-US', { minimumIntegerDigits: 2 })} ${amOrpm}`;
-                }
-            }
-        }"
+        <div x-data="x_messenger"
         @newmessage.window="console.log($event.detail);"
          class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black "
         x-init="
@@ -33,6 +9,9 @@
             if(latest == null){
             latest = {{$latest->id}};
             }
+        @endif
+        @if (isset($leads))
+            allLeads = {{$leads}};
         @endif
 
         ">
@@ -45,25 +24,45 @@
 
 
             <div x-data="{
-
-
                 selected: null,
                 lead : null,
                 chats: [],
                 loadingChats: false,
                 showChat(lead) {
                     this.lead = lead;
-                    console.log('loading chats');
+                    console.log('loading chats of'+this.lead.name);
                     this.loadingChats = true;
                     this.selected = lead.id;
+                    this.markasread(lead.id);
                     setTimeout(() => {
-                        console.log(lead);
                         this.chats = allChats[lead.id];
-                        console.log(this.chats);
-
                         this.loadingChats = false;
                       }, '1000');
 
+                },
+                theLeads(){
+                    return allLeads.filter((l) => {
+                        return l != null;
+                    });
+                },
+                markasread(lead_id){
+                    if(allChats[lead_id].filter(chat => chat.status == 'received').length > 0){
+                        axios.get('/mark/read',{
+                            params:{
+                                lead_id : lead_id
+                            }
+                        }).then((r)=>{
+                            if(r.data == true){
+                                allChats[lead_id].forEach(chat => {
+                                    if (chat.lead_id == lead_id && chat.direction == 'Inbound') {
+                                        chat.status = 'read';
+                                    }
+                                });
+                            }
+                        }).catch((c)=>{
+                            console.log('Could not mark messages as read');
+                        })
+                    }
                 }
             }"
             @appendChat.window="console.log('event captured');"
@@ -72,34 +71,41 @@
 
                 {{-- body starts here --}}
 
-                <div class="  overflow-auto basis-[20%] my-2">
+                <div class="  overflow-auto basis-[20%] my-2" x-init="">
 
-                    @foreach ($leads as $lead)
+                    <template x-for="l in theLeads()">
                         <div @click.prevent.stop="
-
-                        showChat({{ $lead }});"
+                        console.log('displaying lead');
+                        console.log(l.chats);
+                        showChat(l);"
                             class=" flex items-start  cursor-pointer hover:bg-base-100 rounded-xl my-1.5 w-full"
-                            :class = "selected == '{{$lead->id}}' ? ' bg-base-100' : '' "
-                            x-init = "allChats[{{$lead->id}}] = {{$lead->chats}}">
+                            :class = "selected == l.id ? ' bg-base-100' : '' "
+                            x-init = "
+                            if(l.chats != null && l.chats != undefined){
+                                allChats[l.id] = l.chats
+                            }
+                            ">
 
                             <div x-data="{
                                 length : 0,
                                 message : ''
-                            }" class=" px-3 text-base-content py-4 w-full" x-init="length = allChats[{{$lead->id}}].length;">
+                            }" class=" px-3 text-base-content py-4 w-full" x-init="length = allChats[l.id].length;">
                                 <div class="flex items-bottom justify-between w-full">
-                                    <p class=" text-base font-medium">
-                                        {{ $lead->name }}
+                                    <p class=" text-base font-medium" x-text="l.name">
+
                                     </p>
-                                    <p class="text-xs" x-text="convertTime(allChats[{{$lead->id}}][allChats[{{$lead->id}}].length -1].created_at)">
+                                    <p class="text-xs" x-text="convertTime(allChats[l.id][allChats[l.id].length -1].created_at)">
 
                                     </p>
                                 </div>
-                                <p  class=" mt-1 text-sm line-clamp-1" x-text=" allChats[{{$lead->id}}][allChats[{{$lead->id}}].length - 1].message" >
-
-                                </p>
+                                <div class="flex justify-between">
+                                    <p  class=" mt-1 text-sm line-clamp-1" x-text=" allChats[l.id][allChats[l.id].length - 1].message" >
+                                    </p>
+                                    <span x-show="allChats[l.id].filter(chat => chat.status == 'received').length != 0" class=" rounded-full bg-green-600 text-base-content font-medium aspect-square h-6 text-center" x-text="allChats[l.id].filter(chat => chat.status == 'received').length"></span>
+                                </div>
                             </div>
                         </div>
-                    @endforeach
+                    </template>
 
                 </div>
 
@@ -107,8 +113,7 @@
                 {{-- Messages section --}}
 
 
-                <div @displayChats="console.log($event.detail);"
-                    class="flex justify-evenly basis-[76%] rounded-xl my-2  overflow-hidden"
+                <div class="flex justify-evenly basis-[76%] rounded-xl my-2  overflow-hidden"
                     style="background-color: #DAD3CC">
 
                     <div class="py-2 px-3 basis-[65%]   hide-scroll relative flex">

@@ -16,14 +16,18 @@
           </thead>
           <tbody>
             @foreach ($agents as $agent)
-                <tr class="text-base-content hover:bg-base-100 relative">
+                <tr class="text-base-content hover:bg-base-100 relative cursor-pointer">
                     {{-- <th>{{$loop->index + 1}}</th> --}}
                     <td>{{$agent->id}}</td>
                     <td>{{$agent->name}}</td>
                     <td>{{$agent->email}}</td>
-                    <td>
+                    <td class=" flex">
                         <button @click.prevent.stop="$dispatch('agentedit', {id: {{$agent->id}}, name: '{{$agent->name}}', email: '{{$agent->email}}'});" class="btn btn-ghost btn-xs text-warning" type="button">
                             <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>
+                        </button>
+                        <button class="btn btn-ghost btn-xs text-warning"
+                        @click.prevent.stop="$dispatch('agentattendance', {id: {{$agent->id}},name: '{{$agent->name}}'});">
+                            <x-icons.attendance-icon/>
                         </button>
                     </td>
                 </tr>

@@ -62,10 +62,7 @@
 
         {{-- details section --}}
         <div
-        x-data = "{
-
-
-        }"
+        x-data = "{}"
         class=" w-[96%] lg:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
             <p x-show="!fpselected" class=" font-semibold text-base text-center mt-4">Select a follow up...</p>
@@ -74,12 +71,13 @@
                 <div
                 {{-- updating values in the details section --}}
                 @fpupdate.window="
-                {{-- console.log($event.detail.followup); --}}
                 showconsultform = false;
+                $dispatch('resetsection');
                 appointment = $event.detail.appointment;
                 if(fps[$event.detail.id] != null || fps[$event.detail.id] != undefined){
                     fp = fps[$event.detail.id];
                     fpname = fp.lead.name;
+                    lead = fp.lead;
                 }
                 else{
                     fp = $event.detail.followup;
@@ -90,15 +88,10 @@
                     fp.lead.remarks = leadremarks;
                     fps[fp.id] = fp;
                 }
-
-
                 fpselected = true;
                 isValid = fp.lead.is_valid;
                 isGenuine = fp.lead.is_genuine;
                 fpname = fp.lead.name;
-
-
-
                 axios.get('/api/followup',{
                     params: {
                     id: fp.id,
@@ -114,13 +107,8 @@
                     console.log(error);
                     historyLoading = false;
                   });
-
-
                 "
-
-
-
-                class=" w-1/2 border-r border-primary">
+                class=" w-[40%] border-r border-primary">
                 <h1 class=" font-medium text-base text-secondary">Lead details</h1>
                     <p class="text-base font-medium">Name : <span x-text=" fp.lead != undefined ? fp.lead.name : '' "> </span></p>
                     <p class="text-base font-medium">City : <span x-text="fp.lead != undefined ? fp.lead.city : '' "> </span></p>
@@ -195,185 +183,271 @@
 
                 </div>
 
-                <div class=" w-1/2 px-2.5">
-                    <h2 class=" text-secondary font-medium text-base">New follow up</h2>
+                {{-- pwd --}}
+                <div x-data="{
+                    selected_section: 'new_follow_up',
+                    messageLoading : false,
+                    qnas: [],
+                    chats : [],
+                    custom_enabled: false,
+                    loadWhatsApp(){
+                        $dispatch('resetselect');
+                        this.selected_section = 'wp';
+                        this.messageLoading = true;
 
-                        <form
-                        x-data ="
-                        { doSubmit() {
-                            let form = document.getElementById('followup-form');
-                            let formdata = new FormData(form);
-                            formdata.append('followup_id',fp.id);
-                            formdata.append('lead_id',fp.lead.id);
-                            $dispatch('formsubmit',{url:'{{route('process-followup')}}', route: 'process-followup',fragment: 'page-content', formData: formdata, target: 'followup-form'});
-                        }}"
-
-                        @submit.prevent.stop="doSubmit();"
-
-                        @formresponse.window="
-                        console.log($event.detail.content);
-                        if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-
-                                if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
-                                {
-
-                                fp.lead.status = $event.detail.content.lead.status;
-                                fp.actual_date = $event.detail.content.followup.actual_date;
-
-                                }
-
-                                if($event.detail.content.followup_remark != null || $event.detail.content.followup_remark != undefined)
-                                {
-                                    fp.remarks.push($event.detail.content.followup_remark);
-
-                                }
-
-                                historyLoading = true;
-                                axios.get('/api/followup',{
-                                    params: {
-                                    id: fp.id,
-                                    lead_id: fp.lead.id
-
-                                    }
-                                  }).then(function (response) {
-                                    history = response.data.followup;
-                                    console.log(response.data.followup);
-                                    historyLoading = false;
-
-                                  }).catch(function (error){
-                                    console.log(error);
-                                    historyLoading = false;
-                                  });
-
-
-                                $dispatch('formerrors', {errors: []});
-                            } else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
+                        axios.get('/api/get/chats',{
+                            params : {
+                                id : lead.id
                             }
-                        }"
+                        }).then((r)=>{
+                            this.expiry_timestamp = r.data.expiration_time;
+                            this.checkExpiry(this.expiry_timestamp);
+                            console.log(r);
+                            this.chats = r.data.chats;
+                            this.messageLoading = false;
 
-                        id="followup-form" class=" mt-2 bg-base-100 rounded-xl flex flex-col space-y-1" action="">
+                        }).catch((e)=>{
+                            console.log(e);
+                        });
 
-                        <ul class="">
-                            <template x-if="fp.remarks != undefined || fp.remarks != null">
-                                <template x-for="remark in fp.remarks">
-                                    <li x-text="remark.remark"></li>
-                                </template>
-                            </template>
-                        </ul>
-
-                            <textarea name="remark" required class="textarea bg-base-200 focus:ring-0" placeholder="Add new follow up remark"></textarea>
-
-
-
-
-
-
-                            <div>
-                                <button type="submit" class="btn btn-primary btn-xs mt-2 self-start">Save remark</button>
-                                <button type="submit" class=""></button>
-                            </div>
-
-
-                        </form>
-
-
-                        {{-- next follow up schedule form --}}
-                        <form x-show="!consult && !fp.consulted && fp.next_followup_date == null" x-transition
-                        x-data ="
-                        { doSubmit() {
-                            let form = document.getElementById('next-followup-form');
-                            let formdata = new FormData(form);
-                            formdata.append('followup_id',fp.id);
-                            formdata.append('lead_id',fp.lead.id);
-                            if(fp.converted){
-                                formdata.append('converted',fp.converted);
-                                console.log(fp.converted);
+                    },
+                    markasread(){
+                        axios.get('/mark/read',{
+                            params:{
+                                lead_id: lead.id
                             }
+                        }).then((r)=>{
+                            console.log('marked messages as read');
+                        }).catch((e)=>{
+                            console.log('could not mark messages as read');
+                        });
+                    },
+                    checkExpiry(timestamp){
+                        if(timestamp == null){
+                            this.custom_enabled = false;
+                        }
+                        else{
+                            const date = new Date(timestamp * 1000);
+                            const options = {
+                            year: 'numeric',
+                            month: 'short',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            timeZone: 'Asia/Kolkata',
+                            };
 
-                            $dispatch('formsubmit',{url:'{{route('next-followup')}}', route: 'next-followup',fragment: 'page-content', formData: formdata, target: 'next-followup-form'});
-                        }}"
-                        @submit.prevent.stop="doSubmit();"
+                            const formattedDate = new Intl.DateTimeFormat('en-IN', options).format(date);
+                            console.log(formattedDate);
+                            const currentDate = new Date();
+                            const timeDifference = currentDate - date;
+                            const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
 
-                        @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-                                if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
-                                {
-
-                                fp.next_followup_date = $event.detail.content.followup.next_followup_date;
-                                fp.actual_date = $event.detail.content.followup.actual_date;
-
-                                }
-
-                                historyLoading = true;
-                                axios.get('/api/followup',{
-                                    params: {
-                                    id: fp.id,
-                                    lead_id: fp.lead.id
-
-                                    }
-                                  }).then(function (response) {
-                                    history = response.data.followup;
-                                    console.log(response.data.followup);
-                                    historyLoading = false;
-
-                                  }).catch(function (error){
-                                    console.log(error);
-                                    historyLoading = false;
-                                  });
-
-                                  $dispatch('formerrors', {errors: []});
-                            }
-
-                            else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
+                            if (timeDifference >= twentyFourHoursInMillis) {
+                                this.custom_enabled = false;
+                            } else {
+                                this.custom_enabled = true;
                             }
                         }
-                        "
-                        id="next-followup-form"
-                         x-show="lead.status != 'Consulted' && fp.next_followup_date == null" action="" class=" mt-5">
+                    }
+                }"
+                @resetsection.window=" selected_section = 'new_follow_up'; "
+                class=" w-[60%] px-2.5">
 
-                            <div>
-                                <label x-show="fp.next_followup_date == null && fp.consulted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
+                <div class=" flex space-x-3">
+                    <h2 @click="selected_section = 'new_follow_up'" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'new_follow_up' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">New follow up</h2>
+                    <h2 @click="loadWhatsApp();" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
+                </div>
 
-                                <input x-show="fp.next_followup_date == null && fp.consulted == null" id="next-followup-date" name="next_followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                    <div x-show="selected_section == 'new_follow_up'">
+
+
+                            <form
+                            x-data ="
+                            { doSubmit() {
+                                let form = document.getElementById('followup-form');
+                                let formdata = new FormData(form);
+                                formdata.append('followup_id',fp.id);
+                                formdata.append('lead_id',fp.lead.id);
+                                $dispatch('formsubmit',{url:'{{route('process-followup')}}', route: 'process-followup',fragment: 'page-content', formData: formdata, target: 'followup-form'});
+                            }}"
+
+                            @submit.prevent.stop="doSubmit();"
+
+                            @formresponse.window="
+                            console.log($event.detail.content);
+                            if ($event.detail.target == $el.id) {
+                                if ($event.detail.content.success) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                    $el.reset();
+
+
+                                    if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
+                                    {
+
+                                    fp.lead.status = $event.detail.content.lead.status;
+                                    fp.actual_date = $event.detail.content.followup.actual_date;
+
+                                    }
+
+                                    if($event.detail.content.followup_remark != null || $event.detail.content.followup_remark != undefined)
+                                    {
+                                        fp.remarks.push($event.detail.content.followup_remark);
+
+                                    }
+
+                                    historyLoading = true;
+                                    axios.get('/api/followup',{
+                                        params: {
+                                        id: fp.id,
+                                        lead_id: fp.lead.id
+
+                                        }
+                                    }).then(function (response) {
+                                        history = response.data.followup;
+                                        console.log(response.data.followup);
+                                        historyLoading = false;
+
+                                    }).catch(function (error){
+                                        console.log(error);
+                                        historyLoading = false;
+                                    });
+
+
+                                    $dispatch('formerrors', {errors: []});
+                                } else if (typeof $event.detail.content.errors != undefined) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                                } else{
+                                    $dispatch('formerrors', {errors: $event.detail.content.errors});
+                                }
+                            }"
+
+                            id="followup-form" class=" mt-2 bg-base-100 rounded-xl flex flex-col space-y-1" action="">
+
+                            <ul class="">
+                                <template x-if="fp.remarks != undefined || fp.remarks != null">
+                                    <template x-for="remark in fp.remarks">
+                                        <li x-text="remark.remark"></li>
+                                    </template>
+                                </template>
+                            </ul>
+
+                                <textarea name="remark" required class="textarea bg-base-200 focus:ring-0" placeholder="Add new follow up remark"></textarea>
+
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-xs mt-2 self-start">Save remark</button>
+                                    <button type="submit" class=""></button>
+                                </div>
+
+
+                            </form>
+
+
+                            {{-- next follow up schedule form --}}
+                            <form x-show="!consult && !fp.consulted && fp.next_followup_date == null" x-transition
+                            x-data ="
+                            { doSubmit() {
+                                let form = document.getElementById('next-followup-form');
+                                let formdata = new FormData(form);
+                                formdata.append('followup_id',fp.id);
+                                formdata.append('lead_id',fp.lead.id);
+                                if(fp.converted){
+                                    formdata.append('converted',fp.converted);
+                                    console.log(fp.converted);
+                                }
+
+                                $dispatch('formsubmit',{url:'{{route('next-followup')}}', route: 'next-followup',fragment: 'page-content', formData: formdata, target: 'next-followup-form'});
+                            }}"
+                            @submit.prevent.stop="doSubmit();"
+
+                            @formresponse.window="
+                            if ($event.detail.target == $el.id) {
+                                if ($event.detail.content.success) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                    $el.reset();
+
+                                    if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
+                                    {
+
+                                    fp.next_followup_date = $event.detail.content.followup.next_followup_date;
+                                    fp.actual_date = $event.detail.content.followup.actual_date;
+
+                                    }
+
+                                    historyLoading = true;
+                                    axios.get('/api/followup',{
+                                        params: {
+                                        id: fp.id,
+                                        lead_id: fp.lead.id
+
+                                        }
+                                    }).then(function (response) {
+                                        history = response.data.followup;
+                                        console.log(response.data.followup);
+                                        historyLoading = false;
+
+                                    }).catch(function (error){
+                                        console.log(error);
+                                        historyLoading = false;
+                                    });
+
+                                    $dispatch('formerrors', {errors: []});
+                                }
+
+                                else if (typeof $event.detail.content.errors != undefined) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                                } else{
+                                    $dispatch('formerrors', {errors: $event.detail.content.errors});
+                                }
+                            }
+                            "
+                            id="next-followup-form"
+                            x-show="lead.status != 'Consulted' && fp.next_followup_date == null" action="" class=" mt-5">
+
+                                <div>
+                                    <label x-show="fp.next_followup_date == null && fp.consulted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
+
+                                    <input x-show="fp.next_followup_date == null && fp.consulted == null" id="next-followup-date" name="next_followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                                </div>
+
+                                <button :disabled=" fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule next follow up</button>
+
+                            </form>
+
+                            {{-- ********************************************************************
+                            Schedule appointment and close lead action dropdown
+                            ****************************************************************** --}}
+
+                            <div x-data="{
+                                selected_action : 'Schedule Appointment'
+                            }" class="pt-6">
+
+                            <x-dropdowns.followups-action-dropdown/>
+
+                            <x-forms.followup-add-appointment-form :doctors="$doctors"/>
+
+                            <x-forms.lead-close-form/>
+
                             </div>
 
-                            <button :disabled=" fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule next follow up</button>
+                    </div>
 
-                        </form>
+                    {{-- Whatsapp section --}}
+                <div x-show="selected_section == 'wp' " class=" py-3" :class="messageLoading ? ' flex w-full ' : '' ">
+                    <x-sections.whatsapp :templates="$messageTemplates"/>
 
-                        {{-- ********************************************************************
-                        Schedule appointment and close lead action dropdown
-                        ****************************************************************** --}}
-
-                        <div x-data="{
-                            selected_action : 'Schedule Appointment'
-                        }" class="pt-6">
-
-                        <x-dropdowns.followups-action-dropdown/>
-
-                        <x-forms.followup-add-appointment-form :doctors="$doctors"/>
-
-                        <x-forms.lead-close-form/>
-
-                        </div>
+                    <div x-show="messageLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                        <span class="loading loading-bars loading-md "></span>
+                        <label for="">Please wait while we load messages...</label>
+                    </div>
 
                 </div>
+
+            </div>
+
             </div>
         </div>
 

@@ -30,8 +30,6 @@ class WhatsAppApiController extends SmartController
 
     public function sent(Request $request)
     {
-
-
         // Fetching lead or follow up details
         if ($request->lead_id) {
             $lead = Lead::where('id', $request->lead_id)->with(['followups', 'appointment'])->get()->first();
@@ -41,13 +39,12 @@ class WhatsAppApiController extends SmartController
             $followup = Followup::where('id', $request->followup_id)->with(['lead'])->get()->first();
             $recipient = $followup->lead->phone;
         }
-
         // Checking and sending non template message
         if ($request->template == 'custom' && $request->message != null) {
 
             $response = $this->connectorService->message($request, $recipient, $lead);
 
-            return response($response, 200);
+            return response()->json($response);
         }
 
         // Sending template message
@@ -92,7 +89,7 @@ class WhatsAppApiController extends SmartController
             }
         }
 
-        // return response($components);
+
         // $recipient = $lead->phone;
 
         $payload = array(
@@ -134,14 +131,18 @@ class WhatsAppApiController extends SmartController
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBOzUh8upIrIzvSs65oKs7rGUCBEWvZCXcv2qj7WwncpPDIXY7OrHp41Gpw6m52K4UoIVSwQCZAfA5bmud4x3qqiYnN5UXWUiah2v7SeUWU2s7VrLcDuSyRkLbjvOnM7guocYRMgUNzpHuEWdYrhuq56waaN3oPH3iw4DZAHRkaL9lLAtuT7ouNwiqTiI2FKBuZBsJILwZB7ZAZCP4pPZC'
+                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
             ),
         ));
         $response = curl_exec($curl);
         curl_close($curl);
         $data = json_decode($response, true);
 
-        if($data['messages'] != null){
+        if(isset($data['error'])){
+            return response()->json(['status'=>'fail','message'=>'Sorry! Could not send message']);
+        }
+
+        if ($data['messages'] != null) {
             info('Message is submitted');
             info($data);
             $message_params = $components[0]['parameters'];
@@ -149,15 +150,16 @@ class WhatsAppApiController extends SmartController
             $rendered_message = $this->connectorService->renderMessage($template->body, $placeholders, $message_params);
             info($rendered_message);
             $chat = Chat::create([
-                'message'=>$rendered_message,
-                'direction'=>'Outbound',
-                'lead_id'=>$lead->id,
-                'status'=>'submitted',
-                'wamid'=>$data['messages'][0]['id'],
+                'message' => $rendered_message,
+                'direction' => 'Outbound',
+                'lead_id' => $lead->id,
+                'status' => 'submitted',
+                'wamid' => $data['messages'][0]['id'],
                 // 'template_id'=>$template->id
             ]);
 
             $data['status'] = 'success';
+            $data['chat'] = $chat;
         }
 
         return response(json_encode($data), 200);
@@ -171,16 +173,18 @@ class WhatsAppApiController extends SmartController
         info($request->header());
 
         // Storing inbound messages
-        if (isset($request['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id']))
+        if (isset($request['entry'][0]['changes'][0]['value']['messages'][0]['from']))
          {
-            $sender = $request['entry'][0]['changes'][0]['value']['contacts'][0]['wa_id'];
+            $sender = $request['entry'][0]['changes'][0]['value']['messages'][0]['from'];
 
             $wamid = $request['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+
+            $timestamp = $request['entry'][0]['changes'][0]['value']['messages'][0]['timestamp'];
 
             $body = $request['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
 
             $lead = Lead::where('phone', $sender)
-                ->orWhere('phone', '91'.$sender)->get()->first();
+                ->orWhere('phone', '91' . $sender)->orWhere('phone', '+' . $sender)->get()->first();
 
             if ($lead == null) {
                 $phone = $sender - 910000000000;
@@ -198,7 +202,8 @@ class WhatsAppApiController extends SmartController
                 'direction' => 'Inbound',
                 'lead_id' => $lead_id,
                 'status' => 'received',
-                'wamid' => $wamid
+                'wamid' => $wamid,
+                'expiration_time' => $timestamp
             ]);
 
             // return response($chat);
@@ -226,34 +231,43 @@ class WhatsAppApiController extends SmartController
         // updating outbound messages
         $status = null;
 
-        if(isset($request['entry'][0]['changes'][0]['value']['statuses'][0]['status'])){
+        if (isset($request['entry'][0]['changes'][0]['value']['statuses'][0]['status'])) {
 
             $status = $request['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
             $wamid = $request['entry'][0]['changes'][0]['value']['statuses'][0]['id'];
-        }
-        $chat = Chat::where('wamid',$wamid)->get()->first();
-        if ($status == "sent") {
-            $chat->status = 'sent';
-            $chat->save();
-            return true;
-        }elseif($status == "delivered") {
-            $chat->status = 'delivered';
-            $chat->save();
-            return true;
-        }elseif($status == 'read'){
-            $chat->status = 'read';
-            $chat->save();
-            return true;
-        }
 
-        return false;
+            $chat = Chat::where('wamid', $wamid)->get()->first();
+            if ($status == "sent") {
+                $chat->status = 'sent';
+                $chat->save();
+                return true;
+            } elseif ($status == "delivered") {
+                $chat->status = 'delivered';
+                $chat->save();
+                return true;
+            } elseif ($status == 'read') {
+                $chat->status = 'read';
+                $chat->save();
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public function getChats(Request $request)
     {
         $chats = Chat::where('lead_id', $request->id)->get();
-        $lead = Lead::find($request->id);
-        return response()->json(['chats' => $chats, 'lead' => $lead]);
+        $expiry = Chat::where('lead_id', $request->id)
+        ->where('direction', 'Inbound')
+        ->orderBy('created_at', 'desc')
+        ->first();
+        if($expiry != null){
+            $expiration_time = $expiry->expiration_time;
+        }else{
+            $expiration_time = null;
+        }
+        return response()->json(['chats' => $chats, 'expiration_time' => $expiration_time]);
     }
 
     public function unread(Request $request)
@@ -279,23 +293,23 @@ class WhatsAppApiController extends SmartController
         if ($request->latest) {
             $latest = Chat::find($request->latest);
             if ($user->hasRole('admin')) {
-                $new_messages = Chat::where('created_at', '>', $latest->created_at)->get();
+                $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
             } else {
-                $new_messages = Chat::whereIn('lead_id',$leadIDs)->where('created_at', '>', $latest->created_at)->latest()->get();
+                $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
             }
         }
 
         $unread = [];
 
-        if($unread_messages != null && count($unread_messages) > 0){
-            foreach($unread_messages as $msg){
+        if ($unread_messages != null && count($unread_messages) > 0) {
+            foreach ($unread_messages as $msg) {
                 array_push($unread, array($msg->lead_id => $msg));
             }
         }
 
         // return response($unread_messages);
         if ($new_messages != null && count($new_messages) > 0) {
-            return response()->json(['status' => true, 'new_messages' => $new_messages, 'unread_messages'=> $unread]);
+            return response()->json(['status' => true, 'new_messages' => $new_messages, 'unread_messages' => $unread]);
         } else {
             return response()->json(['status' => false]);
         }
@@ -320,18 +334,19 @@ class WhatsAppApiController extends SmartController
         return $this->buildResponse('pages.messenger', compact('leads', 'templates', 'latest'));
     }
 
-    public function bulkMessage(Request $request){
-        $numbers = json_decode(json_encode($request->numbers),true);
+    public function bulkMessage(Request $request)
+    {
+        $numbers = json_decode(json_encode($request->numbers), true);
 
         $lead_ids = array_keys($numbers);
 
         $template = Message::find($request->template);
 
-        foreach($lead_ids as $lead_id){
+        foreach ($lead_ids as $lead_id) {
             SendBulkMessage::dispatch($lead_id, $template);
         }
 
-        return response()->json(['numbers'=>array_keys($numbers),'template'=>$template]);
+        return response()->json(['numbers' => array_keys($numbers), 'template' => $template]);
     }
 
     public function verify()
@@ -343,5 +358,35 @@ class WhatsAppApiController extends SmartController
         }
 
         return $challenge;
+    }
+
+    public function fetchLatest(Request $request){
+
+        if ($request->user()->hasRole('agent')) {
+            $user_ids = $request->user()->leads->pluck('id')->toArray();
+            $latest = Chat::whereIn('lead_id', $user_ids)->where('direction','Inbound')->where('status','received')->latest()->get()->first();
+            $unread_messages_count = Chat::whereIn('lead_id', $user_ids)->where('direction','Inbound')->where('status','received')->latest()->get()->count();
+        } else {
+            $latest = Chat::where('lead_id', '!=', null)->where('direction','Inbound')->where('status','received')->latest()->get()->first();
+            $unread_messages_count = Chat::where('lead_id', '!=', null)->where('direction','Inbound')->where('status','received')->get()->count();
+        }
+        if($latest == null){
+            return response()->json(['latest'=>null,'unread_message_count'=>$unread_messages_count]);
+        }else{
+            return response()->json(['latest'=>$latest->id, 'unread_message_count'=>$unread_messages_count]);
+        }
+    }
+
+    public function markRead(Request $request){
+        $chats = Chat::where('lead_id',$request->lead_id)->where('direction','Inbound')->where('status','received')->get();
+
+        if($chats != null && count($chats) > 0){
+            foreach($chats as $chat){
+                $chat->status='read';
+                $chat->save();
+            }
+        }
+
+        return response(true, 200);
     }
 }

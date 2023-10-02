@@ -124,6 +124,8 @@
                     </form>
                 </div>
             </div>
+
+            {{-- agent edit window --}}
             <div
                 x-data="{
                     id: '',
@@ -194,10 +196,90 @@
                     </form>
                 </div>
             </div>
+
+            {{-- attendance window --}}
+
+            <div x-data="{
+                name:'',
+                id: null,
+                audits:[],
+                auditsLoading: false,
+                fetchaudits(){
+                    this.auditsLoading = true;
+                    axios.get('/fetch/audits',{
+                        params:{
+                            user_id : this.id
+                        }
+                    }).then((r)=>{
+                        console.log(r.data);
+                        this.audits = r.data;
+                    }).catch((e)=>{
+                        this.$dispatch('showtoast',{mode:'error',message: 'Could not load audits'});
+                    });
+                    this.auditsLoading = false;
+                },
+                formatDate(isoDateString) {
+                    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+                    return new Date(isoDateString).toLocaleDateString('en-US', options);
+                },
+                formatTime(isoDateString) {
+                    const date = new Date(isoDateString);
+                    const hours = (date.getHours() % 12 || 12).toString().padStart(2, '0');
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+
+                    return `${hours}:${minutes} ${ampm}`;
+                }
+            }" x-show="mode=='attendance'"
+            @agentattendance.window="
+                    mode='attendance';
+                    id=$event.detail.id;
+                    name=$event.detail.name;
+                    fetchaudits();
+                " x-transition>
+                <h1 class=" text-primary font-medium text-lg" x-text="'Attendance of '+name"></h1>
+
+                <div x-show="auditsLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                    <span class="loading loading-bars loading-md "></span>
+                    <label for="">Please wait while we load the audits...</label>
+                </div>
+                <div x-show="!auditsLoading">
+                    {{-- Showing audits --}}
+                    <template x-if="audits.length > 0">
+                        <template x-for="audit in audits">
+                            <div class="flex flex-col text-xs p-1 my-1 bg-base-200 rounded-md">
+                                <p class=" text-secondary font-medium" x-text='"Date : "+formatDate(audit.created_at) '></p>
+                                <p class=" flex space-x-2">
+                                    <span x-text="'Login : '+formatTime(audit.login)"></span>
+                                    <span>|</span>
+                                    <span x-text="'Logout : '+formatTime(audit.logout)"></span>
+                                </p>
+                                <p class=" flex space-x-2">
+                                    <span x-text=" audit.break_in != null ? 'Break-in : '+formatTime(audit.break_in) : 'Break-in : Unavailable'"></span>
+                                    <span>|</span>
+                                    <span x-text=" audit.break_out != null ? 'Break-out : '+formatTime(audit.break_out) : 'Break-out : Unavailable' "></span>
+                                </p>
+                            </div>
+                        </template>
+                    </template>
+                    <template x-if="audits.length < 1">
+                        <div class=" p-4 w-full text-center font-medium text-error">
+                            No audits available
+                        </div>
+                    </template>
+                </div>
+
+                <div class=" flex justify-center">
+                    <button @click.prevent.stop="mode='add'" type="button" class="btn btn-ghost btn-xs">Cancel</button>
+                </div>
+            </div>
+
+
         </div>
 
       </div>
     </div>
   </div>
   <x-footer/>
+
 </x-easyadmin::app-layout>

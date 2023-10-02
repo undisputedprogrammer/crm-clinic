@@ -71,6 +71,18 @@ export default () => ({
             this.$dispatch('linkaction',{link: link, route: link, fragment: 'page-content', params: { center: this.selectedCenter}});
         }
 
+    },
+    fetchLatest(latest){
+        if(latest == null){
+            axios.get('/fetch/latest').then((r)=>{
+                console.log('fetch latest response is ');
+                console.log(r.data);
+                latest = r.data;
+            }).catch((c)=>{
+                console.log('Could not fetch latest');
+            })
+        }
+        return latest;
     }
 });
 
