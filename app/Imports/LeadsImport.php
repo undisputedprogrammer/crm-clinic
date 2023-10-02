@@ -31,7 +31,11 @@ class LeadsImport implements ToArray, WithHeadingRow
         $this->mainCols = $hospital->main_cols;
         $this->agents = $center->agents();
         info($this->agents);
-        $this->x = random_int(0, count($this->agents) - 1);
+        if (count($this->agents) > 1) {
+            $this->x = random_int(0, count($this->agents) - 1);
+        } else {
+            $this->x = 0;
+        }
     }
     /**
      * @param array $row
