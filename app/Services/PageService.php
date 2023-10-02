@@ -57,15 +57,15 @@ class PageService
 
         $currentYear = $now->format('Y');
 
-        $lpm = Lead::whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $hospital = auth()->user()->hospital;
+        $hospitals = [$hospital];
+        $centers = $hospitals[0]->centers;
+        $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-        $ftm = Lead::where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-        $lcm = Lead::where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-        $hospitals = Hospital::all();
-
-        $centers = Center::all();
 
         $pf = Followup::whereHas('lead', function ($query) {
             $query->where('status', '!=', 'Converted');

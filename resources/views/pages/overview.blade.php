@@ -124,6 +124,9 @@
                                 }"
                                 x-init="
                                     hospitals={{Js::from($hospitals)}};
+                                    hospital = hospitals[0];
+                                    centers = {{Js::from($centers)}};
+                                    $center = centers[0];
                                     $watch('hospital', (h) => {
                                         center = '';
                                         fetchCenters();
