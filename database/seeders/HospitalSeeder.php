@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use App\Models\Center;
 use App\Models\Hospital;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class HospitalSeeder extends Seeder
 {
@@ -20,7 +22,12 @@ class HospitalSeeder extends Seeder
                 'phone' => 'phone_number',
                 'city' => 'city'
             ],
-            'chat_room_id' => 'hos_craft'
+            'chat_room_id' => 'hos_craft',
+            'centers' => [
+                'Caft_Kodungallur',
+                'Malappuram',
+                'Vyttila'
+            ]
         ],
         [
             'name' => 'AR',
@@ -28,12 +35,15 @@ class HospitalSeeder extends Seeder
             'email' => 'info@ar.com',
             'phone' => '1234512345',
             'main_cols' => [
-                'name' => 'Name',
-                'email' => 'Email',
-                'phone' => 'Contct Number',
-                'city' => 'City'
+                'name' => 'name',
+                'email' => 'email',
+                'phone' => 'contact_number',
+                'city' => 'city'
             ],
-            'chat_room_id' => 'hos_ar'
+            'chat_room_id' => 'hos_ar',
+            'centers' => [
+                'AR_Kodungallur'
+            ]
         ],
     ];
     /**
@@ -43,7 +53,17 @@ class HospitalSeeder extends Seeder
     {
         foreach ($this->hospitals as $h) {
             $h['main_cols'] = $h['main_cols'];
-            Hospital::factory()->create($h);
+            $centers = $h['centers'];
+            unset($h['centers']);
+            $hosp = Hospital::factory()->create($h);
+            foreach ($centers as $c) {
+                $c = Center::factory()->create([
+                    'hospital_id' => $hosp->id
+                ]);
+                $c->users()->save(User::factory()->create([
+                    'hospital_id' => $hosp->id
+                ]));
+            }
         }
     }
 }

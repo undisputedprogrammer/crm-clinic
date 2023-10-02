@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use App\Models\Center;
 use App\Models\Hospital;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,7 +28,20 @@ class CenterFactory extends Factory
             'location'=>fake()->city(),
             'email'=>fake()->email(),
             'phone'=>fake()->phoneNumber(),
-            'chat_room_id' => 'cen_'.substr($name, 0, 3)
+            'chat_room_id' => 'cen_'.substr($name, 0, 8)
         ];
     }
+
+    // public function configure(): static
+    // {
+    //     return $this->afterCreating(function (Center $c) {
+    //         $hid = $c->hosptial->id;
+    //         $u = User::factory()->create(
+    //             [
+    //                 'hospital_id' => $hid
+    //             ]
+    //             );
+    //         $c->users()->save($u);
+    //     });
+    // }
 }

@@ -21,12 +21,9 @@ class UserSeeder extends Seeder
         $users = User::factory()->count(5)->create();
 
         foreach($users as $user){
+            $h = $user->hospital;
+            $user->centers()->save($h->centers->random());
             $user->assignRole('agent');
-
-            UserCenter::create([
-                'user_id'=>$user->id,
-                'center_id'=>Center::where('hospital_id',$user->hospital_id)->get()->random()->id
-            ]);
         }
 
         $admin = User::create([
@@ -40,18 +37,10 @@ class UserSeeder extends Seeder
         ]);
 
         $admin->assignRole('admin');
-
-        $secondadmin = User::create([
-            'name' => 'admin',
-            'email' => 'secondadmin@demo.com',
-            'designation' => 'Administrator',
-            'hospital_id'=> 2,
-            'email_verified_at' => now(),
-            'password' => Hash::make('abcd1234'),
-            'remember_token' => Str::random(10),
-        ]);
-
-        $secondadmin->assignRole('admin');
+        $h = Hospital::find(1);
+        foreach ($h->centers as $c) {
+            $admin->centers()->save($c);
+        }
 
         $agent = User::create([
             'name' => 'Muhammed Ali',
@@ -64,10 +53,24 @@ class UserSeeder extends Seeder
         ]);
 
         $agent->assignRole('agent');
-        UserCenter::create([
-            'user_id'=>$agent->id,
-            'center_id'=>Center::where('hospital_id',$agent->hospital_id)->get()->random()->id
+        $agent->centers()->save($h->centers->random());
+
+        $secondadmin = User::create([
+            'name' => 'admin',
+            'email' => 'aradmin@demo.com',
+            'designation' => 'Administrator',
+            'hospital_id'=> 2,
+            'email_verified_at' => now(),
+            'password' => Hash::make('abcd1234'),
+            'remember_token' => Str::random(10),
         ]);
+
+        $secondadmin->assignRole('admin');
+        $h = Hospital::find(2);
+        foreach ($h->centers as $c) {
+            $admin->centers()->save($c);
+        }
+
 
     }
 }

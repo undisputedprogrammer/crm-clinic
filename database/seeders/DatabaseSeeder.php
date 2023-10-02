@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             HospitalSeeder::class,
-            CenterSeeder::class,
+            // CenterSeeder::class,
             UserSeeder::class,
             DoctorSeeder::class,
             QuestionSeeder::class,

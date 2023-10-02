@@ -23,17 +23,23 @@ class LeadFactory extends Factory
 
     public function definition(): array
     {
-         $customer_segment = ['hot','warm','cold'];
-         $status = ['Created'];
-         $hospital = Hospital::all()->random();
-         $center_id = $hospital->centers->random()->id;
-        $hospital = Hospital::get()->random();
-        $center = Center::where('hospital_id',$hospital->id)->has('agents')->with('agents')->get()->random();
+        // $customer_segment = ['hot','warm','cold'];
+        // $status = ['Created'];
+        $hospital = Hospital::all()->random();
+        $center = $hospital->centers->random();
+        $agents = $center->agents();
+        if (count($agents) == 0) {
+            $u = User::factory()->create([
+                'hospital_id' => $hospital->id
+            ]);
+            $u->centers()->save($center);
+            $ag = $u;
+        } else {
+            $ag = $agents[random_int(0, count($agents) - 1)];
+        }
         return [
             'hospital_id' => $hospital->id,
-            'center_id' => $center_id,
-            'hospital_id'=>$hospital->id,
-            'center_id'=>$center->id,
+            'center_id' => $center->id,
             'name'=>fake()->name(),
             'phone'=>8137033348,
             'email'=>fake()->email(),
@@ -44,7 +50,7 @@ class LeadFactory extends Factory
             'customer_segment'=> null,
             'status'=> 'Created',
             'followup_created'=>false,
-            'assigned_to'=>$center->users->random(),
+            'assigned_to'=> $ag->id
         ];
     }
 
