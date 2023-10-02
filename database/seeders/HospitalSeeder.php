@@ -57,10 +57,11 @@ class HospitalSeeder extends Seeder
             unset($h['centers']);
             $hosp = Hospital::factory()->create($h);
             foreach ($centers as $c) {
-                $c = Center::factory()->create([
-                    'hospital_id' => $hosp->id
+                $cen = Center::factory()->create([
+                    'name' => $c,
+                    'hospital_id' => $hosp->id,
                 ]);
-                $c->users()->save(User::factory()->create([
+                $cen->users()->save(User::factory()->create([
                     'hospital_id' => $hosp->id
                 ]));
             }
