@@ -29,7 +29,8 @@ class LeadsImport implements ToArray, WithHeadingRow
         $this->hospital = $hospital;
         $this->center = $center;
         $this->mainCols = $hospital->main_cols;
-        $this->agents = User::havingRoles(['agent'])->get()->pluck('id');
+        $this->agents = $center->agents();
+        $this->x = random_int(0, count($this->agents));
     }
     /**
      * @param array $row
@@ -43,12 +44,12 @@ class LeadsImport implements ToArray, WithHeadingRow
         // info($this->headings);
         // $row = $row[0];
         foreach ($rows as $row) {
-            if($row['full_name'] == null || $row['phone_number'] == null){
+            if($row[$this->mainCols->name] == null || $row[$this->mainCols->phone] == null){
                 continue;
             }
             $this->totalCount++;
 
-            $existing_count = Lead::where('phone', $row['phone_number'])->get()->count();
+            $existing_count = Lead::where('phone', $row[$this->mainCols->phone])->get()->count();
             if($existing_count > 0){
                 continue;
             }
@@ -79,7 +80,9 @@ class LeadsImport implements ToArray, WithHeadingRow
                 'customer_segment' => 'cold',
                 'status' => 'Created',
                 'followup_created' => false,
-                'assigned_to' => $this->agents[$this->x]
+                'assigned_to' => $this->agents[$this->x]->id,
+                'hospital_id' => $this->hospital->id,
+                'center_id' => $this->center->id
             ]);
 
 

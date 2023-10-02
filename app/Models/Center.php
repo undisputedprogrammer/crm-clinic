@@ -13,11 +13,23 @@ class Center extends Model
         return $this->hasOne(Hospital::class, 'hospital_id', 'id');
     }
 
-    public function agents(){
+    public function users(){
         return $this->belongsToMany(User::class, 'user_has_centers');
     }
 
     public function doctors(){
         return $this->hasMany(Doctor::class, 'center_id','id');
     }
+
+    public function agents()
+    {
+        $arr = [];
+        foreach ($this->users as $u) {
+            if($u->hasROle('agent')){
+                $arr[] = $u;
+            }
+        }
+        return $arr;
+    }
+
 }

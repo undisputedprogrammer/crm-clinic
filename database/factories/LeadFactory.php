@@ -44,7 +44,7 @@ class LeadFactory extends Factory
             'customer_segment'=> null,
             'status'=> 'Created',
             'followup_created'=>false,
-            'assigned_to'=>$center->agents->random(),
+            'assigned_to'=>$center->users->random(),
         ];
     }
 
