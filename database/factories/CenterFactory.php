@@ -20,12 +20,14 @@ class CenterFactory extends Factory
     public function definition(): array
     {
         $hospital = Hospital::get()->random();
+        $name = fake()->company();
         return [
-            'name'=>fake()->company(),
+            'name'=>$name,
             'hospital_id'=>$hospital->id,
             'location'=>fake()->city(),
             'email'=>fake()->email(),
-            'phone'=>fake()->phoneNumber()
+            'phone'=>fake()->phoneNumber(),
+            'chat_room_id' => 'cen_'.substr($name, 0, 3)
         ];
     }
 }

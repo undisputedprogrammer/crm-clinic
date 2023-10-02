@@ -19,12 +19,14 @@ class HospitalFactory extends Factory
     public $model = Hospital::class;
     public function definition(): array
     {
+        $name = fake()->company();
         return [
-            'name'=>fake()->company(),
+            'name'=> $name,
             'ho_location'=>fake()->city(),
             'email'=>fake()->email(),
             'phone'=>fake()->phoneNumber(),
-            'main_cols' => json_encode([])
+            'main_cols' => json_encode([]),
+            'chat_room_id' => 'hos_'.substr($name, 0, 3)
         ];
     }
 }

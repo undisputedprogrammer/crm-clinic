@@ -19,7 +19,8 @@ class HospitalSeeder extends Seeder
                 'email' => 'email',
                 'phone' => 'phone_number',
                 'city' => 'city'
-            ]
+            ],
+            'chat_room_id' => 'hos_craft'
         ],
         [
             'name' => 'AR',
@@ -31,7 +32,8 @@ class HospitalSeeder extends Seeder
                 'email' => 'Email',
                 'phone' => 'Contct Number',
                 'city' => 'City'
-            ]
+            ],
+            'chat_room_id' => 'hos_ar'
         ],
     ];
     /**
