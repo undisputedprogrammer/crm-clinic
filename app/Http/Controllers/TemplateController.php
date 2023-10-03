@@ -54,7 +54,7 @@ class TemplateController extends SmartController
     public function reassign(Request $request)
     {
         $leadQuery = Lead::where('hospital_id',$request->user()->hospital_id)->with(['assigned'=>function($q){
-            return $q->with('center');
+            return $q->with('centers');
         }]);
 
         if($request->center != null && $request->center != 'all'){

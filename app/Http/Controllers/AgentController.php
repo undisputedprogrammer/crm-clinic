@@ -25,13 +25,14 @@ class AgentController extends SmartController
         $selectedCenter = $request->center;
 
         $agentsQuery = User::whereHas('roles', function($query){
-            $query->where('name','agent');
+            $query->where('name','agent')
+            ->where('hospital_id', auth()->user()->hospital_id);
         });
 
         if($selectedCenter != null && $selectedCenter != 'all'){
-            $agentsQuery->whereHas('center', function($q) use($selectedCenter){
+            $agentsQuery->whereHas('centers', function($q) use($selectedCenter){
                 $c = Center::find($selectedCenter);
-                return $q->where('name', $c->name);
+                return $q->where('id', $c->id);
             });
         }
 

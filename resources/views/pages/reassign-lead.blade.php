@@ -84,7 +84,7 @@ center = '{{$selectedCenter}}';
                         @if ($agents != null && count($agents) > 0)
                            @foreach ($agents as $agent)
 
-                           <template x-if="center == null || center == 'all' || center == '{{$agent->center[0]->id}}' ">
+                           <template x-if="center == null || center == 'all' || center == '{{$agent->centers[0]->id}}' ">
 
                                 <option :selected = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
 
@@ -133,7 +133,7 @@ center = '{{$selectedCenter}}';
                         @if ($agents != null && count($agents) > 0)
 
                            @foreach ($agents as $agent)
-                           <template x-if = "center == '{{$agent->center[0]->id}}' ">
+                           <template x-if = "center == '{{$agent->centers[0]->id}}' ">
                                 <option :disabled = "searchFilter == $el.value ? true : false" value="{{$agent->id}}">{{$agent->name}}</option>
                            </template>
 

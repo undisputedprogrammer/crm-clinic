@@ -81,7 +81,7 @@ class PageController extends SmartController
     {
         $agents = User::where('hospital_id',$request->user()->hospital_id)->whereHas('roles',function($q){
             $q->where('name','agent');
-        })->with('center')->get();
+        })->with('centers')->get();
         $centers = Center::where('hospital_id', $request->user()->hospital_id)->get();
 
         return $this->buildResponse('pages.search', compact('agents','centers'));

@@ -144,7 +144,7 @@
                         <option value="null" :disabled="searchFormState.agent == null ? true : false " :selected="searchFormState.agent == null ? true : false " >--Not selected--</option>
 
                         @foreach ($agents as $agent)
-                            <template x-if="searchFormState.center == undefined || searchFormState.center == '{{$agent->center[0]->id}}' || searchFormState.center == 'null' ">
+                            <template x-if="searchFormState.center == undefined || searchFormState.center == '{{$agent->centers[0]->id}}' || searchFormState.center == 'null' ">
                                 <option :selected="searchFormState.agent == '{{$agent->id}}' ? true : false " value="{{$agent->id}}">{{$agent->name}}</option>
                             </template>
                         @endforeach

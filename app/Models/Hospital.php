@@ -39,4 +39,16 @@ class Hospital extends Model
     public function users(){
         return $this->hasMany(User::class, 'hospital_id','id');
     }
+
+    public function agents()
+    {
+        $arr = [];
+        foreach ($this->users as $u) {
+            if($u->hasRole('agent')){
+                $arr[] = $u;
+            }
+        }
+        return $arr;
+    }
+
 }
