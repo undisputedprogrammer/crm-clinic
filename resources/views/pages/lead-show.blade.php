@@ -72,6 +72,80 @@
             x-init="
                 lead = {{Js::from($lead)}};console.log(lead);
             "
+            {{-- Change Questions --}}
+        @changequestion.window="
+            if($event.detail.current == $event.detail.q_answer){
+                console.log('cannot change answer');
+            }
+            else{
+            ajaxLoading = true;
+            axios.get($event.detail.link,{
+                params: {
+                    lead_id : lead.id,
+                    q_answer : $event.detail.q_answer,
+                    question : $event.detail.question
+                }
+            }).then(function(response){
+                console.log(response);
+                if(response.data.q_visit != undefined){
+                    if(response.data.q_visit == null || response.data.q_visit == 'null'){
+                        lead.q_visit = null;
+                    }
+                    else{
+                        lead.q_visit = response.data.q_visit;
+                    }
+                }
+                if(response.data.q_decide != undefined){
+                    if(response.data.q_decide == null || response.data.q_decide == 'null'){
+                        lead.q_decide = null;
+                    }
+                    else{
+                        lead.q_decide = response.data.q_decide;
+                    }
+                }
+                lead.customer_segment = response.data.customer_segment;
+                ajaxLoading = false;
+                $dispatch('showtoast', {message: response.data.message, mode: 'success'});
+            }).catch(function(error){
+                console.log(error);
+                ajaxLoading = false;
+            });
+            }"
+
+            @changegenuine.window="
+            ajaxLoading = true;
+            axios.get($event.detail.link,{
+                params:{
+                    lead_id : lead.id,
+                    is_genuine : $event.detail.is_genuine
+                }
+            }).then(function(response){
+
+                lead.is_genuine = response.data.is_genuine;
+                ajaxLoading = false;
+                $dispatch('showtoast', {message: response.data.message, mode: 'success'});
+            }).catch(function(error){
+                ajaxLoading = false;
+                console.log(error);
+            })"
+
+            @changevalid.window="
+            ajaxLoading = true;
+            axios.get($event.detail.link,{
+                params:{
+                    lead_id : lead.id,
+                    is_valid : $event.detail.is_valid
+                }
+            }).then(function(response){
+
+                lead.is_valid = response.data.is_valid;
+                ajaxLoading = false;
+                $dispatch('showtoast', {message: response.data.message, mode: 'success'});
+            }).catch(function(error){
+                ajaxLoading = false;
+                console.log(error);
+            })"
+
             class="w-[96%] mx-auto mt-4 md:mt-0 md:w-3/4 min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll
             bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div class=" flex space-x-4">
@@ -227,8 +301,8 @@
                 {{-- *********************************************************************************
         Remark area
         ********************************************************************************* --}}
-                <div class="flex flex-row space-x-4">
-                    <div class=" flex flex-col">
+                <div class="flex flex-row space-x-4 w-full justify-between">
+                    <div class=" flex flex-col min-w-72">
 
                         <p class=" text-base font-medium text-secondary">Remarks</p>
 
@@ -292,7 +366,7 @@
 
                     </div>
 
-                    <div class="flex flex-col">
+                    {{-- <div class="flex flex-col"> --}}
                         <div>
                             <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
                             <h1 x-text="lead.followup_created == 1 ? 'Follow up Initiated' : 'Follow up is not initiated for this lead' "
@@ -301,12 +375,12 @@
                             <p x-show="lead.followup_created == 1" class=" font-medium ">
                                 <span>follow up scheduled : </span>
                                 <span class="text-primary"
-                                    x-text="lead.followup_created == 1 ? followups[0].scheduled_date : '' "></span>
+                                    x-text="lead.followup_created == 1 ? lead.followups[0].scheduled_date : '' "></span>
                             </p>
                             <p x-show="lead.followup_created == 1" class=" font-medium">
                                 <span>Followed up date : </span>
                                 <span class="text-primary"
-                                    x-text="lead.followup_created == 1 ? followups[0].actual_date : '---' "
+                                    x-text="lead.followup_created == 1 && lead.followups[0].actual_date != null ? lead.followups[0].actual_date : '---' "
                                     class="text-secondary"></span>
                             </p>
 
@@ -317,7 +391,7 @@
 
                         <div x-data="{
                                 selected_action: 'Initiate Followup'
-                            }" class="pt-2.5">
+                            }" class="pt-2.5 min-w-72 max-w-72">
 
                             <x-dropdowns.leads-action-dropdown />
 
@@ -328,7 +402,7 @@
                             <x-forms.lead-close-form />
 
                         </div>
-                    </div>
+                    {{-- </div> --}}
                 </div>
 
 
