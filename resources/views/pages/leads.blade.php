@@ -157,74 +157,74 @@ selectedCenter = null;
 
 
         <div x-data="{
-            selected_section: 'details',
-            messageLoading : false,
-            qnas: [],
-            chats : [],
-            expiry_timestamp: null,
-            custom_enabled: false,
-            loadWhatsApp(){
-                this.selected_section = 'wp';
-                this.messageLoading = true;
-                $dispatch('resetselect');
-                axios.get('/api/get/chats',{
-                    params : {
-                        id : lead.id
-                    }
-                }).then((r)=>{
-                    this.expiry_timestamp = r.data.expiration_time;
-                    this.checkExpiry(this.expiry_timestamp);
-                    this.chats = r.data.chats;
-                    this.messageLoading = false;
-                    this.markasread();
-                }).catch((e)=>{
-                    console.log(e);
-                });
+                selected_section: 'details',
+                messageLoading : false,
+                qnas: [],
+                chats : [],
+                expiry_timestamp: null,
+                custom_enabled: false,
+                loadWhatsApp(){
+                    this.selected_section = 'wp';
+                    this.messageLoading = true;
+                    $dispatch('resetselect');
+                    axios.get('/api/get/chats',{
+                        params : {
+                            id : lead.id
+                        }
+                    }).then((r)=>{
+                        this.expiry_timestamp = r.data.expiration_time;
+                        this.checkExpiry(this.expiry_timestamp);
+                        this.chats = r.data.chats;
+                        this.messageLoading = false;
+                        this.markasread();
+                    }).catch((e)=>{
+                        console.log(e);
+                    });
 
-            },
-            checkExpiry(timestamp){
-                if(timestamp == null){
-                    this.custom_enabled = false;
-                }
-                else{
-                    const date = new Date(timestamp * 1000);
-                    const options = {
-                    year: 'numeric',
-                    month: 'short',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    timeZone: 'Asia/Kolkata',
-                    };
-
-                    const formattedDate = new Intl.DateTimeFormat('en-IN', options).format(date);
-                    console.log(formattedDate);
-                    const currentDate = new Date();
-                    const timeDifference = currentDate - date;
-                    const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
-
-                    if (timeDifference >= twentyFourHoursInMillis) {
+                },
+                checkExpiry(timestamp){
+                    if(timestamp == null){
                         this.custom_enabled = false;
-                    } else {
-                        this.custom_enabled = true;
                     }
-                }
-            },
-            markasread(){
-                axios.get('/mark/read',{
-                    params:{
-                        lead_id: lead.id
-                    }
-                }).then((r)=>{
-                    console.log('marked messages as read');
-                }).catch((e)=>{
-                    console.log('could not mark messages as read');
-                });
-            }
-        }"
+                    else{
+                        const date = new Date(timestamp * 1000);
+                        const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        timeZone: 'Asia/Kolkata',
+                        };
 
-        class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+                        const formattedDate = new Intl.DateTimeFormat('en-IN', options).format(date);
+                        console.log(formattedDate);
+                        const currentDate = new Date();
+                        const timeDifference = currentDate - date;
+                        const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
+                        if (timeDifference >= twentyFourHoursInMillis) {
+                            this.custom_enabled = false;
+                        } else {
+                            this.custom_enabled = true;
+                        }
+                    }
+                },
+                markasread(){
+                    axios.get('/mark/read',{
+                        params:{
+                            lead_id: lead.id
+                        }
+                    }).then((r)=>{
+                        console.log('marked messages as read');
+                    }).catch((e)=>{
+                        console.log('could not mark messages as read');
+                    });
+                }
+            }"
+
+            class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div class=" flex space-x-4">
                 <h2 @click="selected_section = 'details'" class="text-lg font-semibold text-secondary cursor-pointer" :class=" selected_section == 'details' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Lead details</h2>
 
