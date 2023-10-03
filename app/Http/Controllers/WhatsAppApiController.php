@@ -298,13 +298,18 @@ class WhatsAppApiController extends SmartController
         }
         if ($request->latest != null) {
             $latest = Chat::find($request->latest);
-            if ($user->hasRole('admin')) {
-                $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
-            } else {
-                $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
-            }
-        }
+            $msgsQuery->where('created_at', '>', $latest->created_at);
 
+            /**
+             * removed old logic to find messages for admin
+             */
+            // if ($user->hasRole('admin')) {
+            //     $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
+            // } else {
+            //     $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
+            // }
+        }
+        $new_messages = $msgsQuery->latest()->get();
         $unread = [];
 
         if ($unread_messages != null && count($unread_messages) > 0) {
@@ -325,7 +330,7 @@ class WhatsAppApiController extends SmartController
     {
         $user_ids = $request->user()->leads->pluck('id')->toArray();
         // dd($user_ids);
-        $q = Lead::has('chats')->with('chats');
+        $q = Lead::has('chats')->with('chats')->where('hospital_id',$request->user()->hospital_id);
 
         if ($request->user()->hasRole('agent')) {
             $q->where('assigned_to', $request->user()->id);
