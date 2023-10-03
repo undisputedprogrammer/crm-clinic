@@ -133,7 +133,8 @@
                 id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
                 data-dropdown-placement="bottom">
                 <span class="sr-only">sidedrawer user menu</span>
-                <img class="w-8 h-8 rounded-full" src="{{ auth()->user()->user_picture != null ? auth()->user()->user_picture['path'] }} : '/images/profile_img.png'" alt="user photo">
+                <img class="w-8 h-8 rounded-full"
+                    src="{{ auth()->user()->user_picture != null ? auth()->user()->user_picture['path'] : '/images/profile_img.png'}}" alt="user photo">
                 <span class="px-1.5 min-w-20 hidden sm:flex">{{ auth()->user()->name }}</span>
             </button>
             <!-- Dropdown menu -->
