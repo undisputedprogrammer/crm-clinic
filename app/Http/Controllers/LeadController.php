@@ -13,6 +13,23 @@ class LeadController extends SmartController
         parent::__construct($request);
     }
 
+    public function show($id)
+    {
+        $lead = Lead::where('id', $id)->with([
+            'remarks',
+            'followups',
+            'assigned',
+            'appointment',
+            'chats',
+            'hospital',
+        ])->get()->first();
+        return $this->buildResponse('pages.lead-show', [
+            'lead' => $lead,
+            'doctors' => [],
+            'messageTemplates' => []
+        ]);
+    }
+
     public function change(Request $request){
         $lead = Lead::find($request->lead_id);
         $lead->customer_segment = $request->customer_segment;
