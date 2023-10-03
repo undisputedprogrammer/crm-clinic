@@ -37,7 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [PageController::class, 'destroy'])->name('user-logout');
     Route::get('/overview', [PageController::class, 'overview'])->name('overview');
     Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
-    Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
     Route::post('/remark/store', [Remarkcontroller::class, 'store'])->name('add-remark');
     Route::get('/lead/change/segment', [LeadController::class, 'change'])->name('change-segment');
     Route::get('/lead/change/valid', [LeadController::class, 'changevalid'])->name('change-valid');
@@ -75,6 +74,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/template', [TemplateController::class, 'store'])->name('template.store');
     Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
     Route::post('/leads/reassign', [TemplateController::class, 'assign'])->name('leads.assign');
+
+    Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
     // whatsapp api routes
     Route::post('/message/sent', [WhatsAppApiController::class, 'sent'])->name('message.sent');
 
