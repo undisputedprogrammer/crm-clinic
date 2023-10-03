@@ -3,13 +3,14 @@
         <h2 class="text-lg font-medium text-base-content">
             {{ __('Profile Information') }}
         </h2>
-
-        <p class="mt-1 text-sm text-base-content">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
     </header>
 
     <form x-data="{
+            hasPicture: false,
+            editMode: false,
+            setEditMode(mode = true) {
+                this.editMode = mode;
+            },
             doSubmit(){
                 let form = document.getElementById('profile-update-form');
                 let formdata = new FormData(form);
@@ -31,10 +32,13 @@
                     }
             }
         "
-        id="profile-update-form" class="mt-6 space-y-6 flex w-full justify-evenly items-start">
+        x-init="
+            hasPicture = {{ auth()->user()->user_picture == null ? 'false' : 'true' }};
+        "
+        id="profile-update-form" class="max-w-72 m-auto mt-6 space-y-6 flex flex-col w-full justify-evenly items-center">
         @csrf
 
-        <div>
+        <div x-show="!hasPicture || editMode" class="border border-base-content border-opacity-20 rounded-lg p-4 text-center">
             @php
                 $element = [
                 'key' => 'user_picture',
@@ -47,9 +51,19 @@
                 ];
             @endphp
             <x-easyadmin::inputs.imageuploader :element="$element"/>
+            <button x-show="hasPicture" @click.prevent.stop="setEditMode(false);" type="button" class="btn btn-link font-normal">
+                Cancel
+            </button>
+        </div>
+        <div x-show="hasPicture && !editMode" class="relative border border-base-content border-opacity-50 p-2 rounded-lg">
+            <img src="{{auth()->user()->user_picture['path']}}" class="h-52 rounded-lg m-auto">
+            <button type="button" @click.prevent.stop="setEditMode();" class="btn btn-warning btn-sm absolute top-2 right-2">
+                <x-easyadmin::display.icon icon="easyadmin::icons.edit"
+                    height="h-4" width="w-4"/>
+            </button>
         </div>
 
-        <div class=" flex flex-col space-y-2">
+        <div class=" flex flex-col items-center space-y-2">
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -58,8 +72,8 @@
         </div>
 
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="flex items-center justify-center p-8 text-center w-full">
+            <button type="submit" class="btn btn-success btn-sm px-4">{{ __('Save') }}</button>
         </div>
 
     </div>

@@ -51,9 +51,7 @@ currentroute=$event.detail.currentroute;"
             latest : null,
             processing : false,
             unread_message_count : 0,
-            pollingID : setInterval(function(){
-                $dispatch('checkforupdates');
-            },5000),
+            pollingID : 0,
             formatDate(timestamp){
                     let date = new Date(timestamp);
 
@@ -86,11 +84,14 @@ currentroute=$event.detail.currentroute;"
                                 this.latest = r.data.latest;
                             }else{
                                 console.log('latest is null');
-                                setTimeout(()=>{
+                                {{-- setTimeout(()=>{
                                     this.fetchLatest();
-                                },5000);
+                                },2000); --}}
                             }
                             this.unread_message_count = r.data.unread_message_count;
+                            this.pollingID = setInterval(function(){
+                                $dispatch('checkforupdates');
+                            },2000);
                         }).catch((c)=>{
                             console.log(c);
                         })
@@ -98,9 +99,19 @@ currentroute=$event.detail.currentroute;"
             }
 
         }"
-        x-init="fetchLatest();"
+        x-init="
+            {{-- fetchLatest(); --}}
+            setTimeout(() => {
+                this.pollingID = setInterval(function(){
+                $dispatch('checkforupdates');
+            },2000);}, 1000);
+
+        "
+        @messengerlatest.window="
+            latest = $event.detail.latest;
+        "
         @checkforupdates.window="
-        if(latest != null && !processing){
+        if(!processing){
             processing = true;
             axios.get('/api/messages/poll',{
                 params:{

@@ -9,6 +9,7 @@
             if(latest == null){
             latest = {{$latest->id}};
             }
+            $dispatch('messengerlatest', {latest: latest});
         @endif
         @if (isset($leads))
             allLeads = {{$leads}};

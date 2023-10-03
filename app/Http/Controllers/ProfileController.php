@@ -34,9 +34,13 @@ class ProfileController extends SmartController
         $request->validate([
             'name'=>'required|min:4'
         ]);
+        /**
+         * @var User
+         */
         $user = User::find(auth()->user()->id);
         $user->name = $request->name;
         $user->save();
+        $user->addOneMediaFromEAInput('user_picture', $request->input('user_picture'));
         return response()->json(['success'=>true, 'message'=>'Profile updated Successfully', 200]);
     }
 

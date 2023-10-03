@@ -289,16 +289,23 @@ class WhatsAppApiController extends SmartController
         if ($user->hasRole('admin')) {
             $unread_messages = UnreadMessages::all();
         }
-
-        if ($request->latest) {
-            $latest = Chat::find($request->latest);
-            if ($user->hasRole('admin')) {
-                $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
-            } else {
-                $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
-            }
+        if ($user->hasRole('admin')) {
+            $msgsQuery = Chat::where('direction','Inbound')->where('status','received')->with(['lead' => function ($query) {
+                return $query->where('hospital_id', auth()->user()->hospital_id);
+            }]);
+        } else {
+            $msgsQuery = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->with('lead');
         }
-
+        if ($request->latest != null) {
+            $latest = Chat::find($request->latest);
+            $msgsQuery->where('created_at', '>', $latest->created_at);
+            // if ($user->hasRole('admin')) {
+            //     $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
+            // } else {
+            //     $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
+            // }
+        }
+        $new_messages = $msgsQuery->latest()->get();
         $unread = [];
 
         if ($unread_messages != null && count($unread_messages) > 0) {
@@ -325,7 +332,9 @@ class WhatsAppApiController extends SmartController
             $q->where('assigned_to', $request->user()->id);
             $latest = Chat::whereIn('lead_id', $user_ids)->latest()->get()->first();
         } else {
-            $latest = Chat::where('lead_id', '!=', null)->latest()->get()->first();
+            $latest = Chat::with(['lead' => function ($query) {
+                return $query->where('hosptial_id', auth()->user()->hospital_id);
+            }])->latest()->get()->first();
         }
 
         $leads = $q->get();
