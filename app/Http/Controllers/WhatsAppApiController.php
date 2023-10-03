@@ -291,7 +291,7 @@ class WhatsAppApiController extends SmartController
         }
         if ($user->hasRole('admin')) {
             $msgsQuery = Chat::where('direction','Inbound')->where('status','received')->with(['lead' => function ($query) {
-                return $query->where('hospital_id', auth()->user()->hospital_id);
+                $query->where('hospital_id', auth()->user()->hospital_id);
             }]);
         } else {
             $msgsQuery = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->with('lead');
