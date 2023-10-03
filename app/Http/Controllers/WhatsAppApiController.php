@@ -299,6 +299,10 @@ class WhatsAppApiController extends SmartController
         if ($request->latest != null) {
             $latest = Chat::find($request->latest);
             $msgsQuery->where('created_at', '>', $latest->created_at);
+
+            /**
+             * removed old logic to find messages for admin
+             */
             // if ($user->hasRole('admin')) {
             //     $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
             // } else {
