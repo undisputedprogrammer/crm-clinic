@@ -290,9 +290,9 @@ class WhatsAppApiController extends SmartController
             $unread_messages = UnreadMessages::all();
         }
         if ($user->hasRole('admin')) {
-            $msgsQuery = Chat::where('direction','Inbound')->where('status','received')->with(['lead' => function ($query) {
+            $msgsQuery = Chat::where('direction','Inbound')->where('status','received')->whereHas('lead', function ($query) {
                 $query->where('hospital_id', auth()->user()->hospital_id);
-            }]);
+            });
         } else {
             $msgsQuery = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->with('lead');
         }
