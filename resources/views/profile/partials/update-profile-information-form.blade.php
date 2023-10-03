@@ -56,7 +56,7 @@
             </button>
         </div>
         <div x-show="hasPicture && !editMode" class="relative border border-base-content border-opacity-50 p-2 rounded-lg">
-            <img src="{{auth()->user()->user_picture['path']}}" class="h-52 rounded-lg m-auto">
+            <img src="{{auth()->user()->user_picture != null ? auth()->user()->user_picture['path'] : ''}}" class="h-52 rounded-lg m-auto">
             <button type="button" @click.prevent.stop="setEditMode();" class="btn btn-warning btn-sm absolute top-2 right-2">
                 <x-easyadmin::display.icon icon="easyadmin::icons.edit"
                     height="h-4" width="w-4"/>
