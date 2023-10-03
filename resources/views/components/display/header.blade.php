@@ -147,7 +147,7 @@
                 <ul class="py-2 text-base-content" aria-labelledby="user-menu-button">
 
                     <li>
-                        <a href="" class="block px-4 py-2 text-sm hover:text-primary hover:bg-base-100">Profile</a>
+                        <a href="" @click.prevent.stop="$dispatch('linkaction',{link: '{{route('user.profile')}}', route: 'user.profile', fragment: 'page-content'})" class="block px-4 py-2 text-sm hover:text-primary hover:bg-base-100">Profile</a>
                     </li>
 
                     <li>

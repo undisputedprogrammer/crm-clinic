@@ -319,7 +319,7 @@ class WhatsAppApiController extends SmartController
     {
         $user_ids = $request->user()->leads->pluck('id')->toArray();
         // dd($user_ids);
-        $q = Lead::has('chats')->with('chats');
+        $q = Lead::has('chats')->with('chats')->where('hospital_id',$request->user()->hospital_id);
 
         if ($request->user()->hasRole('agent')) {
             $q->where('assigned_to', $request->user()->id);

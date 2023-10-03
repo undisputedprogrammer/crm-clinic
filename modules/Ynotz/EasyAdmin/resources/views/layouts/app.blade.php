@@ -102,7 +102,7 @@ currentroute=$event.detail.currentroute;"
         @checkforupdates.window="
         if(latest != null && !processing){
             processing = true;
-            axios.get('api/messages/poll',{
+            axios.get('/api/messages/poll',{
                 params:{
                     user_id : '{{Auth::user()->id}}',
                     latest : latest
