@@ -1,9 +1,14 @@
 <x-easyadmin::app-layout>
-    <div>
+    <div x-data="x_overview"
+    x-init = "@if(isset($journal))
+    journal = {{$journal}};
+    @endif
+    "
+    >
         <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
             <!-- Header -->
-            <x-display.header />
+            <x-display.header :hospital="$hospital"/>
             <x-sections.side-drawer />
             <!-- ./Header -->
 
@@ -212,14 +217,6 @@
                                     Doctors
                                 </button>
 
-                                {{-- <button class="btn btn-sm btn-secondary"
-                                    @click.prevent.stop="$dispatch('linkaction',{
-                                        link:'{{ route('messages.index') }}',
-                                        route:'messages.index',
-                                        fragment:'page-content'
-                                    })">Manage Messages
-                                </button> --}}
-
                                 <button class="btn btn-sm btn-secondary "
                                     @click.prevent.stop="$dispatch('linkaction',{
                                         link:'{{ route('agents.index') }}',
@@ -242,6 +239,28 @@
                         </div>
                     @endcan
 
+                    @can('is-agent')
+
+                    <div class="bg-base-200 w-fit p-3 rounded-lg border border-secondary max-w-100 text-base-content">
+                        <h2 class=" font-mono font-semibold text-base">Daily Journel</h2>
+                        <p class="font-bold text-secondary" x-text="getDate();"></p>
+                        <p style="white-space: pre-line;" class="text-sm my-2 font-medium" x-html="journal != null ? escapeSingleQuotes(journal.body) : 'Enter today\'s journal' " ></p>
+
+                        <form @submit.prevent.stop="journalSubmit($el.id,'{{route('journal.store')}}', 'journal.store');" id="add-journal-form" action="" class=" mt-3"
+                        @formresponse.window="
+                        if($el.id == $event.detail.target){
+                            postJournalSubmission($event.detail.content);
+                            $el.reset();
+                        }">
+                            <textarea name="body" id="journal-body"
+                            class=" textarea textarea-ghost min-w-72 lg:w-full bg-base-100 focus-within:border-secondary focus:outline-none"
+                            placeholder="Enter today's report"></textarea>
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-1.5">Save</button>
+                        </form>
+                    </div>
+
+                    @endcan
                 </div>
 
 

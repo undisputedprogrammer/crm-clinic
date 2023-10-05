@@ -3,25 +3,43 @@
 selectedCenter = null;
 @isset($selectedCenter)
     selectedCenter = {{$selectedCenter}};
-@endisset">
+@endisset
+theLink = '{{route('fresh-leads')}}';">
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
-      <x-display.header/>
+      <x-display.header :hospital="$hospital"/>
       <x-sections.side-drawer/>
       {{-- page body --}}
 
         <div class=" flex bg-base-200 items-center justify-between px-[3.3%]">
 
-            <div class=" flex space-x-2 items-center justify-start pt-1.5">
+            <div class=" flex space-x-3 items-center justify-start pt-1.5">
                 <h1 class=" text-primary text-xl font-semibold bg-base-200 ">Leads</h1>
-                <div>
+                <div class=" flex space-x-3">
                     @can('is-admin')
                         @php
                         $route = "fresh-leads";
                         @endphp
                         <x-forms.filter-leads :route="$route" :centers="$centers"/>
                     @endcan
+
+                    {{-- Search lead by name or phone number --}}
+                    <div>
+                        <form @submit.prevent.stop="searchlead();" id="lead-search-form" class=" relative mx-auto text-base-content">
+                            <input class="border border-primary bg-base-100 input input-sm  focus:outline-none focus:ring-0 focus-within:border-primary text-base-content"
+                              type="text" name="search" placeholder="Search name or phone">
+                            <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 ">
+                              <x-icons.search-icon/>
+                            </button>
+                        </form>
+                    </div>
+
+                    {{-- filter lead by status --}}
+                    <div>
+                        <x-forms.filter-lead-by-status :status="$status"/>
+                    </div>
+
                 </div>
 
             </div>
@@ -150,10 +168,7 @@ selectedCenter = null;
        class=" md:h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full md:flex justify-evenly">
 
 
-
-
         <x-tables.leads-table :leads="$leads"/>
-
 
 
         <div x-data="{
@@ -241,9 +256,6 @@ selectedCenter = null;
             selected = true;
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
-                {{-- lead = JSON.parse($event.detail.lead);
-                remarks = JSON.parse($event.detail.remarks);
-                followups = JSON.parse($event.detail.followups); --}}
                 lead = $event.detail.lead;
                 remarks = $event.detail.remarks;
                 followups = $event.detail.followups;
@@ -261,8 +273,6 @@ selectedCenter = null;
                 followups = leads[$event.detail.id].followups;
                 name = lead.name;
                 qnas = lead.qnas;
-
-
             }
             convert = false;
 

@@ -8,6 +8,8 @@ import progressbar from '@/components/progressbar';
 import main from './components/pages/main';
 import leads from './components/pages/leads';
 import messenger from './components/pages/messenger';
+import overview from './components/pages/overview';
+import agents from './components/pages/agents';
 
 Alpine.plugin(persist)
 
@@ -28,6 +30,8 @@ Alpine.data('progressBar', progressbar);
 Alpine.data('x_main', main);
 Alpine.data('x_leads', leads);
 Alpine.data('x_messenger', messenger);
+Alpine.data('x_overview', overview);
+Alpine.data('x_agents', agents);
 
 Alpine.start();
 

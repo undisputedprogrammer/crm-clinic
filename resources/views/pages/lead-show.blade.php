@@ -1,5 +1,5 @@
 <x-easyadmin::app-layout>
-    <x-display.header />
+    <x-display.header :hospital="$hospital" />
     <x-sections.side-drawer />
     <div class="py-8">
         <div x-data="{
@@ -11,12 +11,13 @@
                 expiry_timestamp: null,
                 custom_enabled: false,
                 loadWhatsApp() {
+                    console.log('fetching chats from lead'+lead.id);
                     this.selected_section = 'wp';
                     this.messageLoading = true;
                     $dispatch('resetselect');
                     axios.get('/api/get/chats', {
                         params: {
-                            id: lead.id
+                            id: this.lead.id
                         }
                     }).then((r) => {
                         this.expiry_timestamp = r.data.expiration_time;

@@ -15,6 +15,20 @@ export default () => ({
 
         console.log(Object.keys(this.selectedLeads).length);
     },
+    selectAll(el){
+       let checkboxes = document.getElementsByClassName('individual-checkboxes');
+       for(let i = 0; i<checkboxes.length; i++){
+        if(el.checked == true){
+            if(checkboxes[i].checked != true){
+                checkboxes[i].click();
+            }
+        }else{
+            if(checkboxes[i].checked != false){
+                checkboxes[i].click();
+            }
+        }
+       }
+    },
     sendBulkMessage(ajaxLoading){
         if(Object.keys(this.selectedLeads).length < 1){
             console.log('No leads selected');
@@ -83,6 +97,9 @@ export default () => ({
             })
         }
         return latest;
+    },
+    escapeSingleQuotes(inputString) {
+        return inputString.replace(/'/g, "\'");
     }
 });
 

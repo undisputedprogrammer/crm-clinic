@@ -87,7 +87,9 @@
                                 <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor">
                                     <option disabled>Choose Doctor</option>
                                     @foreach ($doctors as $doctor)
-                                        <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                                    <template x-if="lead.center_id == '{{$doctor->center_id}}' ">
+                                            <option value="{{$doctor->id}}">{{$doctor->name}}</option>
+                                    </template>
                                     @endforeach
 
                                 </select>
@@ -105,63 +107,7 @@
                         ************************************************************* --}}
 
                         {{-- mark consulted form --}}
-                        <form
-                        x-data="{
-                            doSubmit() {
-                                let form = document.getElementById('mark-consulted-form');
-                                let formdata = new FormData(form);
-                                formdata.append('followup_id',fp.id);
-                                formdata.append('lead_id',fp.lead.id);
-                                $dispatch('formsubmit',{url:'{{route('consulted.mark')}}', route: 'consulted.mark',fragment: 'page-content', formData: formdata, target: 'mark-consulted-form'});
-                            }
-                        }"
 
-                        @submit.prevent.stop="doSubmit()"
-
-                        @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            {{-- console.log($event.detail.content); --}}
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                $el.reset();
-
-                                if($event.detail.content.lead != null || $event.detail.content.lead != undefined){
-                                    lead.status = $event.detail.content.lead.status;
-                                    console.log(lead.status);
-                                }
-
-                                if($event.detail.content.followup != null || $event.detail.content.followup != undefined){
-                                    fp.consulted = $event.detail.content.followup.consulted;
-                                    console.log(fp.consulted);
-                                }
-
-                                if($event.detail.content.appointment != null && $event.detail.content != undefined){
-                                    lead.appointment.remarks = $event.detail.content.appointment.remarks;
-                                }
-
-
-                                  $dispatch('formerrors', {errors: []});
-                            }
-
-                            else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
-                            }
-                        }
-                        "
-                         x-show="fp.consulted == null && lead.status=='Converted'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
-                            <h1 class=" text-secondary font-medium text-base mb-1">Mark consulted</h1>
-
-                            <textarea name="remark" class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
-
-                            <div class=" flex space-x-2 mt-1">
-                                <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
-                            </div>
-
-
-                        </form>
 
                         <div x-show="fp.consulted != null" class="mt-4">
                             <p class=" text-success font-medium">Consult completed on <span x-text="lead.appointment != null ? lead.appointment.appointment_date : '' "></span></p>

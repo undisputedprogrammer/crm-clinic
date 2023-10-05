@@ -27,7 +27,7 @@
     <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
-      <x-display.header/>
+      <x-display.header :hospital="$hospital"/>
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
