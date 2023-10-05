@@ -236,9 +236,9 @@
                 </div>
 
                 <div x-show="!journalsLoading" class="flex flex-col space-y-2">
-                    <form action="" class="flex space-x-2">
-                        <input type="month" class=" input input-sm input-bordered border-primary">
-                        <button class="btn btn-sm btn-primary">search</button>
+                    <form action="" class="flex space-x-2" @submit.prevent.stop="filterJournals($el);">
+                        <input type="month" name="month" class=" input input-sm input-bordered border-primary">
+                        <button type="submit" class="btn btn-sm btn-primary">search</button>
                     </form>
                     <template x-if="journals.length > 0">
                         <template x-for="journal in journals">

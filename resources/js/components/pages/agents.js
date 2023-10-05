@@ -1,3 +1,4 @@
+import axios from "axios";
 export default () => ({
     mode: "add",
     id: "",
@@ -55,4 +56,17 @@ export default () => ({
         });
         this.journalsLoading = false;
     },
+    filterJournals(el){
+        let formdata = new FormData(el);
+        console.log(formdata.get('month'));
+        axios.get('/fetch/journals',{
+            params:{
+                month: formdata.get('month')
+            }
+        }).then((r)=>{
+            console.log(r.data);
+        }).catch((e)=>{
+            console.log(e);
+        });
+    }
 });

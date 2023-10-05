@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Journal;
 use App\Services\JournalService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -30,9 +31,18 @@ class JournalController extends SmartController
     }
 
     public function fetch(Request $request){
-        $journalsQuery = Journal::where('user_id',$request->user_id);
-        $journals = $journalsQuery->latest()->get();
+        if($request->month){
+            $date = Carbon::createFromFormat('Y-m',$request->month);
+            $month = $date->format('m');
+            $year = $date->format('Y');
+        }else{
+            $today = Carbon::now();
+            $month  = $today->format('m');
+            $year = $today->format('Y');
+        }
 
+        $journalsQuery = Journal::where('user_id',$request->user_id)->whereMonth('date',$month)->whereYear('date',$year);
+        $journals = $journalsQuery->latest()->get();
         return response($journals);
     }
 }
