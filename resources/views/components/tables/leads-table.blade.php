@@ -2,7 +2,7 @@
 
 {{-- {{dd($leads[0])}} --}}
 
-<div class=" w-[96%] mx-auto md:w-[55%] overflow-x-scroll hide-scroll">
+<div class=" w-[96%] mx-auto md:w-[45%] overflow-x-scroll hide-scroll">
     <div class="overflow-x-auto border border-primary rounded-xl">
         @if ($leads != null && count($leads) > 0)
 
@@ -11,7 +11,7 @@
                 <thead>
                     <tr class=" text-secondary ">
                         <th><input id="select-all" type="checkbox" class=" checkbox checkbox-secondary" @click="selectAll($el);"></th>
-                        <th>ID</th>
+                        {{-- <th>ID</th> --}}
                         <th>Name</th>
                         <th>City</th>
                         <th>Phone</th>
@@ -27,7 +27,7 @@
 
                             <th><input type="checkbox" :checked="selectedLeads[{{$lead->id}}] != null ? true : false " @click="selectLead($el,{{$lead}})" class="checkbox checkbox-secondary checkbox-sm individual-checkboxes"></th>
 
-                            <th>{{ $lead->id }}</th>
+                            {{-- <th>{{ $lead->id }}</th> --}}
                             <td>{{ $lead->name }}</td>
                             <td>{{ $lead->city }}</td>
                             <td>{{ $lead->phone }}</td>

@@ -190,6 +190,11 @@
                 </div>
                 <div x-show="!auditsLoading">
                     {{-- Showing audits --}}
+
+                    <form action="" class="flex space-x-2" @submit.prevent.stop="filterAudits($el);">
+                        <input type="month" name="month" class=" input input-sm input-bordered border-primary">
+                        <button type="submit" class="btn btn-sm btn-primary">search</button>
+                    </form>
                     <template x-if="audits.length > 0">
                         <template x-for="audit in audits">
                             <div class="flex flex-col text-xs p-1 my-1 bg-base-200 rounded-md">
@@ -207,7 +212,7 @@
                             </div>
                         </template>
                     </template>
-                    <template x-if="audits.length < 1">
+                    <template x-if="audits.length == 0">
                         <div class=" p-4 w-full text-center font-medium text-error">
                             No audits available
                         </div>

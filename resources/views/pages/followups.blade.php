@@ -402,6 +402,9 @@
                                 </div>
                             </form>
 
+                            <div x-show="lead.status == 'Consulted' " >
+                                <p class="w-full text-center font-medium text-secondary text-base">Consultation completed.</p>
+                            </div>
 
                             <div x-data="{
                                 selected_action : '-- Select Action --'

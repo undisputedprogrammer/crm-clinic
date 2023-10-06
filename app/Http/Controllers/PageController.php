@@ -39,7 +39,7 @@ class PageController extends SmartController
 
         $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center,$request->search, $request->status);
 
-        return $this->buildResponse('pages.leads', $data);
+        return $this->buildResponse('pages.new-leads', $data);
 
     }
 

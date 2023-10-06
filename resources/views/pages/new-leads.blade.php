@@ -172,7 +172,7 @@ theLink = '{{route('fresh-leads')}}';">
 
 
         <div x-data="{
-                selected_section: 'details',
+                selected_section: 'actions',
                 messageLoading : false,
                 qnas: [],
                 chats : [],
@@ -240,19 +240,12 @@ theLink = '{{route('fresh-leads')}}';">
             }"
 
             class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
-            <div class=" flex space-x-4">
-                <h2 @click="selected_section = 'details'" class="text-lg font-semibold text-secondary cursor-pointer" :class=" selected_section == 'details' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Lead details</h2>
-
-                <h2 @click="selected_section = 'qna'" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'qna' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">QNA</h2>
-
-                <h2 @click="loadWhatsApp();" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
-            </div>
 
             <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
 
-            <div x-show="selected && selected_section == 'details'" x-transition
+            <div x-show="selected" x-transition
             @detailsupdate.window="
-            selected_section = 'details';
+            selected_section = 'actions';
             selected = true;
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
@@ -276,44 +269,40 @@ theLink = '{{route('fresh-leads')}}';">
             }
             convert = false;
 
-            " class=" mt-2 flex flex-col">
-                <div class=" lg:flex space-x-6">
+            " class=" mt-2 flex flex-col lg:flex-row">
+
+            {{-- Details section starts --}}
+            <div>
+                <div>
                     <p class="text-base font-medium">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-base font-medium">City : <span x-text="lead.city"> </span></p>
-                </div>
-
-                <div class=" lg:flex space-x-6">
                     <p class="text-base font-medium">Phone : <span x-text="lead.phone"> </span></p>
                     <p class="text-base font-medium">Email : <span x-text="lead.email"> </span></p>
                 </div>
 
+                <div class=" flex items-center space-x-2">
+                    <p class=" text-base font-medium">Is valid : </p>
 
-                <div class=" md:flex space-x-5">
-                    <div class=" flex items-center space-x-2">
-                        <p class=" text-base font-medium">Is valid : </p>
-
-                        <input @change.prevent.stop="$dispatch('changevalid',{
-                            link: '{{route('change-valid')}}',
-                            is_valid: lead.is_valid,
-                        });" type="checkbox" name="is_valid" :checked=" lead.is_valid == 1 ? true : false" class="checkbox checkbox-sm checkbox-success focus:ring-0" />
-                    </div>
-
-                    <div class=" flex items-center space-x-2 ">
-                        <p class=" text-base font-medium ">Is genuine : </p>
-
-                        <input @change.prevent.stop="$dispatch('changegenuine',{
-                            link: '{{route('change-genuine')}}',
-                            is_genuine: lead.is_genuine,
-                        });" type="checkbox" name="is_genuine" :checked=" lead.is_genuine == 1 ? true : false " class="checkbox checkbox-sm checkbox-success focus:ring-0" />
-                    </div>
+                    <input @change.prevent.stop="$dispatch('changevalid',{
+                        link: '{{route('change-valid')}}',
+                        is_valid: lead.is_valid,
+                    });" type="checkbox" name="is_valid" :checked=" lead.is_valid == 1 ? true : false" class="checkbox checkbox-sm checkbox-success focus:ring-0" />
                 </div>
 
+                <div class=" flex items-center space-x-2 ">
+                    <p class=" text-base font-medium ">Is genuine : </p>
+
+                    <input @change.prevent.stop="$dispatch('changegenuine',{
+                        link: '{{route('change-genuine')}}',
+                        is_genuine: lead.is_genuine,
+                    });" type="checkbox" name="is_genuine" :checked=" lead.is_genuine == 1 ? true : false " class="checkbox checkbox-sm checkbox-success focus:ring-0" />
+                </div>
 
                 {{-- Questions for lead segment --}}
 
                 {{-- question visit within a week --}}
                 <div class="flex items-center space-x-2">
-                    <p class=" text-base font-medium">Will they visit within a week ? : </p>
+                    <p class=" text-base font-medium">Visit in a week ? : </p>
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_visit == null || lead.q_visit == 'null' ? 'Not selected' : lead.q_visit " class=" text-secondary"></span><x-icons.down-arrow /></label>
 
@@ -343,7 +332,6 @@ theLink = '{{route('fresh-leads')}}';">
 
                       </div>
                 </div>
-
 
                 {{-- question decide within a week --}}
                 <div x-show="lead.q_visit == 'no'" class="flex items-center space-x-2">
@@ -378,82 +366,9 @@ theLink = '{{route('fresh-leads')}}';">
                       </div>
                 </div>
 
-
                 <div class=" flex items-center space-x-2">
                     <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " :class="lead.customer_segment != null ? ' uppercase' : '' "></span></p>
-
                 </div>
-
-
-                {{-- *********************************************************************************
-                Remark area
-                ********************************************************************************* --}}
-
-            <div class="md:flex justify-start space-x-8 mt-1.5">
-
-                <div class=" flex flex-col md:w-1/2">
-
-                    <p class=" text-base font-medium text-secondary">Remarks</p>
-
-                    <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal">
-                        <template x-for="remark in remarks">
-
-                            <li class="">
-                                <span x-text="remark.remark"></span>
-
-                                <span>-</span>
-                                <span x-text="formatDate(remark.created_at)"></span>
-
-                            </li>
-
-                        </template>
-                    </ul>
-
-                    <form
-                    x-data = "{ doSubmit() {
-                            let form = document.getElementById('add-remark-form');
-                            let formdata = new FormData(form);
-                            formdata.append('remarkable_id',lead.id);
-                            formdata.append('remarkable_type','lead');
-                            $dispatch('formsubmit',{url:'{{route('add-remark')}}', route: 'add-remark',fragment: 'page-content', formData: formdata, target: 'add-remark-form'});
-                        }}"
-                    @submit.prevent.stop="doSubmit()"
-                    @formresponse.window="
-                        if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                axios.get('/api/get/remarks',{
-                                    params: {
-                                    remarkable_id: lead.id,
-                                    remarkable_type: 'App\Models\Lead'
-                                    }
-                                  }).then(function (response) {
-
-                                    remarks = response.data.remarks;
-                                    leads[lead.id].remarks = remarks;
-                                    document.getElementById('add-remark-form').reset();
-
-                                  }).catch(function (error){
-                                    console.log(error);
-                                  });
-                                $dispatch('formerrors', {errors: []});
-                            } else if (typeof $event.detail.content.errors != undefined) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                            } else{
-                                $dispatch('formerrors', {errors: $event.detail.content.errors});
-                            }
-                        }"
-                    action="" id="add-remark-form" class=" bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
-
-                        <textarea placeholder="Remark" name="remark" required class="textarea textarea-bordered textarea-xs text-sm w-full max-w-sm" rows="2"></textarea>
-
-                        <button type="submit" class="btn btn-primary btn-xs self-end">Add remark</button>
-
-                    </form>
-
-                </div>
-
 
                 <div>
                     <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
@@ -472,42 +387,136 @@ theLink = '{{route('fresh-leads')}}';">
 
                 </div>
 
-
             </div>
+            {{-- Details section ends --}}
 
-                <div x-data="{
-                    selected_action : 'Initiate Followup'
-                }" class="pt-2.5">
+            {{-- Actions and whatsapp sections begins --}}
 
-                <x-dropdowns.leads-action-dropdown/>
+            <div>
+                <div class=" flex space-x-4">
+                    <h2 @click="selected_section = 'actions'" class="text-lg font-semibold text-secondary cursor-pointer" :class=" selected_section == 'actions' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Lead Actions</h2>
 
-                <x-forms.followup-initiate-form/>
+                    <h2 @click="selected_section = 'qna'" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'qna' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">QNA</h2>
 
-                <x-forms.add-appointment-form :doctors="$doctors"/>
+                    <h2 @click="loadWhatsApp();" class="text-lg font-semibold text-secondary cursor-pointer " :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
+                </div>
 
-                <x-forms.lead-close-form/>
+                {{-- Actions area --}}
+                <div x-show="selected_section == 'actions' " x-transition class="">
+
+                    <div class=" flex flex-col">
+
+                        <p class=" text-base font-medium text-secondary">Remarks</p>
+
+                        <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal">
+                            <template x-for="remark in remarks">
+
+                                <li class="">
+                                    <span x-text="remark.remark"></span>
+
+                                    <span>-</span>
+                                    <span x-text="formatDate(remark.created_at)"></span>
+
+                                </li>
+
+                            </template>
+                        </ul>
+
+                        <form
+                        x-data = "{ doSubmit() {
+                                let form = document.getElementById('add-remark-form');
+                                let formdata = new FormData(form);
+                                formdata.append('remarkable_id',lead.id);
+                                formdata.append('remarkable_type','lead');
+                                $dispatch('formsubmit',{url:'{{route('add-remark')}}', route: 'add-remark',fragment: 'page-content', formData: formdata, target: 'add-remark-form'});
+                            }}"
+                        @submit.prevent.stop="doSubmit()"
+                        @formresponse.window="
+                            if ($event.detail.target == $el.id) {
+                                if ($event.detail.content.success) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                    axios.get('/api/get/remarks',{
+                                        params: {
+                                        remarkable_id: lead.id,
+                                        remarkable_type: 'App\Models\Lead'
+                                        }
+                                      }).then(function (response) {
+
+                                        remarks = response.data.remarks;
+                                        leads[lead.id].remarks = remarks;
+                                        document.getElementById('add-remark-form').reset();
+
+                                      }).catch(function (error){
+                                        console.log(error);
+                                      });
+                                    $dispatch('formerrors', {errors: []});
+                                } else if (typeof $event.detail.content.errors != undefined) {
+                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
+
+                                } else{
+                                    $dispatch('formerrors', {errors: $event.detail.content.errors});
+                                }
+                            }"
+                        action="" id="add-remark-form" class=" bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
+
+                            <textarea placeholder="Remark" name="remark" required class="textarea textarea-bordered textarea-xs text-sm w-full max-w-sm" rows="2"></textarea>
+
+                            <button type="submit" class="btn btn-primary btn-xs self-end">Add remark</button>
+
+                        </form>
+
+                    </div>
+
+                    <div x-data="{
+                                    selected_action : 'Initiate Followup'
+                                }" class="pt-2.5">
+
+                        <x-dropdowns.leads-action-dropdown/>
+
+                        <x-forms.followup-initiate-form/>
+
+                        <x-forms.add-appointment-form :doctors="$doctors"/>
+
+                        <x-forms.lead-close-form/>
+
+                    </div>
+
+                </div>
+                {{-- Actions section ends --}}
+
+                {{-- QNA section --}}
+                <div x-show="selected_section == 'qna' " class=" py-3">
+                    <x-sections.qna />
+                </div>
+                {{-- QNA section ends --}}
+
+                {{-- Whatsapp section --}}
+                <div x-show="selected_section == 'wp' " class=" py-3" :class="messageLoading ? ' flex w-full ' : '' ">
+                    <x-sections.whatsapp :templates="$messageTemplates"/>
+
+                    <div x-show="messageLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                        <span class="loading loading-bars loading-md "></span>
+                        <label for="">Please wait while we load messages...</label>
+                    </div>
 
                 </div>
 
 
             </div>
 
-            {{-- QNA section --}}
-            <div x-show="selected_section == 'qna' " class=" py-3">
-                <x-sections.qna />
-            </div>
 
 
-            {{-- Whatsapp section --}}
-            <div x-show="selected_section == 'wp' " class=" py-3" :class="messageLoading ? ' flex w-full ' : '' ">
-                <x-sections.whatsapp :templates="$messageTemplates"/>
 
-                <div x-show="messageLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
-                    <span class="loading loading-bars loading-md "></span>
-                    <label for="">Please wait while we load messages...</label>
-                </div>
+
+
+
 
             </div>
+
+
+
+
+
 
         </div>
 

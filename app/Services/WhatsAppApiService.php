@@ -258,4 +258,34 @@ class WhatsAppApiService
 
         return response(json_encode($data), 200);
     }
+
+    public function markasread($wamid){
+        $postfields = array(
+            "messaging_product"=> "whatsapp",
+            "status"=> "read",
+            "message_id"=> $wamid
+        );
+        $json_postfields = json_encode($postfields);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://graph.facebook.com/v18.0/123563487508047/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $json_postfields,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'authkey: 405736ABdKIenjmHR6501a01aP1',
+                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $data = json_decode($response, true);
+        return $data;
+    }
 }

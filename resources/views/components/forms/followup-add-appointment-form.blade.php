@@ -13,7 +13,7 @@
     <p class=" text-error text-base font-medium py-4">This lead is closed!</p>
 </template>
 
-<form x-show="fp.converted != true" x-cloak x-transition
+<form x-show="fp.converted != true && fp.next_followup_date == null" x-cloak x-transition
                         x-data ="
                         { doSubmit() {
                             let form = document.getElementById('appointment-form');

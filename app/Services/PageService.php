@@ -135,8 +135,7 @@ class PageService
             return $q->with('appointment');
         }, 'remarks'])
             ->where('scheduled_date', '<=', date('Y-m-d'))
-            ->where('actual_date', null)
-            ->where('consulted', null);
+            ->where('actual_date', null);
 
         if ($user->hasRole('agent')) {
             $followupsQuery->whereHas('lead', function ($query) use ($user) {

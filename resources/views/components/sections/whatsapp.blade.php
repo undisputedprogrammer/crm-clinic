@@ -65,7 +65,7 @@
             }
 
         }"
-         class="flex justify-evenly pt-2" id="wp-message-form" action="{{route('message.sent')}}" method="POST" @submit.prevent.stop="doSubmit()">
+         class="flex justify-evenly pt-2" id="wp-message-form" action="{{route('message.sent')}}" method="POST" @submit.prevent.stop="doSubmit()" x-show="lead.id != null">
         @csrf
 
             <select @change.prevent.stop="validate()" :required="!custom ? true : false " x-model="value" x-show="!custom" name="template" id="select-template" class=" select select-info w-[78%] lg:w-[80%] focus:ring-0 focus:outline-none" >
