@@ -5,14 +5,15 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 
+use App\Models\Journal;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Ynotz\MediaManager\Traits\OwnsMedia;
 use Ynotz\AccessControl\Traits\WithRoles;
 use Ynotz\MediaManager\Contracts\MediaOwner;
+
+
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -99,5 +100,9 @@ class User extends Authenticatable implements MediaOwner
                 return $arr;
             }
         );
+    }
+
+    public function journals(){
+        return $this->hasMany(Journal::class, 'user_id', 'id');
     }
 }

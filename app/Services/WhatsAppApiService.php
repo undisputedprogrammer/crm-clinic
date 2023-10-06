@@ -189,17 +189,12 @@ class WhatsAppApiService
         // $recipient = $lead->phone;
 
         $payload = array(
-            "to" => $recipient,
-            "type" => "template",
-            "template" => array(
-                "name" => $template->template,
-                "language" => array(
-                    "code" => "en",
-                    "policy" => "deterministic"
-                ),
-                "components" => json_encode($components)
+            "name" => $template->template,
+            "language" => array(
+                "code" => "en",
+                "policy" => "deterministic"
             ),
-            "messaging_product" => "whatsapp"
+            "components" => json_encode($components),
         );
 
 
@@ -207,16 +202,18 @@ class WhatsAppApiService
             "integrated_number" => "918075473813",
             "lead_id" => $lead->id,
             "content_type" => "template",
-            "payload" => $payload,
-            "messaging_product" => "whatsapp"
-
+            "type" => "template",
+            "template" => $payload,
+            "messaging_product" => "whatsapp",
+            "recipient_type" => "individual",
+            "to" => $recipient
         );
 
         $json_postfields = json_encode($postfields);
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/',
+            CURLOPT_URL => 'https://graph.facebook.com/v17.0/123563487508047/messages/',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -228,15 +225,37 @@ class WhatsAppApiService
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'authkey: 405736ABdKIenjmHR6501a01aP1',
+                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
             ),
         ));
         $response = curl_exec($curl);
         curl_close($curl);
+        $data = json_decode($response, true);
 
+        if(isset($data['error'])){
+            return response()->json(['status'=>'fail','message'=>'Sorry! Could not send message']);
+        }
+        $serviceObject = new WhatsAppApiService;
+        if ($data['messages'] != null) {
+            info('Message is submitted');
+            info($data);
+            $message_params = $components[0]['parameters'];
+            $placeholders = $serviceObject->getVariables($template->body);
+            $rendered_message = $serviceObject->renderMessage($template->body, $placeholders, $message_params);
+            info($rendered_message);
+            $chat = Chat::create([
+                'message' => $rendered_message,
+                'direction' => 'Outbound',
+                'lead_id' => $lead->id,
+                'status' => 'submitted',
+                'wamid' => $data['messages'][0]['id'],
+                // 'template_id'=>$template->id
+            ]);
 
+            $data['status'] = 'success';
+            $data['chat'] = $chat;
+        }
 
-        // return redirect('/leads');
-        info('Message is sent to '.$lead->name);
-        return true;
+        return response(json_encode($data), 200);
     }
 }

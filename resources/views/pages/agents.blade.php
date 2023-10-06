@@ -7,7 +7,7 @@
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
-      <x-display.header/>
+      <x-display.header :hospital="$hospital"/>
       <x-sections.side-drawer/>
       {{-- page body --}}
 
@@ -23,8 +23,6 @@
         </div>
       </div>
 
-
-
       <div x-data="{page: 0}"
         x-init="
             page = {{request()->input('page', 0)}};
@@ -39,17 +37,12 @@
                 fragment: 'page-content',
             })"
 
-       class=" lg:h-[calc(100vh-3.5rem)] pt-7 pb-12 lg:pb-0  bg-base-200 w-full flex flex-col lg:flex-row space-y-4 lg:space-y-0 items-center lg:items-start justify-evenly">
+       class=" lg:h-[calc(100vh-6rem)] pt-7 pb-12 lg:pb-0  bg-base-200 w-full flex flex-col lg:flex-row space-y-4 lg:space-y-0 items-center lg:items-start justify-evenly">
 
 
         <x-tables.agents-table :agents="$agents"/>
 
-
-
-        <div
-            x-data="{
-                mode: 'add',
-            }"
+        <div x-data="x_agents"
             class=" w-[96%] lg:w-[35%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <div x-show="mode=='add'" x-transition>
                 <h2 class="text-lg font-semibold text-secondary ">Add Agent</h2>
@@ -72,11 +65,7 @@
                             } else {
                                 $dispatch('showtoast', {mode: 'error', message: $event.detail.content.message});
                             }
-
-
-                        }
-                        "
-                        >
+                        }">
                         <div class="form-control w-full max-w-xs">
                             <label class="label">
                             <span class="label-text">Name</span>
@@ -127,19 +116,6 @@
 
             {{-- agent edit window --}}
             <div
-                x-data="{
-                    id: '',
-                    name: '',
-                    email: '',
-                    center_id: '',
-                    reset() {
-                        this.id = '';
-                        this.name = '';
-                        this.email = '';
-                        this.center_id = '';
-                        mode = 'add';
-                    }
-                }"
                 x-show="mode=='edit'"
                 @agentedit.window="
                     id = $event.detail.id;
@@ -199,38 +175,7 @@
 
             {{-- attendance window --}}
 
-            <div x-data="{
-                name:'',
-                id: null,
-                audits:[],
-                auditsLoading: false,
-                fetchaudits(){
-                    this.auditsLoading = true;
-                    axios.get('/fetch/audits',{
-                        params:{
-                            user_id : this.id
-                        }
-                    }).then((r)=>{
-                        console.log(r.data);
-                        this.audits = r.data;
-                    }).catch((e)=>{
-                        this.$dispatch('showtoast',{mode:'error',message: 'Could not load audits'});
-                    });
-                    this.auditsLoading = false;
-                },
-                formatDate(isoDateString) {
-                    const options = { year: 'numeric', month: 'short', day: '2-digit' };
-                    return new Date(isoDateString).toLocaleDateString('en-US', options);
-                },
-                formatTime(isoDateString) {
-                    const date = new Date(isoDateString);
-                    const hours = (date.getHours() % 12 || 12).toString().padStart(2, '0');
-                    const minutes = date.getMinutes().toString().padStart(2, '0');
-                    const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
-
-                    return `${hours}:${minutes} ${ampm}`;
-                }
-            }" x-show="mode=='attendance'"
+            <div x-show="mode=='attendance'"
             @agentattendance.window="
                     mode='attendance';
                     id=$event.detail.id;
@@ -252,7 +197,7 @@
                                 <p class=" flex space-x-2">
                                     <span x-text="'Login : '+formatTime(audit.login)"></span>
                                     <span>|</span>
-                                    <span x-text="'Logout : '+formatTime(audit.logout)"></span>
+                                    <span x-text="audit.logout != null ? 'Logout : '+formatTime(audit.logout) : 'Logout : Unavailable' "></span>
                                 </p>
                                 <p class=" flex space-x-2">
                                     <span x-text=" audit.break_in != null ? 'Break-in : '+formatTime(audit.break_in) : 'Break-in : Unavailable'"></span>
@@ -274,7 +219,48 @@
                 </div>
             </div>
 
+            {{-- Journals section --}}
+            <div x-show="mode=='journals'"
+            @agentjournals.window="
+            mode = 'journals';
+            name = $event.detail.name;
+            id = $event.detail.id;
+            fetchJournals();
+            ">
+                <h1 class=" text-primary font-medium text-lg" x-text="'Journals of '+name"></h1>
 
+                {{-- journals loading animation --}}
+                <div x-show="journalsLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                    <span class="loading loading-bars loading-md "></span>
+                    <label for="">Please wait while we load the journals...</label>
+                </div>
+
+                <div x-show="!journalsLoading" class="flex flex-col space-y-2">
+                    <form action="" class="flex space-x-2" @submit.prevent.stop="filterJournals($el);">
+                        <input type="month" name="month" class=" input input-sm input-bordered border-primary">
+                        <button type="submit" class="btn btn-sm btn-primary">search</button>
+                    </form>
+                    <template x-if="journals.length > 0">
+                        <template x-for="journal in journals">
+                            <div class="w-full bg-base-200 rounded-lg py-1 px-2">
+                                <p class=" font-semibold text-base font-mono text-secondary" x-text="formatDate(journal.date);"></p>
+                                <p class=" text-sm font-medium" style="white-space: pre-line;" x-html="escapeSingleQuotes(journal.body)"></p>
+                            </div>
+                        </template>
+                    </template>
+                    <template x-if="journals.length == 0">
+                        <div x-show="!journalsLoading">
+                            <h1 class="w-full text-center py-6 text-error font-semibold">No journals from this month.</h1>
+                        </div>
+                    </template>
+                </div>
+
+
+                <div class=" flex justify-center mt-3.5">
+                    <button @click.prevent.stop="mode='add'" type="button" class="btn btn-ghost btn-xs">Cancel</button>
+                </div>
+
+            </div>
         </div>
 
       </div>

@@ -9,25 +9,57 @@ use App\Models\Doctor;
 use App\Models\Message;
 use App\Models\Followup;
 use App\Models\Hospital;
+use App\Models\Journal;
 use Illuminate\Support\Facades\Auth;
 
 
 class PageService
 {
 
-    public function getLeads($user, $selectedLeads, $selectedCenter)
+    public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status)
     {
+        if($search != null){
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('name', 'like', '%' . $search . '%')
+            ->orWhere('phone', 'like', '%' . $search . '%');
 
-        $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('status', '!=', 'Consulted')->with([
-            'remarks' => function ($q) {
-                return $q->orderBy('created_at', 'desc');
-            },
-            'appointment'
-        ]);
+            $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
+                return $query->where('assigned_to', $user->id);
+            });
+
+            return $this->returnLeads($user,$selectedLeads,$selectedCenter,$leadsQuery,$status);
+        }
+
+
+        if($status != null && $status != 'none')
+        {
+            if($status == 'all'){
+                $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->with([
+                    'remarks' => function ($q) {
+                        return $q->orderBy('created_at', 'desc');
+                    },
+                    'appointment'
+                ]);
+            }
+            else{
+                $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('status', $status)->with([
+                    'remarks' => function ($q) {
+                        return $q->orderBy('created_at', 'desc');
+                    },
+                    'appointment'
+                ]);
+            }
+        }
+        else{
+            $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '!=', 'Consulted')->with([
+                'remarks' => function ($q) {
+                    return $q->orderBy('created_at', 'desc');
+                },
+                'appointment'
+            ]);
+        }
 
         $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
             return $query->where('assigned_to', $user->id);
-
         });
 
         if($selectedCenter != null && $selectedCenter != 'all'){
@@ -41,17 +73,35 @@ class PageService
         $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
         if($selectedLeads != null){
-            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter');
-        }else{
-            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter');
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status');
+        }
+        else{
+            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter','status');
         }
 
+    }
+
+    public function returnLeads($user, $selectedLeads, $selectedCenter, $leadsQuery, $status)
+    {
+        $leads = $leadsQuery->paginate(10);
+        $doctors = Doctor::all();
+        $messageTemplates = Message::all();
+        $centers = Center::where('hospital_id',$user->hospital_id)->get();
+
+        if($selectedLeads != null){
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status');
+        }
+        else{
+            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter','status');
+        }
     }
 
     public function getOverviewData()
     {
 
         $now = Carbon::now();
+
+        $date = $now->format('Y-m-j');
 
         $currentMonth = $now->format('m');
 
@@ -72,7 +122,8 @@ class PageService
         })->where('next_followup_date', null)
         ->where('consulted',null)->count();
 
-        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers');
+        $journal = Journal::where('user_id',auth()->user()->id)->where('date',$date)->get()->first();
+        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers','journal');
     }
 
     public function getFollowupData($user, $selectedCenter)

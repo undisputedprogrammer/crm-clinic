@@ -29,6 +29,10 @@
                         @click.prevent.stop="$dispatch('agentattendance', {id: {{$agent->id}},name: '{{$agent->name}}'});">
                             <x-icons.attendance-icon/>
                         </button>
+                        <button class="btn btn-ghost btn-xs text-warning"
+                        @click.prevent.stop="$dispatch('agentjournals', {id: {{$agent->id}},name: '{{$agent->name}}'});">
+                            <x-icons.journal-icon/>
+                        </button>
                     </td>
                 </tr>
             @endforeach

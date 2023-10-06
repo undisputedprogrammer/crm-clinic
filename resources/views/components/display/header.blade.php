@@ -1,3 +1,4 @@
+@props(['hospital'])
 <div class="w-full  top-0 left-0 flex items-center justify-between h-14  bg-neutral z-10 px-4 lg:px-10">
 
 
@@ -23,7 +24,7 @@
             @click.prevent.stop="$dispatch('linkaction',{link: '{{ route('overview') }}', route: 'overview', fragment: 'page-content'})"
             class="text-xl font-bold flex items-center ">
             <img src="{{ asset('images/CRAFT Hospital Logo_Final-cut.png') }}" class="h-12 mr-2" alt="crm-app Logo">
-            <span class="self-center text-neutral-content whitespace-nowrap">CRAFT</span>
+            <span class="self-center text-neutral-content whitespace-nowrap uppercase">{{$hospital->name}}</span>
         </a>
     </div>
 

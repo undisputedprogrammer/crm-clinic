@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\Center;
 use App\Models\UserCenter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -33,10 +34,7 @@ class AgentService implements ModelViewConnector
             'password'=>Hash::make($request->password)
         ]);
 
-        UserCenter::create([
-            'user_id'=>$agent->id,
-            'center_id'=>$request->center
-        ]);
+        $agent->centers()->save(Center::find($request->center));
 
         $agent->assignRole('agent');
 

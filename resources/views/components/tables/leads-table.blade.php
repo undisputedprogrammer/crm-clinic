@@ -10,8 +10,8 @@
                 <!-- head -->
                 <thead>
                     <tr class=" text-secondary ">
-                        <th><input type="checkbox" class=" checkbox checkbox-secondary"></th>
-                        <th></th>
+                        <th><input id="select-all" type="checkbox" class=" checkbox checkbox-secondary" @click="selectAll($el);"></th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>City</th>
                         <th>Phone</th>
@@ -25,7 +25,7 @@
                             @click="
                                 $dispatch('detailsupdate',{lead : {{ json_encode($lead) }}, remarks: {{ json_encode($lead->remarks) }}, id: {{ $lead->id }}, followups: {{ $lead->followups }}, qnas: {{ json_encode($lead->qnas) }}})">
 
-                            <th><input type="checkbox" :checked="selectedLeads[{{$lead->id}}] != null ? true : false " @click="selectLead($el,{{$lead}})" class="checkbox checkbox-secondary checkbox-sm"></th>
+                            <th><input type="checkbox" :checked="selectedLeads[{{$lead->id}}] != null ? true : false " @click="selectLead($el,{{$lead}})" class="checkbox checkbox-secondary checkbox-sm individual-checkboxes"></th>
 
                             <th>{{ $lead->id }}</th>
                             <td>{{ $lead->name }}</td>

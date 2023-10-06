@@ -59,7 +59,7 @@ currentroute=$event.detail.currentroute;"
 
                     let hours = date.getHours();
                     let amOrpm = 'AM'
-                    if(hours > 12){
+                    if(hours >= 12){
                         amOrpm = 'PM';
                         hours = hours % 12 || 12;
                     }
@@ -119,7 +119,7 @@ currentroute=$event.detail.currentroute;"
                     latest : latest
                 }
             }).then((r)=>{
-                console.log(r.data);
+                {{-- console.log(r.data); --}}
                 if(r.data.status == true){
                     let newMessages = r.data.new_messages;
                     if (r.data.new_messages.length > 0) {
@@ -143,10 +143,10 @@ currentroute=$event.detail.currentroute;"
                         }
                         latest = msg.id;
                     })
-                    console.log(r.data.new_messages);
+                    {{-- console.log(r.data.new_messages); --}}
                 }
                 else{
-                    console.log('No new messages');
+                    {{-- console.log('No new messages'); --}}
                 }
             }).catch((e)=>{
                 console.log(e);

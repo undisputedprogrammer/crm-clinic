@@ -37,7 +37,7 @@
     <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
-      <x-display.header/>
+      <x-display.header :hospital="$hospital"/>
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class=" flex justify-start items-center w-full bg-base-200 pt-1.5 pl-[3.3%] space-x-2">
@@ -63,7 +63,7 @@
         {{-- details section --}}
         <div
         x-data = "{}"
-        class=" w-[96%] lg:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
+        class=" w-[96%] lg:w-[50%] min-h-[100%] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
             <p x-show="!fpselected" class=" font-semibold text-base text-center mt-4">Select a follow up...</p>
 
@@ -107,6 +107,8 @@
                     console.log(error);
                     historyLoading = false;
                   });
+
+                  $dispatch('resetaction');
                 "
                 class=" w-[40%] border-r border-primary">
                 <h1 class=" font-medium text-base text-secondary">Lead details</h1>
@@ -183,7 +185,6 @@
 
                 </div>
 
-                {{-- pwd --}}
                 <div x-data="{
                     selected_section: 'new_follow_up',
                     messageLoading : false,
@@ -255,8 +256,8 @@
                 @resetsection.window=" selected_section = 'new_follow_up'; "
                 class=" w-[60%] px-2.5">
 
-                <div class=" flex space-x-3">
-                    <h2 @click="selected_section = 'new_follow_up'" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'new_follow_up' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">New follow up</h2>
+                <div class=" flex space-x-4">
+                    <h2 @click="selected_section = 'new_follow_up'" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'new_follow_up' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">Follow up Actions</h2>
                     <h2 @click="loadWhatsApp();" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
                 </div>
 
@@ -329,7 +330,10 @@
                             <ul class="">
                                 <template x-if="fp.remarks != undefined || fp.remarks != null">
                                     <template x-for="remark in fp.remarks">
-                                        <li x-text="remark.remark"></li>
+                                        <li class="flex space-x-1">
+                                            <span x-text="remark.remark"></span>
+                                            <span x-text="'-'+formatDate(remark.created_at)"></span>
+                                        </li>
                                     </template>
                                 </template>
                             </ul>
@@ -345,91 +349,73 @@
                             </form>
 
 
-                            {{-- next follow up schedule form --}}
-                            <form x-show="!consult && !fp.consulted && fp.next_followup_date == null" x-transition
-                            x-data ="
-                            { doSubmit() {
-                                let form = document.getElementById('next-followup-form');
-                                let formdata = new FormData(form);
-                                formdata.append('followup_id',fp.id);
-                                formdata.append('lead_id',fp.lead.id);
-                                if(fp.converted){
-                                    formdata.append('converted',fp.converted);
-                                    console.log(fp.converted);
-                                }
+                            {{-- mark as consulted if appointment is scheduled --}}
+                            <form
+                                x-data="{
+                                    doSubmit() {
+                                        let form = document.getElementById('mark-consulted-form');
+                                        let formdata = new FormData(form);
+                                        formdata.append('followup_id',fp.id);
+                                        formdata.append('lead_id',fp.lead.id);
+                                        $dispatch('formsubmit',{url:'{{route('consulted.mark')}}', route: 'consulted.mark',fragment: 'page-content', formData: formdata, target: 'mark-consulted-form'});
+                                    }
+                                }"
 
-                                $dispatch('formsubmit',{url:'{{route('next-followup')}}', route: 'next-followup',fragment: 'page-content', formData: formdata, target: 'next-followup-form'});
-                            }}"
-                            @submit.prevent.stop="doSubmit();"
+                                @submit.prevent.stop="doSubmit()"
 
-                            @formresponse.window="
-                            if ($event.detail.target == $el.id) {
-                                if ($event.detail.content.success) {
-                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                    $el.reset();
+                                @formresponse.window="
+                                if ($event.detail.target == $el.id) {
+                                    if ($event.detail.content.success) {
+                                        $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                                        $el.reset();
 
-                                    if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
-                                    {
+                                        if($event.detail.content.lead != null || $event.detail.content.lead != undefined){
+                                            lead.status = $event.detail.content.lead.status;
+                                            console.log(lead.status);
+                                        }
 
-                                    fp.next_followup_date = $event.detail.content.followup.next_followup_date;
-                                    fp.actual_date = $event.detail.content.followup.actual_date;
+                                        if($event.detail.content.followup != null || $event.detail.content.followup != undefined){
+                                            fp.consulted = $event.detail.content.followup.consulted;
+                                            console.log(fp.consulted);
+                                        }
 
+                                        if($event.detail.content.appointment != null && $event.detail.content != undefined){
+                                            lead.appointment.remarks = $event.detail.content.appointment.remarks;
+                                        }
+                                        $dispatch('formerrors', {errors: []});
                                     }
 
-                                    historyLoading = true;
-                                    axios.get('/api/followup',{
-                                        params: {
-                                        id: fp.id,
-                                        lead_id: fp.lead.id
+                                    else if (typeof $event.detail.content.errors != undefined) {
+                                        $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
-                                        }
-                                    }).then(function (response) {
-                                        history = response.data.followup;
-                                        console.log(response.data.followup);
-                                        historyLoading = false;
+                                    } else{
+                                        $dispatch('formerrors', {errors: $event.detail.content.errors});
+                                    }
+                                }"
+                            x-show="fp.consulted == null && lead.status=='Converted'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
+                                <h1 class=" text-secondary font-medium text-base mb-1">Mark consulted</h1>
 
-                                    }).catch(function (error){
-                                        console.log(error);
-                                        historyLoading = false;
-                                    });
+                                <textarea name="remark" required class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
 
-                                    $dispatch('formerrors', {errors: []});
-                                }
-
-                                else if (typeof $event.detail.content.errors != undefined) {
-                                    $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                                } else{
-                                    $dispatch('formerrors', {errors: $event.detail.content.errors});
-                                }
-                            }
-                            "
-                            id="next-followup-form"
-                            x-show="lead.status != 'Consulted' && fp.next_followup_date == null" action="" class=" mt-5">
-
-                                <div>
-                                    <label x-show="fp.next_followup_date == null && fp.consulted == null" for="next-followup-date" class="text-sm font-medium">Schedule date for next follow up</label>
-
-                                    <input x-show="fp.next_followup_date == null && fp.consulted == null" id="next-followup-date" name="next_followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                                <div class=" flex space-x-2 mt-1">
+                                    <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
                                 </div>
-
-                                <button :disabled=" fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule next follow up</button>
-
                             </form>
 
-                            {{-- ********************************************************************
-                            Schedule appointment and close lead action dropdown
-                            ****************************************************************** --}}
 
                             <div x-data="{
-                                selected_action : 'Schedule Appointment'
-                            }" class="pt-6">
+                                selected_action : '-- Select Action --'
+                            }"
+                            @resetaction.window="selected_action = '-- Select Action --';"
+                             class="pt-6">
 
                             <x-dropdowns.followups-action-dropdown/>
 
                             <x-forms.followup-add-appointment-form :doctors="$doctors"/>
 
                             <x-forms.lead-close-form/>
+
+                            <x-forms.add-followup-form/>
 
                             </div>
 
@@ -454,9 +440,6 @@
       </div>
 
     </div>
-
-
-
 </div>
 <x-footer/>
 </x-easyadmin::app-layout>

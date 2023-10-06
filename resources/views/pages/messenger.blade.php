@@ -18,7 +18,7 @@
         ">
 
             <!-- Header -->
-            <x-display.header />
+            <x-display.header :hospital="$hospital" />
             <x-sections.side-drawer />
             {{-- page body --}}
 
@@ -29,6 +29,7 @@
                 lead : null,
                 chats: [],
                 loadingChats: false,
+                thelink: '',
                 showChat(lead) {
                     this.lead = lead;
                     console.log('loading chats of'+this.lead.name);
@@ -68,7 +69,8 @@
             }"
             @appendChat.window="console.log('event captured');"
 
-             class="h-[calc(100vh-3.5rem)] bg-base-200 w-full flex justify-evenly">
+             class="h-[calc(100vh-3.5rem)] bg-base-200 w-full flex justify-evenly"
+             x-init="thelink='{{route('leads.show', '_X_')}}';">
 
                 {{-- body starts here --}}
 
@@ -166,6 +168,8 @@
                                 <p class=" font-medium text-base">Phone : <span x-text="lead.phone"></span></p>
 
                                 <p class=" font-medium text-base">Email : <span x-text="lead.email"></span></p>
+
+                                <button @click.prevent.stop="$dispatch('linkaction',{link:thelink.replace('_X_', lead.id),route: 'leads.show',fragment:'page-content'});" type="button" class=" btn btn-ghost border border-secondary w-fit btn-sm text-secondary self-center">View Lead</button>
 
                             </div>
                         </template>

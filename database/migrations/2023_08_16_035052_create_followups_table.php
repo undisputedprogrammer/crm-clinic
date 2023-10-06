@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('lead_id')->references('id')->on('leads');
             $table->integer('followup_count')->nullable();
             $table->date('scheduled_date');
-            $table->date('actual_date')->nullable();
+            $table->timestamp('actual_date')->nullable();
             $table->date('next_followup_date')->nullable();
             // $table->enum('status',['pending','completed']);
 
