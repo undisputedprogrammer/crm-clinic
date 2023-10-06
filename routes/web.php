@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/templates', [TemplateController::class, 'index'])->name('template.index');
     Route::post('/template', [TemplateController::class, 'store'])->name('template.store');
     Route::post('/leads/reassign', [TemplateController::class, 'assign'])->name('leads.assign');
+
+    Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
     // whatsapp api routes
     Route::post('/message/sent', [WhatsAppApiController::class, 'sent'])->name('message.sent');
 
