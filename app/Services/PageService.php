@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 class PageService
 {
 
-    public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status)
+    public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status, $is_valid, $is_genuine)
     {
         if($search != null){
             $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('name', 'like', '%' . $search . '%')
@@ -48,6 +48,7 @@ class PageService
                     'appointment'
                 ]);
             }
+
         }
         else{
             $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '!=', 'Consulted')->with([
@@ -66,6 +67,23 @@ class PageService
             $leadsQuery->where('center_id',$selectedCenter);
         }
 
+        if($is_valid != null){
+            if($is_valid == 'true'){
+                $leadsQuery->where('is_valid', true);
+            }else{
+                $leadsQuery->where('is_valid', false);
+            }
+
+        }
+
+        if($is_genuine != null){
+            if($is_genuine == 'true'){
+                $leadsQuery->where('is_genuine', true);
+            }else{
+                $leadsQuery->where('is_genuine', false);
+            }
+        }
+
         $leads = $leadsQuery->paginate(10);
 
         $doctors = Doctor::all();
@@ -73,10 +91,10 @@ class PageService
         $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
         if($selectedLeads != null){
-            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status');
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status', 'is_valid', 'is_genuine');
         }
         else{
-            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter','status');
+            return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter','status', 'is_valid', 'is_genuine');
         }
 
     }

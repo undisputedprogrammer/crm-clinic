@@ -26,7 +26,6 @@ class FollowupController extends SmartController
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
             'scheduled_date' => $request->scheduled_date,
-
         ]);
 
         if($lead->status == "Converted"){

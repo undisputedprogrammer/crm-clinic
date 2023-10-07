@@ -98,45 +98,6 @@
                     <input id="to-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="to date" name="to_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="toDate" :value="toDate" />
                 </div>
 
-                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
-                    <label for="" class=" text-sm text-primary font-medium">Select valid status</label>
-                    <select class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content" name="is_valid">
-                        <option value="null" :disabled="searchFormState.is_valid == null ? true : false"
-                        :selected="searchFormState.is_valid == null ? true : false ">--Not selected--</option>
-
-                        <option :selected="searchFormState.is_valid == 1 ? true : false " value="1">Validated</option>
-
-                        <option :selected="searchFormState.is_valid == 0 ? true : false " value="0">Not validated</option>
-
-                    </select>
-                </div>
-
-                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
-                    <label for="" class=" text-sm text-primary font-medium">Select genuine status</label>
-                    <select name="is_genuine" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
-                        <option value="null" :disabled="searchFormState.is_genuine == null ? true : false " :selected="searchFormState.is_genuine == null ? true : false ">--Not selected--</option>
-
-                        <option :selected="searchFormState.is_genuine == 1 ? true : false " value="1">Genuine</option>
-
-                        <option :selected="searchFormState.is_genuine == 0 ? true : false " value="0">Not genuine</option>
-
-                    </select>
-                </div>
-
-                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
-                    <label for="" class=" text-sm text-primary font-medium">Select lead status</label>
-                    <select name="lead_status" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
-                        <option value="null" :disabled="searchFormState.lead_status == null ? true : false " :selected="searchFormState.lead_status == null ? true : false " >--Not selected--</option>
-
-                        <option :selected="searchFormState.lead_status == 'Created' ? true : false " value="Created">Created</option>
-
-                        <option :selected="searchFormState.lead_status == 'Converted' ? true : false " value="Converted">Converted</option>
-
-                        <option :selected="searchFormState.lead_status == 'Closed' ? true : false " value="Closed">Closed</option>
-
-                    </select>
-                </div>
-
                 @can('is-admin')
                 <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
                     <label for="" class=" text-sm text-primary font-medium">Select Agent</label>

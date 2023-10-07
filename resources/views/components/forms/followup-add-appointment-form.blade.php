@@ -2,11 +2,14 @@
 {{-- schedule appointment form --}}
 <div x-show="selected_action == 'Schedule Appointment'">
 <template x-if="fp.next_followup_date != null">
-    <p class=" text-primary font-medium py-4">Next followup is scheduled for this lead.</p>
+    <p class=" text-primary font-medium py-4">
+        <span>Next follow up scheduled for </span>
+        <span x-text="getDateWithoutTime(fp.next_followup_date);"></span>
+    </p>
 </template>
 
 <template x-if="lead.status == 'Converted' ">
-    <p class=" text-primary font-medium py-4">Appointment is already scheduled for this lead</p>
+    <p class=" text-primary font-medium py-4"><span>Appointment scheduled for this lead on </span><span x-text="getDateWithoutTime(lead.appointment.appointment_date);"></span></p>
 </template>
 
 <template x-if="lead.status == 'Closed' ">
@@ -36,6 +39,7 @@
                                 fp.lead.status = $event.detail.content.lead.status;
                                 fp.actual_date = $event.detail.content.followup.actual_date;
                                 fp.converted = $event.detail.content.followup.converted;
+                                fp.next_followup_date = $event.detail.content.followup.next_followup_date;
 
                                 }
 
@@ -82,9 +86,10 @@
                          x-show="lead.status != 'Converted' && fp.next_followup_date == null" action="" class=" mt-1.5">
 
                             <div>
-                                <label x-show="fp.next_followup_date == null && fp.converted == null" for="next-followup-date" class="text-sm font-medium text-secondary mb-1">Schedule appointment</label>
+                                <h2 x-show="fp.next_followup_date == null && fp.converted == null" class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
 
-                                <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor">
+                                <label for="select-doctor" class="font-medium">Select Doctor</label>
+                                <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor" id="select-doctor">
                                     <option disabled>Choose Doctor</option>
                                     @foreach ($doctors as $doctor)
                                     <template x-if="lead.center_id == '{{$doctor->center_id}}' ">
@@ -94,7 +99,11 @@
 
                                 </select>
 
-                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="next-followup-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                                <label for="appointment-date" class="font-medium">Appointment Date</label>
+                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+
+                                <label for="followup-date" class="font-medium">Follow up Date</label>
+                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
                             </div>
 
                             <button :disabled=" fp.converted == true ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
