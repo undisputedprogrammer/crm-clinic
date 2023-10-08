@@ -27,8 +27,7 @@ class CenterFactory extends Factory
             'hospital_id'=>$hospital->id,
             'location'=>fake()->city(),
             'email'=>fake()->email(),
-            'phone'=>fake()->phoneNumber(),
-            'chat_room_id' => 'cen_'.substr($name, 0, 8)
+            'phone'=>fake()->phoneNumber()
         ];
     }
 

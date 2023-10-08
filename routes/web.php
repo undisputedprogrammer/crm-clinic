@@ -21,6 +21,7 @@ use App\Http\Controllers\WhatsAppApiController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\BreakController;
+use App\Http\Controllers\InternalChatController;
 use App\Http\Controllers\JournalController;
 
 /*
@@ -123,6 +124,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/chat-corner', [InternalChatController::class, 'index'])->name('internal_chat.index');
+    Route::get('/get-chat-room', [InternalChatController::class, 'getChatRoom'])->name('internal_chat.get_chat_room');
+    Route::get('/get-older-chats', [InternalChatController::class, 'olderMessages'])->name('internal_chat.older_messages');
+    Route::post('/post-internal-message', [InternalChatController::class, 'postMessage'])->name('internal_chat.post_message');
+
 });
 
 Route::get('/', [PageController::class, 'home']);

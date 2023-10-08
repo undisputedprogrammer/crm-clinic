@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hospitals', function (Blueprint $table) {
+        Schema::create('chat_rooms_users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('ho_location');
-            $table->string('email');
-            $table->string('phone');
-            $table->json('main_cols');
-            $table->timestamps();
+            $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('chat_room_id')->constrained('chat_rooms', 'id');
+            $table->bigInteger('last_viewed_at');
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hospitals');
+        Schema::dropIfExists('chat_rooms_users');
     }
 };

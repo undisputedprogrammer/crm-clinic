@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Hospital extends Model
@@ -51,4 +52,8 @@ class Hospital extends Model
         return $arr;
     }
 
+    public function chatRoom(): MorphOne
+    {
+        return $this->morphOne(ChatRoom::class, 'chatable');
+    }
 }

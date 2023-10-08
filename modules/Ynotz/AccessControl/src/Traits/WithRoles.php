@@ -118,7 +118,7 @@ trait WithRoles{
 
     public function scopeHavingRoles($query, $roles)
     {
-        if (count($roles) > 0) {
+        if (count($roles) == 0) {
             return $query;
         }
         if (is_int($roles[0])) {

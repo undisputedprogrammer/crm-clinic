@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendBulkMessage;
 use Exception;
 use App\Models\Chat;
 use App\Models\Lead;
@@ -10,10 +9,12 @@ use App\Models\User;
 use GuzzleHttp\Client;
 use App\Models\Message;
 use App\Models\Followup;
-use App\Models\UnreadMessages;
 use Illuminate\Http\Request;
+use App\Jobs\SendBulkMessage;
+use App\Models\UnreadMessages;
 use App\Services\WhatsAppApiService;
 use Illuminate\Support\Facades\Auth;
+use App\Services\InternalChatService;
 use Illuminate\Http\Client\ResponseSequence;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -278,7 +279,7 @@ class WhatsAppApiController extends SmartController
         return response($leadIDs);
     }
 
-    public function poll(Request $request)
+    public function poll(Request $request, InternalChatService $icService)
     {
         $user = User::find($request->user_id);
 
@@ -318,11 +319,12 @@ class WhatsAppApiController extends SmartController
             }
         }
 
+        $internalChats = $icService->getMessages($request->input('last_id'));
         // return response($unread_messages);
         if ($new_messages != null && count($new_messages) > 0) {
-            return response()->json(['status' => true, 'new_messages' => $new_messages, 'unread_messages' => $unread]);
+            return response()->json(['status' => true, 'new_messages' => $new_messages, 'unread_messages' => $unread, 'internalChatsData' => $internalChats]);
         } else {
-            return response()->json(['status' => false]);
+            return response()->json(['status' => false, 'internalChatsData' => $internalChats]);
         }
     }
 

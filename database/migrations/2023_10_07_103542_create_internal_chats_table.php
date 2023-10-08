@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('internal_chats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sender_id')->constrained('users', 'id');
-            $table->string('target_channel_id', 12);
+            $table->foreignId('chat_room_id')->constrained('chat_rooms', 'id');
             $table->text('message')->nullable();
-            $table->timestamp('created_at', 0);
+            $table->bigInteger('created_at', 0);
         });
     }
 

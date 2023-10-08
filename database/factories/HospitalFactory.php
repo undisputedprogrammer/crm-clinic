@@ -25,8 +25,7 @@ class HospitalFactory extends Factory
             'ho_location'=>fake()->city(),
             'email'=>fake()->email(),
             'phone'=>fake()->phoneNumber(),
-            'main_cols' => json_encode([]),
-            'chat_room_id' => 'hos_'.substr($name, 0, 3)
+            'main_cols' => json_encode([])
         ];
     }
 }

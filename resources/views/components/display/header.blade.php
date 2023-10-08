@@ -111,8 +111,17 @@
                 link: '{{route('messenger')}}', route: 'messenger', fresh: true
             });"
             class="text-base-100 inline-block h-6 w-6 indicator">
-            <span class="indicator-item badge-xs animate-pulse badge badge-secondary text-base-content font-medium" x-text="unread_message_count"></span>
+            <span x-show="unread_message_count > 0" class="indicator-item badge-xs animate-pulse badge badge-secondary text-base-content font-medium" x-text="unread_message_count"></span>
             <img src="/images/whatsapp.png">
+        </a>
+        <a href=""
+        @click.prevent.stop="
+            $dispatch('linkaction', {
+                link: '{{route('internal_chat.index')}}', route: 'internal_chat.index', fresh: true
+            });"
+            class="text-base-100 inline-block h-6 w-6 indicator">
+            <span x-show="unread_ic_count > 0" class="indicator-item badge-xs animate-pulse badge badge-info text-base-content font-medium" x-text="unread_ic_count"></span>
+            <img src="/images/chat.png">
         </a>
 
         {{-- user dropdown --}}

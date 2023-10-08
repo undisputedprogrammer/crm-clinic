@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hospitals', function (Blueprint $table) {
+        Schema::create('chat_rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('ho_location');
-            $table->string('email');
-            $table->string('phone');
-            $table->json('main_cols');
-            $table->timestamps();
+            $table->string('type'); //public, one-to-one
+            $table->foreignId('chatable_id')->nullable();
+            $table->string('chatable_type')->nullable();
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hospitals');
+        Schema::dropIfExists('chat_rooms');
     }
 };

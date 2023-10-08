@@ -52,6 +52,8 @@ currentroute=$event.detail.currentroute;"
             processing : false,
             unread_message_count : 0,
             pollingID : 0,
+            ic_lastid: null,
+            unread_ic_count: 0,
             formatDate(timestamp){
                     let date = new Date(timestamp);
 
@@ -116,7 +118,8 @@ currentroute=$event.detail.currentroute;"
             axios.get('/api/messages/poll',{
                 params:{
                     user_id : '{{Auth::user()->id}}',
-                    latest : latest
+                    latest : latest,
+                    last_id: ic_lastid
                 }
             }).then((r)=>{
                 {{-- console.log(r.data); --}}
@@ -147,6 +150,12 @@ currentroute=$event.detail.currentroute;"
                 }
                 else{
                     {{-- console.log('No new messages'); --}}
+                }
+                ic_lastid = r.data.internalChatsData.lastid;
+                $dispatch('internalchats', {data: r.data.internalChatsData});
+                console.log('internalChatsData');
+                if(currentroute != 'internal_chat.index') {
+                    unread_ic_count += r.data.internalChatsData.messages;
                 }
             }).catch((e)=>{
                 console.log(e);

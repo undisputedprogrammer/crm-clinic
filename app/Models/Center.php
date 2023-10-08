@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Center extends Model
 {
@@ -32,4 +33,8 @@ class Center extends Model
         return $arr;
     }
 
+    public function chatRoom(): MorphOne
+    {
+        return $this->morphOne(ChatRoom::class, 'chatable');
+    }
 }

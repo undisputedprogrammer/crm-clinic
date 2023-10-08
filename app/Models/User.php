@@ -44,7 +44,7 @@ class User extends Authenticatable implements MediaOwner
     ];
 
     protected $appends = [
-        'chat_room_ids','user_picture'
+        'user_picture'
     ];
 
     /**
@@ -89,20 +89,33 @@ class User extends Authenticatable implements MediaOwner
         return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
 
-    public function chatRoomIds(): Attribute
-    {
-        return Attribute::make(
-            get: function ($val) {
-                $arr = [];
-                array_push($arr, $this->id);
-                array_push($arr, $this->hospital->chat_room_id);
-                array_merge($arr, $this->centers->pluck('chat_room_id')->toArray());
-                return $arr;
-            }
-        );
-    }
-
     public function journals(){
         return $this->hasMany(Journal::class, 'user_id', 'id');
+    }
+
+    public function chatRooms()
+    {
+        return $this->belongsToMany(ChatRoom::class, 'chat_rooms_users', 'user_id', 'chat_room_id')->withPivot('last_viewed_at');
+    }
+
+    public function publicChatRooms()
+    {
+        return $this->belongsToMany(ChatRoom::class, 'chat_rooms_users', 'user_id', 'chat_room_id')->where('type', 'public');
+    }
+
+    public function chatFriends()
+    {
+        if ($this->hasPermissionTo('Chat: Enter Own Hospital')) {
+            $users = $this->hospital->users;
+        } elseif($this->hasPermissionTo('Chat: Enter Own Center')) {
+            $users = $this->centers[0]->users;
+        }
+        $friends = [];
+        foreach ($users as $f) {
+            if ($f->id != $this->id) {
+                $friends[] = $f;
+            }
+        }
+        return $friends;
     }
 }

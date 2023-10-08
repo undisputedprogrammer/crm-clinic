@@ -1,58 +1,58 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\ChatHelper;
+use App\Models\ChatRoom;
 use App\Models\InternalChat;
 use Carbon\Carbon;
 
 class InternalChatService
 {
-    public function postMessage($sender_id,$target_channel_id, $text = null, $images = [])
+    public function postMessage($sender_id,$chat_room_id , $text = null, $images = [])
     {
         $message = InternalChat::create([
             'sender_id' => $sender_id,
-            'target_channel_id' => $target_channel_id,
+            'chat_room_id' => $chat_room_id,
             'message' => $text ?? '',
+            'created_at' => Carbon::now()->timestamp
         ]);
         if (count($images) > 0) {
             $message->addMediaFromEAInput('chat_pics', $images);
         }
-        
+        return $message;
     }
 
-    public function getMessages($userId, $timestamp)
+    public function getMessages($lastid = null)
     {
-        $user = auth()->user();
-        $cids = $user->chat_room_ids;
-        $messages = InternalChat::where('sender_id', $user->id)
-            ->orWhereIn('target_channel_id', $user->chatRoomIds)
-            ->orderBy('created_at', 'desc')
-            ->limit(50)
-            ->get();
-
-        $formatted = [];
-        foreach ($messages as $m) {
-            if ($m->sender_id == $user->id) {
-                $formatted[$m->target_channel_id][] = $m;
-            } else {
-                $formatted[$m->sender_id][] = $m;
-            }
-        }
-        return [
-            'messages' => $formatted,
-        ];
-    }
-
-    public function olderMessages($roomId, $cid)
-    {
-        $messages = InternalChat::where('target_channel_id', $roomId)
-            ->orWhere('sender_id', $roomId)
-            ->where('id', '<', $cid)
+        $messages = $lastid != null ? InternalChat::where('id', '>', $lastid)
             ->orderBy('created_at')
-            ->limit(30)
+            ->get() : [];
+        $lastid = $lastid ?? InternalChat::orderBy('id', 'desc')->limit(10)->get()->first()->id;
+        return [
+            'messages' => $messages,
+            'lastid' => count($messages) > 0 ? $messages->last()->id : $lastid
+        ];
+    }
+
+    public function olderMessages($ChatRoomId, $earliestMsgId)
+    {
+        $messages = InternalChat::where('chat_room_id', $ChatRoomId)
+            ->where('id', '<', $earliestMsgId)
+            ->orderBy('created_at', 'desc')
+            ->limit(config('chatSettings.previous_load_count'))
             ->get();
         return [
-            'messages' => $messages
+            'messages' => array_reverse($messages->toArray())
         ];
+    }
+
+    public function getChatRoom($entityId = null, $entityType = null, $chatRoomId = null)
+    {
+        return ChatHelper::getChatRoom(
+            $entityId,
+            $entityType,
+            $chatRoomId
+        );
     }
 }
 ?>

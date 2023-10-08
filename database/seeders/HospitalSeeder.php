@@ -22,7 +22,6 @@ class HospitalSeeder extends Seeder
                 'phone' => 'phone_number',
                 'city' => 'city'
             ],
-            'chat_room_id' => 'hos_craft',
             'centers' => [
                 'Caft_Kodungallur',
                 'Malappuram',
@@ -40,7 +39,6 @@ class HospitalSeeder extends Seeder
                 'phone' => 'contact_number',
                 'city' => 'city'
             ],
-            'chat_room_id' => 'hos_ar',
             'centers' => [
                 'AR_Kodungallur'
             ]

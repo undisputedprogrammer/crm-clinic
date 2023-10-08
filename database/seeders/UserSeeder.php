@@ -18,59 +18,80 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::factory()->count(5)->create();
+        $craft = Hospital::where('name', 'Craft')->get()->first();
+        $craftadmin = User::create([
+            'name' => 'Craft Admin',
+            'email' => 'craftadmin@demo.com',
+            'designation' => 'Administrator',
+            'hospital_id'=> $craft->id,
+            'email_verified_at' => now(),
+            'password' => Hash::make('abcd1234'),
+            'remember_token' => Str::random(10),
+        ]);
 
-        foreach($users as $user){
-            $h = $user->hospital;
-            $user->centers()->save($h->centers->random());
+        $craftadmin->assignRole('admin');
+        foreach ($craft->centers as $c) {
+            $craftadmin->centers()->save($c);
+        }
+
+        $craftagent = User::create([
+            'name' => 'Craft Agent',
+            'email' => 'craftagent@demo.com',
+            'designation' => 'Customer Relations Executive',
+            'hospital_id' => $craft->id,
+            'email_verified_at' => now(),
+            'password' => Hash::make('abcd1234'),
+            'remember_token' => Str::random(10),
+        ]);
+
+        $craftagent->assignRole('agent');
+        $craftagent->centers()->save($craft->centers->random());
+
+        $craftusers = User::factory()->count(5)->create(
+            ['hospital_id' => $craft->id]
+        );
+
+        foreach($craftusers as $user){
+            $user->centers()->save($craft->centers->random());
             $user->assignRole('agent');
         }
 
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@demo.com',
-            'designation' => 'Administrator',
-            'hospital_id'=> 1,
-            'email_verified_at' => now(),
-            'password' => Hash::make('abcd1234'),
-            'remember_token' => Str::random(10),
-        ]);
-
-        $admin->assignRole('admin');
-        $h = Hospital::find(1);
-        foreach ($h->centers as $c) {
-            $admin->centers()->save($c);
-        }
-
-        $agent = User::create([
-            'name' => 'Muhammed Ali',
-            'email' => 'ali@demo.com',
-            'designation' => 'Marketing Agent',
-            'hospital_id' => 1,
-            'email_verified_at' => now(),
-            'password' => Hash::make('abcd1234'),
-            'remember_token' => Str::random(10),
-        ]);
-
-        $agent->assignRole('agent');
-        $agent->centers()->save($h->centers->random());
-
-        $secondadmin = User::create([
-            'name' => 'admin',
+        $ar = Hospital::where('name', 'AR')->get()->first();
+        $aradmin = User::create([
+            'name' => 'AR Admin',
             'email' => 'aradmin@demo.com',
             'designation' => 'Administrator',
-            'hospital_id'=> 2,
+            'hospital_id'=> $ar->id,
             'email_verified_at' => now(),
             'password' => Hash::make('abcd1234'),
             'remember_token' => Str::random(10),
         ]);
 
-        $secondadmin->assignRole('admin');
-        $h = Hospital::find(2);
-        foreach ($h->centers as $c) {
-            $admin->centers()->save($c);
+        $aradmin->assignRole('admin');
+        foreach ($ar->centers as $c) {
+            $aradmin->centers()->save($c);
         }
 
+        $aragent = User::create([
+            'name' => 'AR Agent',
+            'email' => 'aragent@demo.com',
+            'designation' => 'Customer Relations Executive',
+            'hospital_id' => $ar->id,
+            'email_verified_at' => now(),
+            'password' => Hash::make('abcd1234'),
+            'remember_token' => Str::random(10),
+        ]);
 
+        $aragent->assignRole('agent');
+        $aragent->centers()->save($ar->centers->random());
+
+        $arusers = User::factory()->count(5)->create(
+            ['hospital_id' => $craft->id]
+        );
+
+        foreach($arusers as $user){
+            $user->centers()->save($ar->centers->random());
+            $user->assignRole('agent');
+        }
     }
 }
