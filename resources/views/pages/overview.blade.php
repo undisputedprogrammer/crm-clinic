@@ -4,6 +4,18 @@
     journal = {{$journal}};
     @endif
     chartCanvas = document.getElementById('chartCanvas');
+    validChartCanvas = document.getElementById('validChartCanvas');
+    genuineChartCanvas = document.getElementById('genuineChartCanvas');
+    @isset($process_chart_data)
+        processChartData = JSON.parse('{{$process_chart_data}}');
+    @endisset
+    @isset($valid_chart_data)
+        validChartData = JSON.parse('{{$valid_chart_data}}');
+    @endisset
+    @isset($genuine_chart_data)
+        genuineChartData = JSON.parse('{{$genuine_chart_data}}');
+        console.log(genuineChartData);
+    @endisset
     initChart();
     "
     >
@@ -222,6 +234,14 @@
                     {{-- Chart Canvas --}}
                     <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
                         <canvas id="chartCanvas"></canvas>
+                    </div>
+
+                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
+                        <canvas id="validChartCanvas"></canvas>
+                    </div>
+
+                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
+                        <canvas id="genuineChartCanvas"></canvas>
                     </div>
 
                     </div>

@@ -17,7 +17,7 @@
                 class=" " :class="selected_action == 'Schedule Appointment' ? ' text-primary hover:text-primary' : ''">Schedule Appointment
             </a>
         </li>
-        <li x-show="lead.status != 'Consulted'">
+        <li x-show="lead.status != 'Closed'">
             <a @click.prevent.stop=" selected_action = 'Close Lead' "
                 class="" :class="selected_action == 'Close Lead' ? ' text-primary hover:text-primary' : ''">Close Lead
             </a>
