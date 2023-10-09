@@ -473,7 +473,7 @@ theLink = '{{route('fresh-leads')}}';
 
                     </div>
 
-                    <div x-data="{
+                    <div x-show="lead.status != 'Completed'" x-data="{
                                     selected_action : 'Initiate Followup'
                                 }" class="pt-2.5">
 
@@ -485,6 +485,10 @@ theLink = '{{route('fresh-leads')}}';
 
                         <x-forms.lead-close-form/>
 
+                    </div>
+
+                    <div x-show="lead.status == 'Completed'" class="py-6">
+                        <p class=" font-semibold text-base text-secondary-focus">This lead has completed all follow ups.</p>
                     </div>
 
                 </div>

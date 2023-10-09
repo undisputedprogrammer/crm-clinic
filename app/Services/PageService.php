@@ -141,7 +141,73 @@ class PageService
         ->where('consulted',null)->count();
 
         $journal = Journal::where('user_id',auth()->user()->id)->where('date',$date)->get()->first();
-        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers','journal');
+        // $process_chart_data = $this->getProcessChartData($currentMonth);
+        $process_chart_data = json_encode($this->getProcessChartData($currentMonth));
+        $valid_chart_data = json_encode($this->getValidChartData($currentMonth));
+        $genuine_chart_data = json_encode($this->getGenuineChartData($currentMonth));
+        return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers','journal','process_chart_data','valid_chart_data','genuine_chart_data');
+    }
+
+    public function getProcessChartData($currentMonth){
+        $process_chart_data = [];
+        $hospitalID = auth()->user()->hospital_id;
+        $user = Auth::user();
+        $baseQuery = Lead::forHospital($hospitalID)->whereMonth('created_at',$currentMonth);
+        if($user->hasRole('agent')){
+            $baseQuery->where('assigned_to',$user->id);
+        }
+        $newQuery = clone $baseQuery;
+        $process_chart_data['unprocessed_leads'] = $newQuery->where('status','Created')->where('followup_created',false)->count();
+
+        $newQuery = clone $baseQuery;
+        $process_chart_data['followed_up_leads'] = $newQuery->where('status','Created')->where('followup_created',true)->count();
+
+        $newQuery = clone $baseQuery;
+        $process_chart_data['appointments_created'] = $newQuery->where('status','Converted')->count();
+
+        $newQuery = clone $baseQuery;
+        $process_chart_data['consulted'] =  $newQuery->where('status','Consulted')->count();
+
+        $newQuery = clone $baseQuery;
+        $process_chart_data['closed'] =$newQuery->where('status','Closed')->count();
+
+        return $process_chart_data;
+    }
+
+    public function getValidChartData($currentMonth){
+        $valid_chart_data = [];
+        $hospitalID = auth()->user()->hospital_id;
+        $user = Auth::user();
+        $baseQuery = Lead::forHospital($hospitalID)->whereMonth('created_at',$currentMonth);
+        if($user->hasRole('agent')){
+            $baseQuery->where('assigned_to',$user->id);
+        }
+
+        $newQuery = clone $baseQuery;
+        $valid_chart_data['valid_leads'] = $newQuery->where('is_valid',true)->count();
+
+        $newQuery = clone $baseQuery;
+        $valid_chart_data['invalid_leads'] = $newQuery->where('is_valid',false)->count();
+
+        return $valid_chart_data;
+    }
+
+    public function getGenuineChartData($currentMonth){
+        $genuine_chart_data = [];
+        $hospitalID = auth()->user()->hospital_id;
+        $user = Auth::user();
+        $baseQuery = Lead::forHospital($hospitalID)->whereMonth('created_at',$currentMonth);
+        if($user->hasRole('agent')){
+            $baseQuery->where('assigned_to',$user->id);
+        }
+
+        $newQuery = clone $baseQuery;
+        $genuine_chart_data['genuine_leads'] = $newQuery->where('is_genuine',true)->count();
+
+        $newQuery = clone $baseQuery;
+        $genuine_chart_data['false_leads'] = $newQuery->where('is_genuine',false)->count();
+
+        return $genuine_chart_data;
     }
 
     public function getFollowupData($user, $selectedCenter)

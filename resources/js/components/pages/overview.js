@@ -3,6 +3,11 @@ import Chart from "chart.js/auto";
 export default () => ({
     journal: null,
     chartCanvas : null,
+    validChartCanvas : null,
+    genuineChartCanvas : null,
+    processChartData : [],
+    validChartData : [],
+    genuineChartData : [],
     journalSubmit(formID, url, route) {
         let formdata = new FormData(document.getElementById(formID));
         if(this.journal != null){
@@ -64,17 +69,29 @@ export default () => ({
 
         return formattedDate;
     },
+    getMonth(){
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+
+          const currentDate = new Date();
+          const currentMonthIndex = currentDate.getMonth();
+          const currentMonth = monthNames[currentMonthIndex];
+
+          return currentMonth;
+    },
     initChart(){
         new Chart(this.chartCanvas, {
             type: 'pie',
             data: {
-                labels: ['Item-1', 'Item-2', 'Item-3', 'Item-4', 'Item-5'],
+                labels: ['Unprocessed Leads', 'Followed up leads', 'Appointments scheduled', 'Consulted', 'Closed leads'],
                 datasets: [
                   {
                     label: 'Lead management process',
-                    data: [ 418, 263, 434, 586, 332 ],
-                    backgroundColor: [ "#51EAEA", "#FCDDB0",
-                    "#FF9D76", "#FB3569", "#82CD47" ],
+                    data: [ this.processChartData.unprocessed_leads, this.processChartData.followed_up_leads, this.processChartData.appointments_created, this.processChartData.consulted, this.processChartData.closed ],
+                    backgroundColor: [ "#FF9D76", "#FCDDB0",
+                    "#51EAEA", "#82CD47", "#FB3569" ],
                   }
                 ]
               },
@@ -87,7 +104,62 @@ export default () => ({
                   },
                   title: {
                     display: true,
-                    text: 'Process Overview'
+                    text: 'Process Overview - '+this.getMonth()
+                  }
+                }
+              }
+          });
+
+          new Chart(this.validChartCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Valid leads', 'Non validated / Invalid leads'],
+                datasets: [
+                  {
+                    label: 'Lead validation',
+                    data: [this.validChartData.valid_leads, this.validChartData.invalid_leads],
+                    backgroundColor: [ "#51EAEA", "#FB3569"],
+                  }
+                ]
+              },
+            options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                  },
+                  title: {
+                    display: true,
+                    text: 'Leads Validation - '+this.getMonth()
+                  }
+                }
+              }
+          });
+
+
+          new Chart(this.genuineChartCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Genuine leads', 'Non checked / False leads'],
+                datasets: [
+                  {
+                    label: 'Lead Genuinity',
+                    data: [this.genuineChartData.genuine_leads,this.genuineChartData.false_leads],
+                    backgroundColor: [ "#51EAEA", "#FB3569"],
+                  }
+                ]
+              },
+            options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                  },
+                  title: {
+                    display: true,
+                    text: 'Leads Genuineness Check - '+this.getMonth()
                   }
                 }
               }

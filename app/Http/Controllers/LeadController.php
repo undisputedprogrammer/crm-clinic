@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Followup;
 use App\Models\Lead;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -129,9 +131,18 @@ class LeadController extends SmartController
             return response()->json(['success'=>false,'message'=>'Lead not found']);
         }
 
-        $lead->status = 'Closed';
-
+        if($lead->status == 'Consulted'){
+            $lead->status = 'Completed';
+        }
+        else{
+            $lead->status = 'Closed';
+        }
         $lead->save();
+        $followup = Followup::where('lead_id',$lead->id)->where('actual_date',null)->latest()->get()->first();
+        if($followup != null){
+            $followup->actual_date = Carbon::now();
+            $followup->save();
+        }
 
         return response()->json(['success'=>true, 'message'=>'Lead closed successfully']);
     }

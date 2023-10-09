@@ -53,7 +53,7 @@
                                     fp.remarks.push($event.detail.content.followup_remark);
 
                                 }
-
+                                $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true});
                                 historyLoading = true;
                                 axios.get('/api/followup',{
                                     params: {
