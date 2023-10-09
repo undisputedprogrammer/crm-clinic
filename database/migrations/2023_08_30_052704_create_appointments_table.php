@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('lead_id')->constrained('leads', 'id');
             $table->foreignId('doctor_id')->constrained('doctors', 'id');
             $table->date('appointment_date');
+            $table->date('consulted_date')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

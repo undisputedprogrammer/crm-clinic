@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Hospital;
 use App\Models\Lead;
 use App\Models\User;
 use App\Models\Center;
+use App\Models\Hospital;
 use App\Models\Appointment;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -50,7 +51,8 @@ class LeadFactory extends Factory
             'customer_segment'=> null,
             'status'=> 'Created',
             'followup_created'=>false,
-            'assigned_to'=> $ag->id
+            'assigned_to'=> $ag->id,
+            'created_at' => Carbon::now()->startOfMonth()->format('Y-m-d')
         ];
     }
 

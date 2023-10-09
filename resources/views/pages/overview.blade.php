@@ -102,7 +102,7 @@
                     {{-- import leads form --}}
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
-                            <h1 class="font-semibold mb-2.5 text-primary">Import leads from Excel</h1>
+                            <h1 class="font-semibold mb-2.5 text-primary text-center">Import leads</h1>
                             <form
                                 x-data="{
                                     fileName: '',
@@ -199,9 +199,9 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-sm btn-success" :disabled="isDisabled()">Import</button>
+                                <button type="submit" class="btn btn-sm btn-success normal-case" :disabled="isDisabled()">Import</button>
                                 <div>
-                                    <button class="btn btn-sm btn-ghost text-base-content opacity-60" type="reset">Cancel</button>
+                                    <button class="btn btn-sm btn-ghost text-base-content opacity-60 normal-case" type="reset">Cancel</button>
                                 </div>
                             </form>
                         </div>

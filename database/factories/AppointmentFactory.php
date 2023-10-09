@@ -22,7 +22,7 @@ class AppointmentFactory extends Factory
         return [
             'lead_id' => Lead::all()->random()->id,
             'doctor_id' => Doctor::all()->random()->id,
-            'appointment_date' => Carbon::today()->addDays(random_int(3, 7))
+            'appointment_date' => Carbon::today()->addDays(random_int(3, 7))->format('Y-m-d')
         ];
     }
 }

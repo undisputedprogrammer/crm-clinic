@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lead_id')->references('id')->on('leads');
             $table->integer('followup_count')->nullable();
-            $table->date('scheduled_date');
+            $table->timestamp('scheduled_date');
             $table->timestamp('actual_date')->nullable();
-            $table->date('next_followup_date')->nullable();
+            $table->timestamp('next_followup_date')->nullable();
             // $table->enum('status',['pending','completed']);
 
-            $table->boolean('converted')->nullable();
-            $table->boolean('consulted')->nullable();
+            $table->boolean('converted')->default(false);
+            $table->boolean('consulted')->default(false);
             $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->timestamps();
         });
