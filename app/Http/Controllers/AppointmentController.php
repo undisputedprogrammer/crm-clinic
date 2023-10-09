@@ -71,4 +71,10 @@ class AppointmentController extends SmartController
 
         return response()->json($result);
     }
+
+    public function updateAppointment(Request $request){
+        info('Inside controller function');
+        $response = $this->connectorService->updateAppointment($request);
+        return response()->json($response);
+    }
 }

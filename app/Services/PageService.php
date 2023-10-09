@@ -160,7 +160,7 @@ class PageService
         $process_chart_data['unprocessed_leads'] = $newQuery->where('status','Created')->where('followup_created',false)->count();
 
         $newQuery = clone $baseQuery;
-        $process_chart_data['followed_up_leads'] = $newQuery->where('status','Created')->where('followup_created',true)->count();
+        $process_chart_data['followed_up_leads'] = $newQuery->where('status','Follow-up Started')->count();
 
         $newQuery = clone $baseQuery;
         $process_chart_data['appointments_created'] = $newQuery->where('status','Appointment Fixed')->count();
@@ -216,7 +216,9 @@ class PageService
         $followupsQuery = Followup::whereHas('lead', function ($qr) use ($user) {
             return $qr->where('hospital_id',$user->hospital_id);
         })->with(['lead'=>function($q) use($user){
-            return $q->with('appointment');
+            return $q->with(['appointment'=>function($qr){
+                return $qr->with('doctor');
+            }]);
         }, 'remarks'])
             ->where('scheduled_date', '<=', date('Y-m-d'))
             ->where('actual_date', null);

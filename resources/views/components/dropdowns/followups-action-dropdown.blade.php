@@ -22,5 +22,12 @@
                 class="" :class="selected_action == 'Close Lead' ? ' text-primary hover:text-primary' : ''">Close Lead
             </a>
         </li>
+        <template x-if="lead.appointment != null">
+            <li x-show="lead.status == 'Appointment Fixed'">
+                <a @click.prevent.stop=" selected_action = 'Reschedule Appointment' "
+                    class="" :class="selected_action == 'Reschedule Appointment' ? ' text-primary hover:text-primary' : ''">Reschedule Appointment
+                </a>
+            </li>
+        </template>
     </ul>
 </div>

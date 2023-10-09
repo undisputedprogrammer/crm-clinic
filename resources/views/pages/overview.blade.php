@@ -98,7 +98,7 @@
                     </div>
 
 
-                    <div class="flex flex-col md:flex-row space-x-10">
+                    <div class="flex flex-col md:flex-row md:flex-wrap space-x-10">
                     {{-- import leads form --}}
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
@@ -232,17 +232,18 @@
                     @endcan
 
                     {{-- Chart Canvas --}}
-                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
-                        <canvas id="chartCanvas"></canvas>
-                    </div>
 
-                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
-                        <canvas id="validChartCanvas"></canvas>
-                    </div>
+                        <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit mt-5">
+                            <canvas id="chartCanvas"></canvas>
+                        </div>
 
-                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
-                        <canvas id="genuineChartCanvas"></canvas>
-                    </div>
+                        <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit mt-5">
+                            <canvas id="validChartCanvas"></canvas>
+                        </div>
+
+                        <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit mt-5">
+                            <canvas id="genuineChartCanvas"></canvas>
+                        </div>
 
                     </div>
 
