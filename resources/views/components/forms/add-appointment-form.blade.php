@@ -5,7 +5,7 @@
     <p class=" text-primary font-medium py-4">Follow up is initiated for this lead. You can only perform further actions in the followups page.</p>
 </template>
 
-<template x-if="lead.status == 'Converted' ">
+<template x-if="lead.status == 'Appointment Fixed' ">
     <p class=" text-primary font-medium py-4">Appointment is scheduled already scheduled for this lead</p>
 </template>
 
@@ -13,7 +13,7 @@
     <p class=" text-error text-base font-medium py-4">This lead is closed!</p>
 </template>
 
-<form x-show=" lead.status != 'Converted' && lead.followup_created == false && lead.status != 'Closed'" x-cloak x-transition
+<form x-show=" lead.status != 'Appointment Fixed' && lead.followup_created == false && lead.status != 'Closed'" x-cloak x-transition
 x-data ="
 { doSubmit() {
     let form = document.getElementById('appointment-form');
@@ -73,7 +73,7 @@ if ($event.detail.target == $el.id) {
 }
 "
 id="appointment-form"
- x-show="lead.status != 'Converted' && lead.followup_created == false" action="" class=" mt-1.5">
+ x-show="lead.status != 'Appointment Fixed' && lead.followup_created == false" action="" class=" mt-1.5">
 
     <div>
         <h2 class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
@@ -97,7 +97,7 @@ id="appointment-form"
         <input  id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5 max-w-sm">
     </div>
 
-    <button :disabled=" lead.status == 'Converted' ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
+    <button :disabled=" lead.status == 'Appointment Fixed' ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
 
 </form>
 </div>

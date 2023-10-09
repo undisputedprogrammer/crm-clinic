@@ -136,7 +136,7 @@ class PageService
 
 
         $pf = Followup::whereHas('lead', function ($query) {
-            $query->where('status', '!=', 'Converted');
+            $query->where('status', '!=', 'Appointment Fixed');
         })->where('next_followup_date', null)
         ->where('consulted',null)->count();
 
@@ -163,7 +163,7 @@ class PageService
         $process_chart_data['followed_up_leads'] = $newQuery->where('status','Created')->where('followup_created',true)->count();
 
         $newQuery = clone $baseQuery;
-        $process_chart_data['appointments_created'] = $newQuery->where('status','Converted')->count();
+        $process_chart_data['appointments_created'] = $newQuery->where('status','Appointment Fixed')->count();
 
         $newQuery = clone $baseQuery;
         $process_chart_data['consulted'] =  $newQuery->where('status','Consulted')->count();

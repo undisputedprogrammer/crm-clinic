@@ -28,13 +28,15 @@ class FollowupController extends SmartController
             'scheduled_date' => $request->scheduled_date,
         ]);
 
-        if($lead->status == "Converted"){
+        if($lead->status == "Appointment Fixed"){
 
             $followup->converted = true;
             $followup->save();
         }
 
         $lead->followup_created = true;
+        $lead->status = "Follow-up Started";
+
         $lead->save();
         return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
         // return response()->json(['success'=>true,'message'=>'converted '.$followup->converted]);
@@ -86,7 +88,7 @@ class FollowupController extends SmartController
         $followup->converted = true;
         $followup->save();
         $lead = Lead::find($request->lead_id);
-        $lead->status = 'Converted';
+        $lead->status = 'Appointment Fixed';
         $lead->save();
         return response()->json(['success' => true, 'message' => 'Lead converted to customer', 'followup' => $followup, 'lead' => $lead]);
     }
