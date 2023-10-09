@@ -85,10 +85,10 @@ export default () => ({
         new Chart(this.chartCanvas, {
             type: 'pie',
             data: {
-                labels: ['Unprocessed Leads', 'Followed up leads', 'Appointments scheduled', 'Consulted', 'Closed leads'],
+                labels: ['Unprocessed', 'Follow-up Started', 'Appointment Scheduled', 'Consulted', 'Closed'],
                 datasets: [
                   {
-                    label: 'Lead management process',
+                    label: 'Lead Management Process',
                     data: [ this.processChartData.unprocessed_leads, this.processChartData.followed_up_leads, this.processChartData.appointments_created, this.processChartData.consulted, this.processChartData.closed ],
                     backgroundColor: [ "#FF9D76", "#FCDDB0",
                     "#51EAEA", "#82CD47", "#FB3569" ],
@@ -116,7 +116,7 @@ export default () => ({
                 labels: ['Valid leads', 'Non validated / Invalid leads'],
                 datasets: [
                   {
-                    label: 'Lead validation',
+                    label: 'Lead Validation',
                     data: [this.validChartData.valid_leads, this.validChartData.invalid_leads],
                     backgroundColor: [ "#51EAEA", "#FB3569"],
                   }
@@ -141,7 +141,7 @@ export default () => ({
           new Chart(this.genuineChartCanvas, {
             type: 'pie',
             data: {
-                labels: ['Genuine leads', 'Non checked / False leads'],
+                labels: ['Genuine Leads', 'Non checked / False leads'],
                 datasets: [
                   {
                     label: 'Lead Genuinity',

@@ -8,6 +8,7 @@ use App\Models\Remark;
 use App\Models\Followup;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Ynotz\EasyAdmin\Traits\IsModelViewConnector;
 use Ynotz\EasyAdmin\Contracts\ModelViewConnector;
 
@@ -70,7 +71,8 @@ class AppointmentService implements ModelViewConnector
             $followup = Followup::create([
                 'lead_id' => $request->lead_id,
                 'scheduled_date' => $request->followup_date,
-                'converted' => true
+                'converted' => true,
+                'user_id'=> Auth::user()->id
             ]);
 
             return ['success' => true, 'message' => 'Appointment fixed', 'converted' => true, 'lead' => $lead, 'appointment' => $appointment, 'followup'=>$followup];
@@ -94,7 +96,8 @@ class AppointmentService implements ModelViewConnector
             $next_followup = Followup::create([
                 'lead_id' => $request->lead_id,
                 'scheduled_date' => $request->followup_date,
-                'converted' => true
+                'converted' => true,
+                'user_id' =>Auth::user()->id
             ]);
 
             return ['success' => true, 'message' => 'Remark added and converted', 'converted' => true, 'followup' => $followup, 'lead' => $lead, 'appointment' => $appointment,'next_followup'=>$next_followup];
@@ -122,6 +125,58 @@ class AppointmentService implements ModelViewConnector
             return ['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'message'=>'Consult is marked'];
         }
         return ['success'=>false, 'lead'=>$lead, 'message'=>'Appointment date has not reached'];
+    }
+
+    public function updateAppointment($request){
+        $validate = $this->updateValidation($request);
+        if($validate == false){
+            return ['success'=>false, 'message'=>'Could not reschedule appointmet'];
+        }
+        $appointment = Appointment::find($request->appointment_id);
+        $appointment->doctor_id = $request->doctor;
+        $appointment->appointment_date = $request->appointment_date;
+        $appointment->save();
+        info('appointment created');
+        info('followup_id is '.$request->followup_id);
+        if($request->followup_id){
+            Remark::create([
+                'remarkable_type' => Lead::class,
+                'remarkable_id' => $request->lead_id,
+                'remark' => 'Appointment Rescheduled to ' . $appointment->appointment_date,
+                'user_id' => Auth::id(),
+            ]);
+            info('remark created');
+            $followup = Followup::find($request->followup_id);
+            $followup->actual_date = Carbon::now();
+            $followup->next_followup_date = $request->followup_date;
+            $followup->save();
+
+            $next_followup = Followup::create([
+                'lead_id' => $request->lead_id,
+                'scheduled_date' => $request->followup_date,
+                'converted' => true,
+                'user_id' => Auth::user()->id
+            ]);
+        }
+
+        return ['success'=>true,'message'=>'Appointment Rescheduled'];
+    }
+
+    public function updateValidation($request){
+        $validator = Validator::make($request->all(), [
+            'doctor' => 'required',
+            'appointment_date' => 'required',
+            'followup_date' => 'required',
+            'followup_id' => 'required',
+            'lead_id' => 'required',
+            'appointment_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
 }

@@ -3,7 +3,7 @@
 @if(isset($selectedCenter))
 center = '{{$selectedCenter}}';
 @endif">
-    <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
+    <div class=" flex flex-col h-screen flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
       <!-- Header -->
       <x-display.header :hospital="$hospital"/>
@@ -165,11 +165,11 @@ center = '{{$selectedCenter}}';
                </div>
         </div>
 
-        <x-footer/>
+
       </div>
 
     </div>
 
 </div>
-
+<x-footer/>
 </x-easyadmin::app-layout>

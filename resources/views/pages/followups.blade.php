@@ -420,6 +420,8 @@
 
                             <x-forms.add-followup-form/>
 
+                            <x-forms.reschedule-appointment :doctors="$doctors"/>
+
                             </div>
 
                     </div>

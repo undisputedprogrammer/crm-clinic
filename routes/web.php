@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/doctors', [DoctorController::class, 'store'])->name('doctors.store');
     Route::post('/doctors/{id}', [DoctorController::class, 'update'])->name('doctors.update');
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('add-appointment');
+    Route::post('/appointment/update',[AppointmentController::class, 'updateAppointment'])->name('appointment.update');
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/consulted', [AppointmentController::class, 'consulted'])->name('consulted.mark');
     Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');

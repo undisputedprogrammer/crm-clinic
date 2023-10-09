@@ -245,8 +245,6 @@
                             <canvas id="genuineChartCanvas"></canvas>
                         </div>
 
-
-
                     </div>
 
                     @can('is-admin')
