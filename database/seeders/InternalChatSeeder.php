@@ -28,11 +28,14 @@ class InternalChatSeeder extends Seeder
             foreach ($h->users as $u) {
                 $hRoom->users()->attach([$u->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
             }
+            $msgTime = Carbon::now()->subDays(90)->timestamp;
             for($i = 0; $i < 30; $i++) {
                 InternalChat::factory()->create([
                     'sender_id' => $h->users->random()->id,
-                    'chat_room_id' => $hRoom->id
+                    'chat_room_id' => $hRoom->id,
+                    'created_at' => $msgTime
                 ]);
+                $msgTime += 60 * 60 * random_int(1, 20);
             }
         }
 
@@ -45,11 +48,14 @@ class InternalChatSeeder extends Seeder
             foreach ($c->users as $u) {
                 $cRoom->users()->attach([$u->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
             }
+            $msgTime = Carbon::now()->subDays(90)->timestamp;
             for($i = 0; $i < 30; $i++) {
                 InternalChat::factory()->create([
                     'sender_id' => $c->users->random()->id,
-                    'chat_room_id' => $cRoom->id
+                    'chat_room_id' => $cRoom->id,
+                    'created_at' => $msgTime
                 ]);
+                $msgTime += 60 * 60 * random_int(1, 20);
             }
         }
 
@@ -71,13 +77,16 @@ class InternalChatSeeder extends Seeder
                 $room = ChatRoom::factory()->create(['type' => 'one-to-one']);
                 $room->users()->attach([$u->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
                 $room->users()->attach([$admin->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
+                $msgTime = Carbon::now()->subDays(90)->timestamp;
                 for($i = 0; $i < $x; $i++) {
                     for($n = 0; $n < 30; $n++) {
                         $self = random_int(0,1);
                         InternalChat::factory()->create([
                             'sender_id' => $self ? $admin->id : $u->id,
-                            'chat_room_id' => $room->id
+                            'chat_room_id' => $room->id,
+                            'created_at' => $msgTime
                         ]);
+                        $msgTime += 60 * 60 * random_int(1, 20);
                     }
                 }
             }
@@ -91,13 +100,16 @@ class InternalChatSeeder extends Seeder
                 $room = ChatRoom::factory()->create(['type' => 'one-to-one']);
                 $room->users()->attach([$u->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
                 $room->users()->attach([$agent->id => ['last_viewed_at' => Carbon::now()->timestamp]]);
+                $msgTime = Carbon::now()->subDays(90)->timestamp;
                 for($i = 0; $i < $x; $i++) {
                     for($n = 0; $n < 30; $n++) {
                         $self = random_int(0,1);
                         InternalChat::factory()->create([
                             'sender_id' => $self ? $agent->id : $u->id,
-                            'chat_room_id' => $room->id
+                            'chat_room_id' => $room->id,
+                            'created_at' => $msgTime
                         ]);
+                        $msgTime += 60 * random_int(1, 5);
                     }
                 }
             }

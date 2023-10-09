@@ -3,8 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Hospital;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\Fake;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Hospital>
@@ -22,6 +23,7 @@ class HospitalFactory extends Factory
         $name = fake()->company();
         return [
             'name'=> $name,
+            'code'=> Str::snake($name),
             'ho_location'=>fake()->city(),
             'email'=>fake()->email(),
             'phone'=>fake()->phoneNumber(),

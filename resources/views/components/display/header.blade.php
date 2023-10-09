@@ -19,12 +19,11 @@
             </div>
         </button>
 
-
         <a href=""
             @click.prevent.stop="$dispatch('linkaction',{link: '{{ route('overview') }}', route: 'overview', fragment: 'page-content'})"
             class="text-xl font-bold flex items-center ">
-            <img src="{{ asset('images/CRAFT Hospital Logo_Final-cut.png') }}" class="h-12 mr-2" alt="crm-app Logo">
-            <span class="self-center text-neutral-content whitespace-nowrap uppercase">{{$hospital->name}}</span>
+            <img src="{{ asset($appLogo) }}" class="h-12 mr-2" alt="crm-app Logo">
+            {{-- <span class="self-center text-neutral-content whitespace-nowrap uppercase">{{$hospital->name}}</span> --}}
         </a>
     </div>
 

@@ -13,6 +13,7 @@ class HospitalSeeder extends Seeder
     private $hospitals = [
         [
             'name' => 'Craft',
+            'code' => 'craft',
             'ho_location' => 'Kodungalloor',
             'email' => 'info@craft.com',
             'phone' => '1234512345',
@@ -31,6 +32,7 @@ class HospitalSeeder extends Seeder
         ],
         [
             'name' => 'AR',
+            'code' => 'ar',
             'ho_location' => 'Kodungalloor',
             'email' => 'info@ar.com',
             'phone' => '1234512345',

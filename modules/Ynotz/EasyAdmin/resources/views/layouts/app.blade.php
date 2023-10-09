@@ -79,12 +79,9 @@ currentroute=$event.detail.currentroute;"
                 fetchLatest(){
                     if(this.latest == null){
                         axios.get('/fetch/latest').then((r)=>{
-                            console.log('fetch latest response is ');
-                            console.log(r.data);
                             if(r.data != null){
                                 this.latest = r.data.latest;
                             }else{
-                                console.log('latest is null');
                                 {{-- setTimeout(()=>{
                                     this.fetchLatest();
                                 },2000); --}}
@@ -121,7 +118,6 @@ currentroute=$event.detail.currentroute;"
                     last_id: ic_lastid
                 }
             }).then((r)=>{
-                {{-- console.log(r.data); --}}
                 if(r.data.status == true){
                     let newMessages = r.data.new_messages;
                     if (r.data.new_messages.length > 0) {
@@ -145,16 +141,13 @@ currentroute=$event.detail.currentroute;"
                         }
                         latest = msg.id;
                     })
-                    {{-- console.log(r.data.new_messages); --}}
                 }
                 else{
-                    {{-- console.log('No new messages'); --}}
                 }
                 ic_lastid = r.data.internalChatsData.lastid;
                 $dispatch('internalchats', {data: r.data.internalChatsData});
-                console.log('internalChatsData');
                 if(currentroute != 'internal_chat.index') {
-                    unread_ic_count += r.data.internalChatsData.messages;
+                    unread_ic_count += r.data.internalChatsData.messages.length;
                 }
             }).catch((e)=>{
                 console.log(e);

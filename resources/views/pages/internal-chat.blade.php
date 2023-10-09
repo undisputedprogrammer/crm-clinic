@@ -20,6 +20,7 @@
                 activeChatRoom: null,
                 activeChats: [],
                 lastid: 0,
+                oldLoadingChatRoomId: null,
                 setDormantFriends() {
                     let cr_uids = this.chatRooms.filter((cr) => {
                         return cr.type == 'one-to-one';
@@ -70,18 +71,22 @@
                             earliest_msg_id: earliestMsgId,
                         }}
                     ).then((r) => {
-                        console.log('earlier msgs loaded:');
-                        console.log(r.data);
-                        console.log('active chats count: '+this.activeChatRoom.ordered_chats.length);
-                        this.chatRooms[this.activeChatRoomId].ordered_chats = r.data.messages.concat(this.chatRooms[this.activeChatRoomId].ordered_chats);
-                        this.activeChatRoom.ordered_chats = r.data.messages.concat(this.activeChatRoom.ordered_chats);
-                        console.log('chat prepended');
-                        console.log('active chats count: '+this.activeChatRoom.ordered_chats.length);
-                        this.setActiveChat(cid, 'top');
-                        if (r.data.messages.length < {{config('chatSettings.previous_load_count')}}) {
-                            this.activeChatRoom.noMoreMsgs = true;
-                            this.chatRooms[this.activeChatRoomId].noMoreMsgs = true;
+                        let crx = this.chatRooms.filter((c) => {
+                            return c.id == cid;
+                        })[0];
+                        crx.ordered_chats = r.data.messages.concat(crx.ordered_chats);
+                        if (this.activeChatRoom.id == cid) {
+                            this.activeChatRoom.ordered_chats = crx.ordered_chats;
                         }
+
+                        if (r.data.messages.length < {{config('chatSettings.previous_load_count')}}) {
+
+                            crx.noMoreMsgs = true;
+                            if (this.activeChatRoom.id == cid) {
+                                this.activeChatRoom.noMoreMsgs = true;
+                            }
+                        }
+                        this.setActiveChat(cid, 'top');
                         {{-- cr.ordered_chats =  --}}
                     }).catch((e) => { console.log(e); });
                 }
@@ -90,11 +95,9 @@
                 unread_ic_count = 0;
                 chatRooms = {{Js::from($chatRooms)}};
                 chatFriends = {{Js::from($chatFriends)}};
-                console.log('rooms');
-                console.log(chatRooms);
+
                 user = {{Js::from($user)}};
                 xmsgs = {{Js::from($loadedChats)}};
-                console.log(xmsgs);
 
                 setActiveChat();
                 setDormantFriends();
@@ -104,10 +107,7 @@
             "
             @internalchats.window="
                 data = $event.detail;
-                console.log(data);
-                console.log('timestamps compare');
-                console.log(data.data.lastid);
-                console.log(lastid);
+
                 if (data.data.lastid > lastid) {
                     data.data.messages.forEach((m) => {
                         crx = chatRooms.filter((cr) => {
@@ -121,17 +121,15 @@
                                 crx.ordered_chats.push(m);
                             }
                             if (crx.id == activeChatRoomId) {
-                                $dispatch('activechatupdated');
+                                $dispatch('activechatupdated', {scrollto: 'bottom'});
                             }
                         } else {
                             if (lastid != 0) {
-                                console.log('fetch chat room: '+m.chat_room_id);
                                 getChatRoom(null, null, m.chat_room_id, false);
                             }
                         }
 
                     });
-                    console.log('done');
                 }
                 lastid = data.data.lastid;
             "
@@ -159,7 +157,6 @@
                     </div>
                     <div x-data
                         @activechatupdated.window="
-                            console.log('scroll signal captured');
                             if ($event.detail.scrollto == 'bottom') {
                             document.getElementById('chatsbottom').scrollIntoView();
                             } else {
@@ -199,7 +196,6 @@
                                     '{{route('internal_chat.post_message')}}',
                                     fd
                                 ).then((r) => {
-                                    {{-- console.log(r.data); --}}
                                     $el.reset();
                                 });
                             }
