@@ -3,6 +3,8 @@
     x-init = "@if(isset($journal))
     journal = {{$journal}};
     @endif
+    chartCanvas = document.getElementById('chartCanvas');
+    initChart();
     "
     >
         <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
@@ -84,7 +86,7 @@
                     </div>
 
 
-
+                    <div class="flex flex-col md:flex-row space-x-10">
                     {{-- import leads form --}}
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
@@ -193,6 +195,37 @@
                         </div>
                     @endcan
 
+
+                    @can('is-agent')
+
+                    <div class="bg-base-200 w-fit p-3 rounded-lg border border-secondary max-w-100 text-base-content">
+                        <h2 class=" font-mono font-semibold text-base">Daily Journel</h2>
+                        <p class="font-bold text-secondary" x-text="getDate();"></p>
+                        <p style="white-space: pre-line;" class="text-sm my-2 font-medium" x-html="journal != null ? escapeSingleQuotes(journal.body) : 'Enter today\'s journal' " ></p>
+
+                        <form @submit.prevent.stop="journalSubmit($el.id,'{{route('journal.store')}}', 'journal.store');" id="add-journal-form" action="" class=" mt-3"
+                        @formresponse.window="
+                        if($el.id == $event.detail.target){
+                            postJournalSubmission($event.detail.content);
+                            $el.reset();
+                        }">
+                            <textarea name="body" id="journal-body"
+                            class=" textarea textarea-ghost min-w-72 lg:w-full bg-base-100 focus-within:border-secondary focus:outline-none"
+                            placeholder="Enter today's report"></textarea>
+
+                            <button type="submit" class="btn btn-sm btn-primary mt-1.5">Save</button>
+                        </form>
+                    </div>
+
+                    @endcan
+
+                    {{-- Chart Canvas --}}
+                    <div class="w-80 p-2 aspect-square rounded-xl bg-base-200 h-fit">
+                        <canvas id="chartCanvas"></canvas>
+                    </div>
+
+                    </div>
+
                     @can('is-admin')
                         <div class="bg-base-200 rounded-xl  p-3 w-fit">
                             <h2 class="text-primary font-medium mb-2.5">More actions</h2>
@@ -239,28 +272,7 @@
                         </div>
                     @endcan
 
-                    @can('is-agent')
 
-                    <div class="bg-base-200 w-fit p-3 rounded-lg border border-secondary max-w-100 text-base-content">
-                        <h2 class=" font-mono font-semibold text-base">Daily Journel</h2>
-                        <p class="font-bold text-secondary" x-text="getDate();"></p>
-                        <p style="white-space: pre-line;" class="text-sm my-2 font-medium" x-html="journal != null ? escapeSingleQuotes(journal.body) : 'Enter today\'s journal' " ></p>
-
-                        <form @submit.prevent.stop="journalSubmit($el.id,'{{route('journal.store')}}', 'journal.store');" id="add-journal-form" action="" class=" mt-3"
-                        @formresponse.window="
-                        if($el.id == $event.detail.target){
-                            postJournalSubmission($event.detail.content);
-                            $el.reset();
-                        }">
-                            <textarea name="body" id="journal-body"
-                            class=" textarea textarea-ghost min-w-72 lg:w-full bg-base-100 focus-within:border-secondary focus:outline-none"
-                            placeholder="Enter today's report"></textarea>
-
-                            <button type="submit" class="btn btn-sm btn-primary mt-1.5">Save</button>
-                        </form>
-                    </div>
-
-                    @endcan
                 </div>
 
 

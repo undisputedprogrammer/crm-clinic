@@ -34,8 +34,16 @@ if ($event.detail.target == $el.id) {
         {
 
         lead.status = $event.detail.content.lead.status;
+        leads[lead.id].status = lead.status;
 
+        lead.followup_created = $event.detail.content.lead.followup_created;
+        leads[lead.id].followup_created = lead.followup_created;
+        }
 
+        if($event.detail.content.followup != null && $event.detail.content.followup != undefined){
+
+            followups.push($event.detail.content.followup);
+            leads[lead.id].followups = followups;
         }
 
         axios.get('/api/get/remarks',{
@@ -68,9 +76,10 @@ id="appointment-form"
  x-show="lead.status != 'Converted' && lead.followup_created == false" action="" class=" mt-1.5">
 
     <div>
-        <label  for="next-followup-date" class="text-sm font-medium text-secondary mb-1">Schedule appointment</label>
+        <h2 class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
 
-        <select class="select select-bordered w-full max-w-sm bg-base-200 text-base-content" name="doctor">
+        <label for="select-doctor" class="font-medium">Select Doctor</label>
+        <select id="select-doctor" class="select text-sm select-bordered w-full max-w-sm bg-base-200 text-base-content" name="doctor">
             <option disabled>Choose Doctor</option>
 
             @foreach ($doctors as $doctor)
@@ -81,7 +90,11 @@ id="appointment-form"
 
         </select>
 
-        <input  id="next-followup-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5 max-w-sm">
+        <label for="appointment-date" class="font-medium">Choose Appointment date</label>
+        <input  id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5 max-w-sm">
+
+        <label for="followup-date" class="font-medium">Choose Follow up date</label>
+        <input  id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5 max-w-sm">
     </div>
 
     <button :disabled=" lead.status == 'Converted' ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>

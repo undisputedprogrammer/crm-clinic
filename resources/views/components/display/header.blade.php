@@ -53,8 +53,7 @@
             })"
                 class="tab text-neutral-content "
                 :class="currentroute == 'fresh-leads' ? ' border-b-[3px] border-primary opacity-100' :
-                    'opacity-60 hover:opacity-100'">Fresh
-                leads</a>
+                    'opacity-60 hover:opacity-100'">Leads</a>
 
             <a href=""
                 @click.prevent.stop="$dispatch('linkaction',{

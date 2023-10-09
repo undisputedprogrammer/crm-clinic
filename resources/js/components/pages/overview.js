@@ -1,7 +1,8 @@
 import axios from "axios";
-
+import Chart from "chart.js/auto";
 export default () => ({
     journal: null,
+    chartCanvas : null,
     journalSubmit(formID, url, route) {
         let formdata = new FormData(document.getElementById(formID));
         if(this.journal != null){
@@ -63,4 +64,33 @@ export default () => ({
 
         return formattedDate;
     },
+    initChart(){
+        new Chart(this.chartCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Item-1', 'Item-2', 'Item-3', 'Item-4', 'Item-5'],
+                datasets: [
+                  {
+                    label: 'Lead management process',
+                    data: [ 418, 263, 434, 586, 332 ],
+                    backgroundColor: [ "#51EAEA", "#FCDDB0",
+                    "#FF9D76", "#FB3569", "#82CD47" ],
+                  }
+                ]
+              },
+            options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                  },
+                  title: {
+                    display: true,
+                    text: 'Process Overview'
+                  }
+                }
+              }
+          });
+    }
 });

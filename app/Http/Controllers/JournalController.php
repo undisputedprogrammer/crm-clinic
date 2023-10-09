@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hospital;
 use App\Models\Journal;
+use App\Providers\HospitalComposerServiceProvider;
 use App\Services\JournalService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\ServiceProvider;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class JournalController extends SmartController
@@ -31,7 +34,7 @@ class JournalController extends SmartController
     }
 
     public function fetch(Request $request){
-        if($request->month){
+        if($request->month != null){
             $date = Carbon::createFromFormat('Y-m',$request->month);
             $month = $date->format('m');
             $year = $date->format('Y');
@@ -40,9 +43,9 @@ class JournalController extends SmartController
             $month  = $today->format('m');
             $year = $today->format('Y');
         }
-
         $journalsQuery = Journal::where('user_id',$request->user_id)->whereMonth('date',$month)->whereYear('date',$year);
         $journals = $journalsQuery->latest()->get();
+        info($journals);
         return response($journals);
     }
 }

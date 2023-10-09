@@ -29,7 +29,6 @@ currentroute=$event.detail.currentroute;"
         @popstate.window="historyAction($event)"
         class="font-sans antialiased text-sm transition-colors hide-scroll ">
         <div x-data ="{
-            selected : false,
             allChats : {},
             allLeads : null,
             name : '',

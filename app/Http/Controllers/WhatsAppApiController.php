@@ -399,6 +399,7 @@ class WhatsAppApiController extends SmartController
             foreach($chats as $chat){
                 $chat->status='read';
                 $chat->save();
+                $this->connectorService->markasread($chat->wamid);
             }
         }
 

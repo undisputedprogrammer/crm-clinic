@@ -1,5 +1,7 @@
 @props(['route','centers'])
-<form action="" x-init="console.log('{{route($route)}}')" class=" flex space-x-1 items-center" @submit.prevent.stop="filterByCenter($el,'{{route($route)}}')" id="filter-by-center-form">
+<form action="" class=" flex space-x-1 items-center" @submit.prevent.stop="
+selected = !selected;
+filterByCenter($el,'{{route($route)}}');" id="filter-by-center-form">
     <select name="center" id="select-center" class=" select text-base-content select-sm text-xs focus:ring-0 focus:outline-none">
         <option value="all">All Centers</option>
         @foreach ($centers as $center)

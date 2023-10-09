@@ -37,9 +37,19 @@ class AppointmentService implements ModelViewConnector
     }
 
     public function processAndStore($request){
+        $today = Carbon::now();
+        $appointment_date = Carbon::parse($request->appointment_date);
+        $followup_date = Carbon::parse($request->followup_date);
+        if($followup_date->lessThan($appointment_date)){
+            return ['success'=>false, 'message'=>'Follow up date should be after Appointment date'];
+        }
+        if($appointment_date->isPast() && !$appointment_date->isToday()){
+            return ['success'=>false, 'message'=>'You cannot input previous dates.'];
+        }
 
         $lead = Lead::find($request->lead_id);
         $lead->status = "Converted";
+        $lead->followup_created = true;
         $lead->save();
 
         $appointment = Appointment::create([
@@ -57,25 +67,37 @@ class AppointmentService implements ModelViewConnector
                 'user_id' => Auth::id(),
             ]);
 
-            return ['success' => true, 'message' => 'Appointment fixed', 'converted' => true, 'lead' => $lead, 'appointment' => $appointment];
+            $followup = Followup::create([
+                'lead_id' => $request->lead_id,
+                'scheduled_date' => $request->followup_date,
+                'converted' => true
+            ]);
+
+            return ['success' => true, 'message' => 'Appointment fixed', 'converted' => true, 'lead' => $lead, 'appointment' => $appointment, 'followup'=>$followup];
 
         } else {
 
             $followup = Followup::where('id', $request->followup_id)->with('remarks')->get()->first();
             $followup->converted = true;
-            // $followup->actual_date = date('Y-m-d');
+            $followup->actual_date = Carbon::now();
+            $followup->next_followup_date = $request->followup_date;
+            $followup->user_id = Auth::user()->id;
             $followup->save();
 
-            if (count($followup->remarks) < 1) {
-                Remark::create([
-                    'remarkable_type' => Followup::class,
-                    'remarkable_id' => $followup->id,
-                    'remark' => 'Appointment fixed on ' . $appointment->appointment_date,
-                    'user_id' => Auth::id(),
-                ]);
-            }
+            Remark::create([
+                'remarkable_type' => Followup::class,
+                'remarkable_id' => $followup->id,
+                'remark' => 'Appointment fixed on ' . $appointment->appointment_date,
+                'user_id' => Auth::id(),
+            ]);
 
-            return ['success' => true, 'message' => 'Remark added and converted', 'converted' => true, 'followup' => $followup, 'lead' => $lead, 'appointment' => $appointment];
+            $next_followup = Followup::create([
+                'lead_id' => $request->lead_id,
+                'scheduled_date' => $request->followup_date,
+                'converted' => true
+            ]);
+
+            return ['success' => true, 'message' => 'Remark added and converted', 'converted' => true, 'followup' => $followup, 'lead' => $lead, 'appointment' => $appointment,'next_followup'=>$next_followup];
         }
     }
 
@@ -103,4 +125,3 @@ class AppointmentService implements ModelViewConnector
     }
 
 }
-?>

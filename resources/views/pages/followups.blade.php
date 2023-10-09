@@ -393,7 +393,7 @@
                                     }
                                 }"
                             x-show="fp.consulted == null && lead.status=='Converted'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
-                                <h1 class=" text-secondary font-medium text-base mb-1">Mark consulted</h1>
+                                <h1 class=" text-secondary font-medium text-base mb-1">Mark consultation</h1>
 
                                 <textarea name="remark" required class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
 
@@ -402,6 +402,9 @@
                                 </div>
                             </form>
 
+                            <div x-show="lead.status == 'Consulted' " >
+                                <p class="w-full text-center font-medium text-secondary text-base">Consultation completed.</p>
+                            </div>
 
                             <div x-data="{
                                 selected_action : '-- Select Action --'

@@ -37,7 +37,7 @@ class PageController extends SmartController
     public function leadIndex(Request $request)
     {
 
-        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center,$request->search, $request->status);
+        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center,$request->search, $request->status, $request->is_valid, $request->is_genuine);
 
         return $this->buildResponse('pages.leads', $data);
 
