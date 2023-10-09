@@ -98,7 +98,7 @@
                     </div>
 
 
-                    <div class="flex flex-col md:flex-row md:flex-wrap space-x-10">
+                    <div class="flex flex-col md:flex-row md:flex-wrap space-x-2">
                     {{-- import leads form --}}
                     @can('import-lead')
                         <div class=" bg-base-200 p-3 rounded-xl w-fit">
@@ -210,7 +210,7 @@
 
                     @can('is-agent')
 
-                    <div class="bg-base-200 w-fit p-3 rounded-lg border border-secondary max-w-100 text-base-content">
+                    <div class="bg-base-200 w-fit p-3 rounded-lg border border-secondary text-base-content max-w-1/4">
                         <h2 class=" font-mono font-semibold text-base">Daily Journel</h2>
                         <p class="font-bold text-secondary" x-text="getDate();"></p>
                         <p style="white-space: pre-line;" class="text-sm my-2 font-medium" x-html="journal != null ? escapeSingleQuotes(journal.body) : 'Enter today\'s journal' " ></p>
@@ -227,6 +227,19 @@
 
                             <button type="submit" class="btn btn-sm btn-primary mt-1.5">Save</button>
                         </form>
+                        <div class="text-center">
+                            <a class="btn btn-link inline-block my-8 normal-case" href=""
+                                @click.prevent.stop="
+                                    $dispatch('linkaction',
+                                    {
+                                        link: '{{route('journals.fetch_own')}}',
+                                        route: 'journals.fetch_own',
+                                        fresh: true
+                                    })
+                                ">
+                                View Journals
+                            </a>
+                        </div>
                     </div>
 
                     @endcan

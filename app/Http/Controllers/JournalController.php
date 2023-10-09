@@ -15,8 +15,9 @@ class JournalController extends SmartController
 {
     private $jService;
 
-    public function __construct(JournalService $jService)
+    public function __construct(Request $request, JournalService $jService)
     {
+        $this->request = $request;
         $this->jService = $jService;
     }
 
@@ -43,9 +44,16 @@ class JournalController extends SmartController
             $month  = $today->format('m');
             $year = $today->format('Y');
         }
-        $journalsQuery = Journal::where('user_id',$request->user_id)->whereMonth('date',$month)->whereYear('date',$year);
+        $userId = $request->user_id ?? auth()->user()->id;
+        $journalsQuery = Journal::where('user_id', $userId)->whereMonth('date',$month)->whereYear('date',$year);
+
         $journals = $journalsQuery->latest()->get();
-        info($journals);
+        if (!isset($request->user_id)) {
+            return $this->buildResponse(
+                'pages.own-journal',
+                ['journals' => $journals]
+            );
+        }
         return response($journals);
     }
 }

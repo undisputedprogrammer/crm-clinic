@@ -100,6 +100,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/fetch/audits',[AuditController::class, 'fetch'])->name('audits.fetch');
 
     Route::get('/fetch/journals',[JournalController::class, 'fetch'])->name('journals.fetch');
+    Route::get('/fetch/own-journal',[JournalController::class, 'fetch'])->name('journals.fetch_own');
 
     Route::get('/api/messages/new', [WhatsAppApiController::class, 'unread']);
 
