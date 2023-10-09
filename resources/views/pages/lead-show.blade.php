@@ -385,7 +385,7 @@
                                     class="text-secondary"></span>
                             </p>
 
-                            <p x-show="lead.status == 'Converted' && lead.followup_created == 0"
+                            <p x-show="lead.status == 'Appointment Fixed' && lead.followup_created == 0"
                                 class=" font-medium text-success my-1">Appointment Scheduled</p>
 
                         </div>

@@ -8,7 +8,7 @@
     </p>
 </template>
 
-<template x-if="lead.status == 'Converted' ">
+<template x-if="lead.status == 'Appointment Fixed' ">
     <p class=" text-primary font-medium py-4"><span>Appointment scheduled for this lead on </span><span x-text="getDateWithoutTime(lead.appointment.appointment_date);"></span></p>
 </template>
 
@@ -83,7 +83,7 @@
                         }
                         "
                         id="appointment-form"
-                         x-show="lead.status != 'Converted' && fp.next_followup_date == null" action="" class=" mt-1.5">
+                         x-show="lead.status != 'Appointment Fixed' && fp.next_followup_date == null" action="" class=" mt-1.5">
 
                             <div>
                                 <h2 x-show="fp.next_followup_date == null && fp.converted == null" class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>

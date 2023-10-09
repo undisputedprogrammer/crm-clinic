@@ -389,7 +389,7 @@ theLink = '{{route('fresh-leads')}}';
                         <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].actual_date : '---' " class="text-secondary"></span>
                     </p>
 
-                    <p x-show="lead.status == 'Converted' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>
+                    <p x-show="lead.status == 'Appointment Fixed' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>
 
                 </div>
 

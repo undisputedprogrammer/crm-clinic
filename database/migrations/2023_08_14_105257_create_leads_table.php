@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('q_visit')->nullable();
             $table->text('q_decide')->nullable();
             $table->enum('customer_segment',['hot','warm','cold'])->nullable();
-            $table->enum('status',['Created','Validated','Converted','Closed','Consulted'])->default('Created')->nullable();
+            $table->enum('status', ['Created', 'Follow-up Started', 'Appointment Fixed', 'Consulted', 'Completed', 'Closed'])->default('Created')->nullable();
             $table->boolean('followup_created')->default(false);
             $table->foreignId('assigned_to')->references('id')->on('users');
             $table->timestamps();
