@@ -4,12 +4,13 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Lead;
+use App\Models\User;
 use App\Models\Center;
 use App\Models\Doctor;
+use App\Models\Journal;
 use App\Models\Message;
 use App\Models\Followup;
 use App\Models\Hospital;
-use App\Models\Journal;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -128,18 +129,37 @@ class PageService
         $hospital = auth()->user()->hospital;
         $hospitals = [$hospital];
         $centers = $hospitals[0]->centers;
-        $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        /**
+         * @var User
+         */
+        $authUser = auth()->user();
 
-        $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        if($authUser->hasRole('admin')) {
+            $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-        $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+            $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+
+            $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
 
-        $pf = Followup::whereHas('lead', function ($query) {
-            $query->where('status', '!=', 'Appointment Fixed');
-        })->where('next_followup_date', null)
-        ->where('consulted',null)->count();
+            $pf = Followup::whereHas('lead', function ($query) {
+                $query->where('status', '!=', 'Appointment Fixed');
+            })->where('next_followup_date', null)
+            ->where('consulted',null)->count();
+        } else {
+            $lpm = Lead::forAgent($authUser->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
+            $ftm = Lead::forAgent($authUser->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+
+            $lcm = Lead::forAgent($authUser->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+
+
+            $pf = Followup::whereHas('lead', function ($query) use($authUser){
+                $query->where('status', '!=', 'Appointment Fixed')
+                ->where('assigned_to', $authUser->id);
+            })->where('next_followup_date', null)
+            ->where('consulted',null)->count();
+        }
         $journal = Journal::where('user_id',auth()->user()->id)->where('date',$date)->get()->first();
         // $process_chart_data = $this->getProcessChartData($currentMonth);
         $process_chart_data = json_encode($this->getProcessChartData($currentMonth));

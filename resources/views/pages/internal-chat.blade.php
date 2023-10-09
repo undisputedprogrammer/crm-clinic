@@ -203,7 +203,7 @@
                         @submit.prevent.stop="postMessage" action="" class="flex flex-row items-stretch my-1">
                         <input name="chat_room_id" type="hidden" :value="activeChatRoomId">
                         <input name="sender_id" type="hidden" :value="user.id">
-                        <textarea name="text_message" class="flex-grow h-12 rounded-md bg-base-100 mr-1"></textarea>
+                        <textarea name="text_message" class="flex-grow h-12 rounded-md bg-base-100 mr-1 text-base-content opacity-80"></textarea>
                         <button type="submit" class="btn btn-success normal-case h-full">Send</button>
                     </form>
                 </div>

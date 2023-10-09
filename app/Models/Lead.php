@@ -50,4 +50,9 @@ class Lead extends Model
     {
         $query->where('hospital_id', $hospitalId);
     }
+
+    public function scopeForAgent($query, $agentId)
+    {
+        $query->where('assigned_to', $agentId);
+    }
 }

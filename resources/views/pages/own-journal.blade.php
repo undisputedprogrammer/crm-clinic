@@ -9,7 +9,7 @@
             {{-- page body --}}
             <div class="w-full bg-base-200">
                 <h1 class="p-4 text-primary text-xl font-semibold bg-base-200 ">Journal</h1>
-                <div class="md:max-w-96 flex m-auto my-8 text-base-content opacity-80 border border-base-content border-opacity-20 rounded-lg overflow-hidden">
+                <div class="md:max-w-2/3 flex m-auto my-8 text-base-content opacity-80 border border-base-content border-opacity-20 rounded-lg overflow-hidden">
                     {{-- {{dd($journals)}} --}}
                     <table class="table table-zebra table-compact">
                         <thead>
@@ -22,7 +22,7 @@
                             @foreach ($journals as $j)
                                 <tr>
                                     <td>{{$j->date}}</td>
-                                    <td>{{$j->body}}</td>
+                                    <td>{!!nl2br(e($j->body))!!}</td>
                                 </tr>
                             @endforeach
                         </tbody>
