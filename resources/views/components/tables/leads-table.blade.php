@@ -6,7 +6,7 @@
     <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh] hide-scroll">
         @if ($leads != null && count($leads) > 0)
 
-            <table class="table ">
+            <table class="table table-sm">
                 <!-- head -->
                 <thead>
                     <tr class=" text-secondary sticky top-0 bg-base-300">
