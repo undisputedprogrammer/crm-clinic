@@ -70,11 +70,18 @@ export default () => ({
         return formattedDate;
     },
     getMonth(){
-        const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-          ];
 
+        const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+        let currentUrl = window.location.href;
+        let url = new URL(currentUrl)
+        if(url.searchParams.has('month')){
+            var dateObj = new Date(url.searchParams.get('month') + "-01");
+            return monthNames[dateObj.getMonth()];
+        }
           const currentDate = new Date();
           const currentMonthIndex = currentDate.getMonth();
           const currentMonth = monthNames[currentMonthIndex];
