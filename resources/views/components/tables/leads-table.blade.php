@@ -3,13 +3,13 @@
 {{-- {{dd($leads[0])}} --}}
 
 <div class=" w-[96%] mx-auto md:w-[45%] overflow-x-scroll hide-scroll">
-    <div class="overflow-x-auto border border-primary rounded-xl">
+    <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh]">
         @if ($leads != null && count($leads) > 0)
 
             <table class="table ">
                 <!-- head -->
                 <thead>
-                    <tr class=" text-secondary ">
+                    <tr class=" text-secondary sticky top-0 bg-base-300">
                         <th><input id="select-all" type="checkbox" class=" checkbox checkbox-secondary" @click="selectAll($el);"></th>
                         {{-- <th>ID</th> --}}
                         <th>Name</th>

@@ -23,7 +23,7 @@ class FollowupFactory extends Factory
     public function definition(): array
     {
         $check = random_int(1, 10);
-        $followup = true;
+        $followup = $check > 4;
         $lead = Lead::all()->random();
         $dint = random_int(0,2);
         $sd = (Carbon::now()->startOfMonth()->addDays($dint))->format('Y-m-d');
@@ -31,7 +31,7 @@ class FollowupFactory extends Factory
         $converted = false;
         if ($followup) {
             $ad = $sd;
-            $converted = $check > 6;
+            $converted = $check > 5;
         }
         return [
             'lead_id' => $lead->id,

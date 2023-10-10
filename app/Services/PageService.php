@@ -86,7 +86,7 @@ class PageService
             }
         }
 
-        $leads = $leadsQuery->paginate(10);
+        $leads = $leadsQuery->paginate(30);
 
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
@@ -144,28 +144,26 @@ class PageService
         if($authUser->hasRole('admin')) {
             $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-            $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+            $ftm = Lead::forHospital($hospital->id)->where('status', '<>', 'Created')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
             $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
 
-            $pf = Followup::whereHas('lead', function ($query) {
-                $query->where('status', '!=', 'Appointment Fixed');
-            })->where('next_followup_date', null)
-            ->where('consulted',null)->count();
+            $pf = Followup::whereHas('lead', function ($query) use($hospital){
+                $query->where('hospital_id', $hospital->id);
+            })->where('actual_date', null)->count();
+
         } else {
             $lpm = Lead::forAgent($authUser->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
-            $ftm = Lead::forAgent($authUser->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+            $ftm = Lead::forAgent($authUser->id)->where('status', '<>', 'Created')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
             $lcm = Lead::forAgent($authUser->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
 
             $pf = Followup::whereHas('lead', function ($query) use($authUser){
-                $query->where('status', '!=', 'Appointment Fixed')
-                ->where('assigned_to', $authUser->id);
-            })->where('next_followup_date', null)
-            ->where('consulted',null)->count();
+                $query->where('assigned_to', $authUser->id);
+            })->where('actual_date', null)->count();
         }
         $journal = Journal::where('user_id',auth()->user()->id)->where('date',$date)->get()->first();
         // $process_chart_data = $this->getProcessChartData($currentMonth);
@@ -189,7 +187,7 @@ class PageService
         $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
 
         // $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
-        $ftm = Lead::forHospital($hospital->id)->where('status', 'Follow-up Started')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
+        $ftm = Lead::forHospital($hospital->id)->where('status', '<>', 'Created')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
 
         // $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
         $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
@@ -197,6 +195,7 @@ class PageService
         $pf = DB::table('followups')
             ->join('leads as l', 'l.id', '=', 'followups.lead_id')
             ->where('l.hospital_id', $hospital->id)
+            ->where('followups.actual_date', null)
             ->select('l.assigned_to', DB::raw('COUNT(l.id) as count'))
             ->groupBy('l.assigned_to')
             ->get();
