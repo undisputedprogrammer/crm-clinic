@@ -12,14 +12,19 @@
                 class="" :class="selected_action == 'Add Followup' ? ' text-primary hover:text-primary' : ''">Add Followup
             </a>
         </li>
-        <li x-show="lead.status != 'Consulted' && lead.status != 'Appointment Fixed'">
+        <li x-show="lead.status == 'Created' || lead.status == 'Follow-up Started'">
             <a @click.prevent.stop="selected_action = 'Schedule Appointment'"
                 class=" " :class="selected_action == 'Schedule Appointment' ? ' text-primary hover:text-primary' : ''">Schedule Appointment
             </a>
         </li>
-        <li x-show="lead.status != 'Closed'">
+        <li x-show="lead.status != 'Closed' && lead.status != 'Consulted'">
             <a @click.prevent.stop=" selected_action = 'Close Lead' "
                 class="" :class="selected_action == 'Close Lead' ? ' text-primary hover:text-primary' : ''">Close Lead
+            </a>
+        </li>
+        <li x-show="lead.status == 'Consulted'">
+            <a @click.prevent.stop=" selected_action = 'Complete' "
+                class="" :class="selected_action == 'Complete' ? ' text-primary hover:text-primary' : ''">Mark as complete
             </a>
         </li>
         <template x-if="lead.appointment != null">

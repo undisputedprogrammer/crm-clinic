@@ -125,7 +125,7 @@
                         {{-- mark consulted form --}}
 
 
-                        <div x-show="fp.consulted != null" class="mt-4">
+                        <div x-show="fp.consulted" class="mt-4">
                             <p class=" text-success font-medium">Consult completed on <span x-text="lead.appointment != null ? lead.appointment.appointment_date : '' "></span></p>
                             <label @click.prevent.stop="showconsultform = true" class=" text-base-content font-medium mt-1" x-text="lead.appointment != null && lead.appointment.remarks != null ? lead.appointment.remarks : 'No remark made' "></label>
                         </div>

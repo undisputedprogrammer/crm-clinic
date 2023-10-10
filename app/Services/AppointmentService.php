@@ -136,12 +136,12 @@ class AppointmentService implements ModelViewConnector
         $appointment->doctor_id = $request->doctor;
         $appointment->appointment_date = $request->appointment_date;
         $appointment->save();
-        info('appointment created');
-        info('followup_id is '.$request->followup_id);
+        // info('appointment created');
+        // info('followup_id is '.$request->followup_id);
         if($request->followup_id){
             Remark::create([
-                'remarkable_type' => Lead::class,
-                'remarkable_id' => $request->lead_id,
+                'remarkable_type' => Followup::class,
+                'remarkable_id' => $request->followup_id,
                 'remark' => 'Appointment Rescheduled to ' . $appointment->appointment_date,
                 'user_id' => Auth::id(),
             ]);
