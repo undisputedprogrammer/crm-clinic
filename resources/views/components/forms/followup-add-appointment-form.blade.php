@@ -100,10 +100,10 @@
                                 </select>
 
                                 <label for="appointment-date" class="font-medium">Appointment Date</label>
-                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                                <input id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
 
                                 <label for="followup-date" class="font-medium">Follow up Date</label>
-                                <input x-show="fp.next_followup_date == null && fp.converted == null" id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                                <input id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
                             </div>
 
                             <button :disabled=" fp.converted == true ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
@@ -118,7 +118,7 @@
                         {{-- mark consulted form --}}
 
 
-                        <div x-show="fp.consulted != null" class="mt-4">
+                        <div x-show="fp.consulted" class="mt-4">
                             <p class=" text-success font-medium">Consult completed on <span x-text="lead.appointment != null ? lead.appointment.appointment_date : '' "></span></p>
                             <label @click.prevent.stop="showconsultform = true" class=" text-base-content font-medium mt-1" x-text="lead.appointment != null && lead.appointment.remarks != null ? lead.appointment.remarks : 'No remark made' "></label>
                         </div>

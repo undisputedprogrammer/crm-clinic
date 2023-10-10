@@ -392,7 +392,7 @@
                                         $dispatch('formerrors', {errors: $event.detail.content.errors});
                                     }
                                 }"
-                            x-show="fp.consulted == null && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
+                            x-show="!fp.consulted && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
                                 <h1 class=" text-secondary font-medium text-base mb-1">Mark consultation</h1>
 
                                 <textarea name="remark" required class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
@@ -417,6 +417,7 @@
                             <x-forms.followup-add-appointment-form :doctors="$doctors"/>
 
                             <x-forms.lead-close-form/>
+                            <x-forms.lead-complete-form/>
 
                             <x-forms.add-followup-form/>
 
