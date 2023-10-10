@@ -10,7 +10,7 @@ class Followup extends Model
     use HasFactory;
     protected $fillable = ['lead_id','scheduled_date','converted','actual_date','next_followup_date','user_id'];
 
-    // protected $with = ['remarks'];
+    protected $with = ['lead'];
 
     public function lead(){
         return $this->hasOne(Lead::class,'id','lead_id');

@@ -1,12 +1,12 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
 <div x-show="selected_action == 'Schedule Appointment'">
-<template x-if="lead.followup_created != 0">
+{{-- <template x-if="lead.followup_created != 0">
     <p class=" text-primary font-medium py-4">Follow up is initiated for this lead. You can only perform further actions in the followups page.</p>
-</template>
+</template> --}}
 
 <template x-if="lead.status == 'Appointment Fixed' ">
-    <p class=" text-primary font-medium py-4">Appointment is scheduled already scheduled for this lead</p>
+    <p class=" text-primary font-medium py-4">Appointment is scheduled scheduled for this lead.</p>
 </template>
 
 <template x-if="lead.status == 'Closed' ">
@@ -35,7 +35,7 @@ if ($event.detail.target == $el.id) {
 
         lead.status = $event.detail.content.lead.status;
         leads[lead.id].status = lead.status;
-
+        document.getElementById('lead-tick-'+lead.id).classList.remove('hidden');
         lead.followup_created = $event.detail.content.lead.followup_created;
         leads[lead.id].followup_created = lead.followup_created;
         }
@@ -75,8 +75,8 @@ if ($event.detail.target == $el.id) {
 id="appointment-form"
  x-show="lead.status != 'Appointment Fixed' && lead.followup_created == false" action="" class=" mt-1.5">
 
-    <div>
-        <h2 class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
+    <div class="bg-base-200 p-3 rounded-lg">
+        {{-- <h2 class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2> --}}
 
         <label for="select-doctor" class="font-medium">Select Doctor</label>
         <select id="select-doctor" class="select text-sm select-bordered w-full max-w-sm bg-base-200 text-base-content" name="doctor">

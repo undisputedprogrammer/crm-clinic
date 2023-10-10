@@ -20,8 +20,9 @@
     @formresponse.window="
     if($event.detail.target == $el.id){
         if ($event.detail.content.success) {
-            $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fragment: 'page-content', fresh:true});
+            {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fragment: 'page-content', fresh:true}); --}}
             lead.status = 'Closed';
+            document.getElementById('lead-tick-'+lead.id).classList.remove('hidden');
             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
             $el.reset();
         }else if (typeof $event.detail.content.errors != undefined) {

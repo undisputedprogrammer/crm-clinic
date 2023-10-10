@@ -1,10 +1,24 @@
-<div class="dropdown ">
+<div x-show="
+    fp.remarks != undefined
+    && fp.remarks != null
+    && fp.remarks.length > 0
+    && fp.next_followup_date == null
+    && fp.lead.status != 'Closed'
+    && fp.lead.status != 'Completed'
+    && lead.status != 'Completed'
+    " class="dropdown ">
     <label tabindex="0" class="btn btn-sm" ><span x-text="selected_action"></span><x-icons.down-arrow /></label>
     <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52"
         :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral'">
         <li>
             <a @click.prevent.stop=" selected_action = '-- Select Action --' "
                 class="" :class="selected_action == '' ? ' text-primary hover:text-primary' : ''"> -- Select Action --
+            </a>
+        </li>
+
+        <li x-show="lead.appointment != null && lead.status == 'Appointment Fixed'">
+            <a @click.prevent.stop=" selected_action = 'Consulted' "
+                class="" :class="selected_action == 'Consulted' ? ' text-primary hover:text-primary' : ''">Mark as consulted
             </a>
         </li>
         <li>
@@ -27,12 +41,12 @@
                 class="" :class="selected_action == 'Complete' ? ' text-primary hover:text-primary' : ''">Mark as complete
             </a>
         </li>
-        <template x-if="lead.appointment != null">
-            <li x-show="lead.status == 'Appointment Fixed'">
-                <a @click.prevent.stop=" selected_action = 'Reschedule Appointment' "
-                    class="" :class="selected_action == 'Reschedule Appointment' ? ' text-primary hover:text-primary' : ''">Reschedule Appointment
-                </a>
-            </li>
-        </template>
+
+        <li x-show="lead.appointment != null && lead.status == 'Appointment Fixed'">
+            <a @click.prevent.stop=" selected_action = 'Reschedule Appointment' "
+                class="" :class="selected_action == 'Reschedule Appointment' ? ' text-primary hover:text-primary' : ''">Reschedule Appointment
+            </a>
+        </li>
+
     </ul>
 </div>

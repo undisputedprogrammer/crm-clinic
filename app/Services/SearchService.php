@@ -17,9 +17,9 @@ class SearchService
         {
             $query = Followup::where('actual_date', '!=', null);
 
-        } else
-        {
-            $query = Followup::where('actual_date', null);
+        }
+        else {
+            $query = Followup::query();
 
         }
 
@@ -48,20 +48,14 @@ class SearchService
 
 
         if(!$request->user()->hasRole('admin')){
-            $query->whereHas('lead', function ($query) use ($request){
+            $query->whereHas('lead', function ($query){
                 $query->where('assigned_to',Auth::user()->id);
             });
         }elseif($request->user()->hasRole('admin')){
-            $query->whereHas('lead', function($q) use($user){
-                return $q->where('hospital_id',$user->hospital_id);
+            $query->whereHas('lead', function($q) {
+                return $q->where('hospital_id', auth()->user()->hospital_id);
             });
         }
-
-
-
-        $query->where('consulted', null);
-
-
 
         $followups = $query->paginate(10);
 

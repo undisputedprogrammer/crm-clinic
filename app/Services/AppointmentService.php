@@ -104,7 +104,7 @@ class AppointmentService implements ModelViewConnector
         }
     }
 
-    public function processConsult($lead_id, $followup_id, $remark)
+    public function processConsult($lead_id, $followup_id, $followup_date)
     {
         $lead = Lead::where('id',$lead_id)->with('appointment')->get()->first();
         $date = Carbon::createFromFormat('d-m-Y', substr($lead->appointment->appointment_date,0,10));
@@ -112,17 +112,18 @@ class AppointmentService implements ModelViewConnector
         if($date->isPast()){
             $followup = Followup::find($followup_id);
             $followup->consulted = true;
+            $followup->actual_date = Carbon::now();
             $followup->save();
             $lead->status = 'Consulted';
             $lead->save();
             $appointment = null;
-            if($remark){
-                $a = Appointment::find($lead->appointment->id);
-                $a->remarks = $remark;
-                $a->save();
-                $appointment = $a;
-            }
-            return ['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'message'=>'Consult is marked'];
+            $next_followup = Followup::create([
+                'lead_id' => $lead_id,
+                'scheduled_date' => $followup_date,
+                'converted' => true,
+                'user_id' => Auth::user()->id
+            ]);
+            return ['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'next_followup' => $next_followup, 'message'=>'Consult is marked'];
         }
         return ['success'=>false, 'lead'=>$lead, 'message'=>'Appointment date has not reached'];
     }
@@ -150,6 +151,7 @@ class AppointmentService implements ModelViewConnector
             $followup->actual_date = Carbon::now();
             $followup->next_followup_date = $request->followup_date;
             $followup->save();
+            $followup->refresh();
 
             $next_followup = Followup::create([
                 'lead_id' => $request->lead_id,
@@ -159,7 +161,7 @@ class AppointmentService implements ModelViewConnector
             ]);
         }
 
-        return ['success'=>true,'message'=>'Appointment Rescheduled'];
+        return ['success'=>true,'message'=>'Appointment Rescheduled', 'followup' => $followup];
     }
 
     public function updateValidation($request){

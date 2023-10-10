@@ -1,7 +1,7 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
 <template x-if="lead.appointment != null">
-<div x-show="selected_action == 'Reschedule Appointment'">
+<div x-show="selected_action == 'Reschedule Appointment' && !lead.rescheduled">
 <template x-if="fp.next_followup_date != null">
     <p class=" text-primary font-medium py-4">
         <span>Next follow up scheduled for </span>
@@ -29,18 +29,21 @@
 
                         @formresponse.window="
                         if ($event.detail.target == $el.id) {
-                            if ($event.detail.content.success) {
-                                $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
+                            console.log('response from reschedule');
+                            console.log($event.detail);
+                            if ($event.detail.content.success == true) {
+                                $dispatch('showtoast', {message: 'Appointment Rescheduled', mode: 'success'});
                                 $el.reset();
 
                                 if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
                                 {
 
-                                fp.lead.status = $event.detail.content.lead.status;
+                                fp.lead.status = $event.detail.content.followup.lead.status;
                                 fp.actual_date = $event.detail.content.followup.actual_date;
                                 fp.converted = $event.detail.content.followup.converted;
                                 fp.next_followup_date = $event.detail.content.followup.next_followup_date;
-
+                                fp.rescheduled = true;
+                                lead.rescheduled = true;
                                 }
 
                                 if($event.detail.content.appointment != null && $event.detail.content.appointment != undefined){
@@ -53,7 +56,7 @@
                                     fp.remarks.push($event.detail.content.followup_remark);
 
                                 }
-                                $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true});
+                                {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true}); --}}
                                 historyLoading = true;
                                 axios.get('/api/followup',{
                                     params: {
@@ -72,9 +75,7 @@
                                   });
 
                                   $dispatch('formerrors', {errors: []});
-                            }
-
-                            else if (typeof $event.detail.content.errors != undefined) {
+                            } else if (typeof $event.detail.content.errors != undefined) {
                                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
                             } else{
@@ -91,7 +92,7 @@
                                 <template x-if="lead.appointment != null">
                                     <h3 class=" font-semibold my-1">
                                         <span>Current Appointment is with </span>
-                                        <span class="text-primary" x-text="lead.appointment.doctor.name"></span>
+                                        <span class="text-primary" x-text="lead.appointment.doctor ? lead.appointment.doctor.name : ''"></span>
                                     </h3>
                                 </template>
 

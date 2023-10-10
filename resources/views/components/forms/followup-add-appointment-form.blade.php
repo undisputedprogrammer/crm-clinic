@@ -1,15 +1,14 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
 <div x-show="selected_action == 'Schedule Appointment'">
+<template x-if="lead.status == 'Appointment Fixed' ">
+    <p class=" text-warning font-medium py-2"><span>Appointment scheduled for this lead on </span><span x-text="getDateWithoutTime(lead.appointment.appointment_date);"></span></p>
+</template>
 <template x-if="fp.next_followup_date != null">
-    <p class=" text-primary font-medium py-4">
+    <p class=" text-warning font-medium py-2">
         <span>Next follow up scheduled for </span>
         <span x-text="getDateWithoutTime(fp.next_followup_date);"></span>
     </p>
-</template>
-
-<template x-if="lead.status == 'Appointment Fixed' ">
-    <p class=" text-primary font-medium py-4"><span>Appointment scheduled for this lead on </span><span x-text="getDateWithoutTime(lead.appointment.appointment_date);"></span></p>
 </template>
 
 <template x-if="lead.status == 'Closed' ">
@@ -37,6 +36,7 @@
                                 {
 
                                 fp.lead.status = $event.detail.content.lead.status;
+                                lead.status = $event.detail.content.lead.status;
                                 fp.actual_date = $event.detail.content.followup.actual_date;
                                 fp.converted = $event.detail.content.followup.converted;
                                 fp.next_followup_date = $event.detail.content.followup.next_followup_date;
@@ -53,7 +53,7 @@
                                     fp.remarks.push($event.detail.content.followup_remark);
 
                                 }
-                                $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true});
+                                {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true}); --}}
                                 historyLoading = true;
                                 axios.get('/api/followup',{
                                     params: {

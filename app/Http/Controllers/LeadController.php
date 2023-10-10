@@ -145,7 +145,7 @@ class LeadController extends SmartController
         }
         $message = 'Lead closed successfully';
         if ($lead->status == 'Completed') {
-            $message = 'Process completed successfully';
+            $message = 'Lead follow-up process completed successfully!';
         }
         return response()->json(['success'=>true, 'message'=> $message]);
     }
