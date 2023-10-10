@@ -35,11 +35,13 @@ class PageController extends SmartController
     }
 
 
-    public function performance()
+    public function performance(Request $request)
     {
-        $overview = $this->pageService->getOverviewData();
-        $performance = $this->pageService->agentsPerformance($this->request->input('month'));
+        info('calling getoverviewdata function');
+        $overview = $this->pageService->getOverviewData($request->month);
+        $performance = $this->pageService->agentsPerformance($request->month);
 // dd(array_merge($overview, $performance));
+
         return $this->buildResponse('pages.performance', array_merge($overview, $performance));
     }
 

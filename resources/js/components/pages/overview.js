@@ -164,5 +164,12 @@ export default () => ({
                 }
               }
           });
+    },
+    searchPerformance(el){
+        let formdata = new FormData(el);
+        let month = formdata.get('month');
+        this.$dispatch('linkaction',{link:'/performance', route: 'performance',fragment:'page-content',params:{
+            month: month
+        }});
     }
 });

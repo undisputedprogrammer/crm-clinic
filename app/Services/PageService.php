@@ -118,8 +118,13 @@ class PageService
 
     public function getOverviewData($month = null, $userId = null)
     {
+        info('inside getoverviewdata function');
         if (isset($month)) {
-
+            info('month is available '.$month);
+            $searchedDate = Carbon::createFromFormat('Y-m',$month);
+            $currentMonth = $searchedDate->format('m');
+            $currentYear = $searchedDate->format('Y');
+            $date = $searchedDate->format('Y-m-j');
         } else {
             $now = Carbon::now();
             $date = $now->format('Y-m-j');
@@ -176,7 +181,10 @@ class PageService
     public function agentsPerformance($month)
     {
         if (isset($month)) {
-
+            $searchedDate = Carbon::createFromFormat('Y-m',$month);
+            $currentMonth = $searchedDate->format('m');
+            $currentYear = $searchedDate->format('Y');
+            $date = $searchedDate->format('Y-m-j');
         } else {
             $now = Carbon::now();
             $date = $now->format('Y-m-j');
