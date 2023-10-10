@@ -45,7 +45,8 @@ class UserSeeder extends Seeder
         ]);
 
         $craftagent->assignRole('agent');
-        $craftagent->centers()->save($craft->centers->random());
+        $craftcenter = Center::where('name', 'Caft_Kodungallur')->get()->first();
+        $craftagent->centers()->save($craftcenter);
 
         $craftusers = User::factory()->count(5)->create(
             ['hospital_id' => $craft->id]
@@ -83,7 +84,8 @@ class UserSeeder extends Seeder
         ]);
 
         $aragent->assignRole('agent');
-        $aragent->centers()->save($ar->centers->random());
+        $arcenter = Center::where('name', 'AR_Kodungallur')->get()->first();
+        $aragent->centers()->save($arcenter);
 
         $arusers = User::factory()->count(5)->create(
             ['hospital_id' => $craft->id]
