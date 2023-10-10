@@ -309,7 +309,7 @@ class PageService
             });
         }
 
-        $followups = $followupsQuery->paginate(10);
+        $followups = $followupsQuery->paginate(30);
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
         $centers = Center::where('hospital_id',$user->hospital_id)->get();
