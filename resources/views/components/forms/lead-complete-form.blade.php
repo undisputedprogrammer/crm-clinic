@@ -9,13 +9,13 @@
 
     <form x-show="lead.status != 'Closed'" x-data="{
         doSubmit() {
-            let form = document.getElementById('lead-close-form');
+            let form = document.getElementById('lead-complete-form');
             let formdata = new FormData(form);
             {{-- formdata.append('no_followup',true); --}}
             formdata.append('lead_id',lead.id);
-            $dispatch('formsubmit',{url:'{{route('lead.close')}}', route: 'lead.close',fragment: 'page-content', formData: formdata, target: 'lead-close-form'});
+            $dispatch('formsubmit',{url:'{{route('lead.close')}}', route: 'lead.close',fragment: 'page-content', formData: formdata, target: 'lead-complete-form'});
         }
-    }" action="" class=" flex flex-col space-y-2" id="lead-close-form"
+    }" action="" class=" flex flex-col space-y-2" id="lead-complete-form"
     @submit.prevent.stop="doSubmit()"
     @formresponse.window="
     if($event.detail.target == $el.id){

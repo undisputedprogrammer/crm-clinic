@@ -143,7 +143,10 @@ class LeadController extends SmartController
             $followup->actual_date = Carbon::now();
             $followup->save();
         }
-
-        return response()->json(['success'=>true, 'message'=>'Lead closed successfully']);
+        $message = 'Lead closed successfully';
+        if ($lead->status == 'Completed') {
+            $message = 'Process completed successfully';
+        }
+        return response()->json(['success'=>true, 'message'=> $message]);
     }
 }
