@@ -6,7 +6,7 @@
           <!-- head -->
           <thead>
             <tr class=" text-secondary ">
-              <th></th>
+              {{-- <th></th> --}}
               <th>Name</th>
               <th>City</th>
               <th>Phone</th>
@@ -24,7 +24,7 @@
 
                     $dispatch('fpupdate',{followup : {{json_encode($followup)}}, lead: {{json_encode($followup->lead)}}, remarks: {{json_encode($followup->remarks)}}, id: {{$followup->id}}, lead_remarks: {{json_encode($followup->lead->remarks)}}, appointment: {{json_encode($followup->lead->appointment)}} })"
                     >
-                    <th>{{$followup->id}}</th>
+                    {{-- <th>{{$followup->id}}</th> --}}
                     <td>{{$followup->lead->name}}</td>
                     <td>{{$followup->lead->city}}</td>
                     <td>{{$followup->lead->phone}}</td>
