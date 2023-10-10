@@ -53,7 +53,7 @@ class PageService
 
         }
         else{
-            $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '!=', 'Consulted')->with([
+            $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '=', 'Created')->with([
                 'remarks' => function ($q) {
                     return $q->orderBy('created_at', 'desc');
                 },

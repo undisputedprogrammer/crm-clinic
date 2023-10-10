@@ -36,8 +36,11 @@ export default ()=>({
             is_genuine = (is_genuine === 'true');
             params.is_genuine = is_genuine;
         }
-        let selectedCenter = document.getElementById('select-center').value;
-        params.center = selectedCenter;
+        let centerEl = document.getElementById('select-center');
+        if (centerEl) {
+            let selectedCenter = centerEl.value;
+            params.center = selectedCenter;
+        }
         this.$dispatch('linkaction',{link: this.theLink, route: 'fresh-leads', fragment: 'page-content', fresh: true, params: params});
     }
 

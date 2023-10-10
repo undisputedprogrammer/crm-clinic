@@ -21,6 +21,8 @@ class FollowupSeeder extends Seeder
                     Followup::factory()->create(
                         ['lead_id' => $l->id]
                     );
+                    $l->status = "Followup Created";
+                    $l->save();
                 }
             }
         }
