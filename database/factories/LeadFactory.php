@@ -29,15 +29,11 @@ class LeadFactory extends Factory
         $hospital = Hospital::all()->random();
         $center = $hospital->centers->random();
         $agents = $center->agents();
-        if (count($agents) == 0) {
-            $u = User::factory()->create([
-                'hospital_id' => $hospital->id
-            ]);
-            $u->centers()->save($center);
-            $ag = $u;
-        } else {
-            $ag = $agents[random_int(0, count($agents) - 1)];
-        }
+        $check = random_int(1,10);
+        $isvalid = $check > 1;
+        $isgenuine = $isvalid && $check > 2;
+
+        $ag = $agents[random_int(0, count($agents) - 1)];
         return [
             'hospital_id' => $hospital->id,
             'center_id' => $center->id,
@@ -45,8 +41,8 @@ class LeadFactory extends Factory
             'phone'=>8137033348,
             'email'=>fake()->email(),
             'city'=>fake()->city(),
-            'is_valid'=>false,
-            'is_genuine'=>false,
+            'is_valid'=> $isvalid,
+            'is_genuine'=> $isgenuine,
             'history'=>fake()->paragraph(),
             'customer_segment'=> null,
             'status'=> 'Created',

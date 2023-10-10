@@ -38,6 +38,7 @@ use App\Http\Controllers\JournalController;
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [PageController::class, 'destroy'])->name('user-logout');
     Route::get('/overview', [PageController::class, 'overview'])->name('overview');
+    Route::get('/performance', [PageController::class, 'performance'])->name('performance');
     Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
     Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
     Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');

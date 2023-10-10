@@ -11,6 +11,7 @@ use App\Models\Journal;
 use App\Models\Message;
 use App\Models\Followup;
 use App\Models\Hospital;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -115,25 +116,31 @@ class PageService
         }
     }
 
-    public function getOverviewData()
+    public function getOverviewData($month = null, $userId = null)
     {
+        if (isset($month)) {
 
-        $now = Carbon::now();
-
-        $date = $now->format('Y-m-j');
-
-        $currentMonth = $now->format('m');
-
-        $currentYear = $now->format('Y');
-
+        } else {
+            $now = Carbon::now();
+            $date = $now->format('Y-m-j');
+            $currentMonth = $now->format('m');
+            $currentYear = $now->format('Y');
+        }
         $hospital = auth()->user()->hospital;
         $hospitals = [$hospital];
         $centers = $hospitals[0]->centers;
-        /**
-         * @var User
-         */
-        $authUser = auth()->user();
 
+        if (isset($userId)) {
+            /**
+             * @var User
+             */
+            $authUser = User::find($userId);
+        } else {
+            /**
+             * @var User
+             */
+            $authUser = auth()->user();
+        }
         if($authUser->hasRole('admin')) {
             $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
 
@@ -166,6 +173,54 @@ class PageService
         $valid_chart_data = json_encode($this->getValidChartData($currentMonth));
         $genuine_chart_data = json_encode($this->getGenuineChartData($currentMonth));
         return compact('lpm', 'ftm', 'lcm', 'pf', 'hospitals', 'centers','journal','process_chart_data','valid_chart_data','genuine_chart_data');
+    }
+
+    public function agentsPerformance($month)
+    {
+        if (isset($month)) {
+
+        } else {
+            $now = Carbon::now();
+            $date = $now->format('Y-m-j');
+            $currentMonth = $now->format('m');
+            $currentYear = $now->format('Y');
+        }
+        $hospital = auth()->user()->hospital;
+        $lpm = Lead::forHospital($hospital->id)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
+
+        // $ftm = Lead::forHospital($hospital->id)->where('followup_created', true)->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $ftm = Lead::forHospital($hospital->id)->where('status', 'Follow-up Started')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
+
+        // $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->count();
+        $lcm = Lead::forHospital($hospital->id)->where('status', 'Consulted')->whereMonth('created_at', $currentMonth)->whereYear('created_at', $currentYear)->select('assigned_to', DB::raw('count(leads.id) as count'))->groupBy('assigned_to')->get();
+
+        $pf = DB::table('followups')
+            ->join('leads as l', 'l.id', '=', 'followups.lead_id')
+            ->where('l.hospital_id', $hospital->id)
+            ->select('l.assigned_to', DB::raw('COUNT(l.id) as count'))
+            ->groupBy('l.assigned_to')
+            ->get();
+        $results = [];
+        foreach ($lpm as $l) {
+            $results[$l->assigned_to]['lpm'] = $l->count;
+        }
+        foreach ($ftm as $f) {
+            $results[$f->assigned_to]['ftm'] = $f->count;
+        }
+        foreach ($lcm as $l) {
+            $results[$l->assigned_to]['lcm'] = $l->count;
+        }
+        foreach ($pf as $p) {
+            $results[$p->assigned_to]['pf'] = $p->count;
+        }
+        // $agents = [];
+        // foreach (collect($hospital->agents())->pluck('name', 'id') as $id => $name) {
+        //     $obj = new \stdClass();
+        //     $obj->id = $id;
+        //     $obj->name = $name;
+        //     $agents[] = $obj;
+        // }
+        return ['counts' => $results, 'agents' => collect($hospital->agents())->pluck('name', 'id')];
     }
 
     public function getProcessChartData($currentMonth){

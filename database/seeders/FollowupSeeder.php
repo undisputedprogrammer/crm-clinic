@@ -15,11 +15,13 @@ class FollowupSeeder extends Seeder
     public function run(): void
     {
         foreach (Lead::all() as $l) {
-            $check = random_int(1, 10);
-            if ($check > 2) {
-                Followup::factory()->create(
-                    ['lead_id' => $l->id]
-                );
+            if ($l->is_genuine) {
+                $check = random_int(1, 10);
+                if ($check > 1) {
+                    Followup::factory()->create(
+                        ['lead_id' => $l->id]
+                    );
+                }
             }
         }
     }

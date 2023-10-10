@@ -1,4 +1,13 @@
 <x-easyadmin::app-layout>
+    {{-- {{dd($agents)}} --}}
+    @foreach ($counts as $k => $d)
+        <div>
+            {{$agents[$k]}}:
+            @foreach ($d as $key => $val)
+                <span> {{$val}}</span>
+            @endforeach
+        </div>
+    @endforeach
     <div x-data="x_overview"
     x-init = "@if(isset($journal))
     journal = {{$journal}};
@@ -300,14 +309,6 @@
                                         fragment:'page-content'
                                     })">Re-assign
                                     Leads
-                                </button>
-
-                                <button class="btn btn-sm btn-secondary "
-                                    @click.prevent.stop="$dispatch('linkaction',{
-                                        link:'{{ route('performance') }}',
-                                        route:'performance',
-                                        fragment:'page-content'
-                                    })">Performance Analysis
                                 </button>
 
                             </div>
