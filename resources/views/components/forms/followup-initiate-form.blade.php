@@ -28,9 +28,10 @@
 
 
                     lead.followup_created = 1;
+                    lead.status = 'Follow-up Started';
                     leads[lead.id].followup_created = lead.followup_created;
 
-
+                    document.getElementById('lead-tick-'+lead.id).classList.remove('hidden');
                     $dispatch('formerrors', {errors: []});
                 } else if (typeof $event.detail.content.errors != undefined) {
                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});

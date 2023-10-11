@@ -1,4 +1,4 @@
-<div x-show= "selected_action == 'Complete'">
+<div x-show= "selected_action == 'Complete' && lead.status != 'Completed'">
 
     <template x-if="lead.status == 'Closed'">
         <p class=" font-medium text-error py-4 text-base">This lead is closed</p>
@@ -20,8 +20,9 @@
     @formresponse.window="
     if($event.detail.target == $el.id){
         if ($event.detail.content.success) {
-            $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fragment: 'page-content', fresh:true});
-            lead.status = 'Closed';
+            {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fragment: 'page-content', fresh:true}); --}}
+            lead.status = 'Completed';
+            fp.lead.status = 'Completed';
             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
             $el.reset();
         }else if (typeof $event.detail.content.errors != undefined) {

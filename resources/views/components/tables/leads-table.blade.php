@@ -2,7 +2,9 @@
 
 {{-- {{dd($leads[0])}} --}}
 
-<div class=" w-[96%] mx-auto md:w-[45%] overflow-x-scroll hide-scroll">
+<div x-data="{
+        theLeads: []
+    }" class=" w-[96%] mx-auto md:w-[45%] overflow-x-scroll hide-scroll">
     <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh] hide-scroll">
         @if ($leads != null && count($leads) > 0)
 
@@ -15,6 +17,7 @@
                         <th>Name</th>
                         <th>City</th>
                         <th>Phone</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -31,7 +34,12 @@
                             <td>{{ $lead->name }}</td>
                             <td>{{ $lead->city }}</td>
                             <td>{{ $lead->phone }}</td>
-
+                            <td>
+                                <div id="lead-tick-{{$lead->id}}" class="flex justify-center items-center p-0 h-7 w-7 rounded-full bg-success text-base-100 hidden">
+                                <x-easyadmin::display.icon icon="easyadmin::icons.tick"
+                                    height="h-6" widht="h-6" />
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
 

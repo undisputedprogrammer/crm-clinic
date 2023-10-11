@@ -63,7 +63,9 @@
 
         {{-- details section --}}
         <div
-        x-data = "{}"
+        x-data = "{
+                show_remarks_form: false
+            }"
         class=" w-[96%] lg:w-[50%] min-h-[100%] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
             <h1 class="text-lg text-secondary font-semibold text-center">Follow up details</h1>
             <p x-show="!fpselected" class=" font-semibold text-base text-center mt-4">Select a follow up...</p>
@@ -108,7 +110,7 @@
                     console.log(error);
                     historyLoading = false;
                   });
-
+                  show_remarks_form = !fp.remarks || fp.remarks.length ==0;
                   $dispatch('resetaction');
                 "
                 class=" w-[40%] border-r border-primary">
@@ -132,7 +134,7 @@
 
                     <p class="font-medium">Lead Segment : <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.customer_segment != null ? fp.lead.customer_segment : 'Unknown' "></span></p>
 
-
+                    <p class="font-medium">Lead Status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.status != null ? fp.lead.status : '-' "></span></p>
 
                     <div class="mt-2.5">
                         <p class=" text-base font-medium text-secondary">Lead remarks</p>
@@ -262,9 +264,9 @@
                     <h2 @click="loadWhatsApp();" class=" text-secondary font-medium text-base cursor-pointer" :class=" selected_section == 'wp' ? 'opacity-100' : ' hover:opacity-100 opacity-40' ">WhatsApp</h2>
                 </div>
 
-                    <div x-show="selected_section == 'new_follow_up'">
+                    <div x-show="selected_section == 'new_follow_up'" class="pt-4">
 
-
+                        <h3 class="text-sm font-medium text-secondary">Remarks:</h3>
                             <form
                             x-data ="
                             { doSubmit() {
@@ -296,6 +298,7 @@
                                     if($event.detail.content.followup_remark != null || $event.detail.content.followup_remark != undefined)
                                     {
                                         fp.remarks.push($event.detail.content.followup_remark);
+                                        show_remarks_form = false;
 
                                     }
 
@@ -338,95 +341,59 @@
                                     </template>
                                 </template>
                             </ul>
-
-                                <textarea name="remark" required class="textarea bg-base-200 focus:ring-0" placeholder="Add new follow up remark"></textarea>
+                            <div x-show="!fp.remarks || fp.remarks.length == 0 || show_remarks_form">
+                                <textarea name="remark" required class="textarea bg-base-200 focus:ring-0 w-full" placeholder="Add new follow up remark"></textarea>
 
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-xs mt-2 self-start">Save remark</button>
                                     <button type="submit" class=""></button>
                                 </div>
-
+                            </div>
+                            <div x-show="!show_remarks_form" >
+                                <button @click.prevent.submit="show_remarks_form = true;" type="submit" class="btn btn-ghost text-warning btn-xs self-end normal-case">More Remarks&nbsp;+</button>
+                            </div>
 
                             </form>
 
 
                             {{-- mark as consulted if appointment is scheduled --}}
-                            <form
-                                x-data="{
-                                    doSubmit() {
-                                        let form = document.getElementById('mark-consulted-form');
-                                        let formdata = new FormData(form);
-                                        formdata.append('followup_id',fp.id);
-                                        formdata.append('lead_id',fp.lead.id);
-                                        $dispatch('formsubmit',{url:'{{route('consulted.mark')}}', route: 'consulted.mark',fragment: 'page-content', formData: formdata, target: 'mark-consulted-form'});
-                                    }
-                                }"
 
-                                @submit.prevent.stop="doSubmit()"
 
-                                @formresponse.window="
-                                if ($event.detail.target == $el.id) {
-                                    if ($event.detail.content.success) {
-                                        $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                        $el.reset();
 
-                                        if($event.detail.content.lead != null || $event.detail.content.lead != undefined){
-                                            lead.status = $event.detail.content.lead.status;
-                                            console.log(lead.status);
-                                        }
-
-                                        if($event.detail.content.followup != null || $event.detail.content.followup != undefined){
-                                            fp.consulted = $event.detail.content.followup.consulted;
-                                            console.log(fp.consulted);
-                                        }
-
-                                        if($event.detail.content.appointment != null && $event.detail.content != undefined){
-                                            lead.appointment.remarks = $event.detail.content.appointment.remarks;
-                                        }
-                                        $dispatch('formerrors', {errors: []});
-                                    }
-
-                                    else if (typeof $event.detail.content.errors != undefined) {
-                                        $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
-
-                                    } else{
-                                        $dispatch('formerrors', {errors: $event.detail.content.errors});
-                                    }
-                                }"
-                            x-show="!fp.consulted && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
-                                <h1 class=" text-secondary font-medium text-base mb-1">Mark consultation</h1>
-
-                                <textarea name="remark" required class="textarea textarea-bordered w-full bg-base-200" placeholder="Add remark about the consult"></textarea>
-
-                                <div class=" flex space-x-2 mt-1">
-                                    <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
-                                </div>
-                            </form>
-
-                            <div x-show="lead.status == 'Consulted' " >
-                                <p class="w-full text-center font-medium text-secondary text-base">Consultation completed.</p>
-                            </div>
 
                             <div x-data="{
-                                selected_action : '-- Select Action --'
-                            }"
-                            @resetaction.window="selected_action = '-- Select Action --';"
-                             class="pt-6">
+                                    selected_action : '-- Select Action --'
+                                }"
+                                @resetaction.window="selected_action = '-- Select Action --';"
+                                class="pt-6"
+                                x-show="fp.remarks && fp.remarks.length > 0"
+                                >
+                                <h3 class="text-sm font-medium text-secondary">Actions:</h3>
+                                <div x-show="fp.next_followup_date && lead.status != 'Appointment Fixed'">
+                                    <p class=" font-semibold text-sm text-warning">Next follow up is scheduled.</p>
+                                </div>
+                                <div x-show="lead.rescheduled">
+                                    <p class=" font-semibold text-sm text-warning">Appointment is rescheduled.</p>
+                                </div>
+                                <div x-show="lead.status == 'Consulted' " >
+                                    <p class="font-semibold text-sm text-warning">Consultation completed.</p>
+                                </div>
+                                <div x-show="lead.status == 'Completed'" >
+                                    <p class="font-semibold text-sm text-warning">Process completed!</p>
+                                </div>
+                                <x-dropdowns.followups-action-dropdown/>
 
-                            <x-dropdowns.followups-action-dropdown/>
+                                <x-forms.followup-add-appointment-form :doctors="$doctors"/>
 
-                            <x-forms.followup-add-appointment-form :doctors="$doctors"/>
+                                <x-forms.lead-close-form/>
+                                <x-forms.lead-complete-form/>
+                                <x-forms.lead-consult-form/>
 
-                            <x-forms.lead-close-form/>
+                                <x-forms.add-followup-form/>
 
-                            <x-forms.lead-complete-form/>
-
-                            <x-forms.add-followup-form/>
-
-                            <x-forms.reschedule-appointment :doctors="$doctors"/>
+                                <x-forms.reschedule-appointment :doctors="$doctors"/>
 
                             </div>
-
                     </div>
 
                     {{-- Whatsapp section --}}

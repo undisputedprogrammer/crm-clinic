@@ -67,13 +67,13 @@ class AppointmentController extends SmartController
 
     public function consulted(Request $request)
     {
-        $result = $this->connectorService->processConsult($request->lead_id, $request->followup_id, $request->remark);
+        $result = $this->connectorService->processConsult($request->lead_id, $request->followup_id, $request->followup_date);
 
         return response()->json($result);
     }
 
     public function updateAppointment(Request $request){
-        info('Inside controller function');
+        // info('Inside controller function');
         $response = $this->connectorService->updateAppointment($request);
         return response()->json($response);
     }

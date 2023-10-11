@@ -1,16 +1,17 @@
 <x-easyadmin::app-layout>
 <div x-data="x_leads" x-init="
-selectedCenter = null;
-@isset($selectedCenter)
-    selectedCenter = '{{$selectedCenter}}';
-@endisset
-theLink = '{{route('fresh-leads')}}';
-@isset($is_valid)
-    is_valid = '{{$is_valid}}';
-@endisset
-@isset($is_genuine)
-    is_genuine = '{{$is_genuine}}';
-@endisset">
+        selectedCenter = null;
+        @isset($selectedCenter)
+            selectedCenter = '{{$selectedCenter}}';
+        @endisset
+        theLink = '{{route('fresh-leads')}}';
+        @isset($is_valid)
+            is_valid = '{{$is_valid}}';
+        @endisset
+        @isset($is_genuine)
+            is_genuine = '{{$is_genuine}}';
+        @endisset"
+    >
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
       <!-- Header -->
@@ -178,6 +179,7 @@ theLink = '{{route('fresh-leads')}}';
 
 
         <div x-data="{
+                show_remarks_form: false,
                 selected_section: 'actions',
                 messageLoading : false,
                 qnas: [],
@@ -273,21 +275,23 @@ theLink = '{{route('fresh-leads')}}';
                 name = lead.name;
                 qnas = lead.qnas;
             }
+            show_remarks_form =  !remarks || remarks.length == 0,
             convert = false;
+            $dispatch('resetactions');
 
             " class=" mt-2 flex flex-col lg:flex-row lg:justify-between min-h-96">
 
             {{-- Details section starts --}}
             <div class=" border-r border-primary pr-1.5 w-[46%]">
                 <div>
-                    <p class="text-base font-medium">Name : <span x-text="lead.name"> </span></p>
-                    <p class="text-base font-medium">City : <span x-text="lead.city"> </span></p>
-                    <p class="text-base font-medium">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-base font-medium">Email : <span x-text="lead.email"> </span></p>
+                    <p class="text-sm font-medium">Name : <span x-text="lead.name"> </span></p>
+                    <p class="text-sm font-medium">City : <span x-text="lead.city"> </span></p>
+                    <p class="text-sm font-medium">Phone : <span x-text="lead.phone"> </span></p>
+                    <p class="text-sm font-medium">Email : <span x-text="lead.email"> </span></p>
                 </div>
 
                 <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Is valid : </p>
+                    <p class=" text-sm font-medium">Is valid : </p>
 
                     <input @change.prevent.stop="$dispatch('changevalid',{
                         link: '{{route('change-valid')}}',
@@ -296,7 +300,7 @@ theLink = '{{route('fresh-leads')}}';
                 </div>
 
                 <div class=" flex items-center space-x-2 ">
-                    <p class=" text-base font-medium ">Is genuine : </p>
+                    <p class=" text-sm font-medium ">Is genuine : </p>
 
                     <input @change.prevent.stop="$dispatch('changegenuine',{
                         link: '{{route('change-genuine')}}',
@@ -308,7 +312,7 @@ theLink = '{{route('fresh-leads')}}';
 
                 {{-- question visit within a week --}}
                 <div class="flex items-center space-x-2">
-                    <p class=" text-base font-medium">Visit within a week ? : </p>
+                    <p class=" text-sm font-medium">Visit within a week ? : </p>
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_visit == null || lead.q_visit == 'null' ? 'Not selected' : lead.q_visit " class=" text-secondary"></span><x-icons.down-arrow /></label>
 
@@ -341,7 +345,7 @@ theLink = '{{route('fresh-leads')}}';
 
                 {{-- question decide within a week --}}
                 <div x-show="lead.q_visit == 'no'" class="flex items-center space-x-2 mt-1">
-                    <p class=" text-base font-medium">Decide within a week ? : </p>
+                    <p class=" text-sm font-medium">Decide within a week ? : </p>
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_decide == null || lead.q_decide == 'null' ? 'Not selected' : lead.q_decide " class=" text-secondary"></span><x-icons.down-arrow /></label>
 
@@ -373,15 +377,15 @@ theLink = '{{route('fresh-leads')}}';
                 </div>
 
                 <div class=" flex items-center space-x-2">
-                    <p class=" text-base font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " :class="lead.customer_segment != null ? ' uppercase' : '' "></span></p>
+                    <p class=" text-sm font-medium">Lead Segment : <span x-text = "lead.customer_segment != null ? lead.customer_segment : 'Unknown' " :class="lead.customer_segment != null ? ' uppercase' : '' "></span></p>
                 </div>
 
                 <div class=" mt-2.5">
-                    <h1 class=" text-secondary text-base font-medium">Follow up details</h1>
+                    <h1 class=" text-secondary text-sm font-medium">Follow up details</h1>
                     <h1 x-text="lead.followup_created == 1 ? 'Follow up Initiated' : 'Follow up is not initiated for this lead' " class="  font-medium text-primary"></h1>
 
                     <p x-show="lead.followup_created == 1" class=" font-medium ">
-                        <span>follow up scheduled : </span>
+                        <span>Follow up scheduled : </span>
                         <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].scheduled_date : '' "></span>
                     </p>
                     <p x-show="lead.followup_created == 1" class=" font-medium">
@@ -412,7 +416,7 @@ theLink = '{{route('fresh-leads')}}';
 
                     <div class=" flex flex-col mt-2.5">
 
-                        <p class=" text-base font-medium text-secondary">Remarks</p>
+                        <p class=" text-sm font-medium text-secondary">Remarks</p>
 
                         <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal ml-1.5">
                             <template x-for="remark in remarks">
@@ -429,13 +433,19 @@ theLink = '{{route('fresh-leads')}}';
                         </ul>
 
                         <form
-                        x-data = "{ doSubmit() {
-                                let form = document.getElementById('add-remark-form');
-                                let formdata = new FormData(form);
-                                formdata.append('remarkable_id',lead.id);
-                                formdata.append('remarkable_type','lead');
-                                $dispatch('formsubmit',{url:'{{route('add-remark')}}', route: 'add-remark',fragment: 'page-content', formData: formdata, target: 'add-remark-form'});
-                            }}"
+                            x-data = "
+                            {
+                                doSubmit() {
+                                    let form = document.getElementById('add-remark-form');
+                                    let formdata = new FormData(form);
+                                    formdata.append('remarkable_id',lead.id);
+                                    formdata.append('remarkable_type','lead');
+                                    $dispatch('formsubmit',{url:'{{route('add-remark')}}', route: 'add-remark',fragment: 'page-content', formData: formdata, target: 'add-remark-form'});
+                                    show_remarks_form = false;
+                                }
+                            }
+                        "
+
                         @submit.prevent.stop="doSubmit()"
                         @formresponse.window="
                             if ($event.detail.target == $el.id) {
@@ -451,7 +461,6 @@ theLink = '{{route('fresh-leads')}}';
                                         remarks = response.data.remarks;
                                         leads[lead.id].remarks = remarks;
                                         document.getElementById('add-remark-form').reset();
-
                                       }).catch(function (error){
                                         console.log(error);
                                       });
@@ -463,20 +472,26 @@ theLink = '{{route('fresh-leads')}}';
                                     $dispatch('formerrors', {errors: $event.detail.content.errors});
                                 }
                             }"
-                        action="" id="add-remark-form" class=" bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
+                        action="" id="add-remark-form" class="mt-2 rounded-xl w-full max-w-[408px]">
+                            <div x-show="!lead.remarks || lead.remarks.length == 0 || show_remarks_form" class="flex flex-col space-y-2 bg-base-200 p-3 rounded-xl">
+                                <textarea placeholder="Remark" name="remark" required class="textarea textarea-bordered textarea-xs text-sm w-full max-w-sm" rows="2"></textarea>
 
-                            <textarea placeholder="Remark" name="remark" required class="textarea textarea-bordered textarea-xs text-sm w-full max-w-sm" rows="2"></textarea>
-
-                            <button type="submit" class="btn btn-primary btn-xs self-end">Add remark</button>
-
+                                <button type="submit" class="btn btn-primary btn-xs self-end">Save Remark</button>
+                            </div>
+                            <div x-show="!show_remarks_form" >
+                                <button @click.prevent.submit="show_remarks_form = true;" type="submit" class="btn btn-ghost text-warning btn-xs self-end normal-case">More Remarks&nbsp;+</button>
+                            </div>
                         </form>
 
                     </div>
-
-                    <div x-show="lead.status != 'Completed'" x-data="{
-                                    selected_action : 'Initiate Followup'
-                                }" class="pt-2.5">
-
+                    <div x-data="{
+                            selected_action : 'Initiate Followup'
+                        }"
+                        @resetactions.window=" console.log('captured reset')
+                        selected_action = 'Initiate Followup';
+                        "
+                        x-show="lead.status != 'Completed' && remarks.length > 0" class="pt-2.5">
+                        <h3 class="text-sm font-medium text-secondary">Actions:</h3>
                         <x-dropdowns.leads-action-dropdown/>
 
                         <x-forms.followup-initiate-form/>

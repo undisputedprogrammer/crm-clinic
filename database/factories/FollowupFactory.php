@@ -47,8 +47,16 @@ class FollowupFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Followup $f) {
-            $lead = $f->lead;
             $check = random_int(1, 10);
+            $lead = $f->lead;
+
+            $validity = $check > 2 || $f->converted;
+            $lead->is_valid = $validity;
+            $lead->is_genuine = $f->converted || ($validity && $check > 3);
+
+            $lead->followup_created = true;
+            $lead->save();
+            $lead->refresh();
             $x = explode(' ', $f->scheduled_date)[0];
             $x = explode('-', $x);
             $y = implode('-', $x);
@@ -86,6 +94,8 @@ class FollowupFactory extends Factory
                 if ($check > 1) {
                     $lead->status = 'Follow-up Started';
                 } else {
+                    $f->actual_date = $f->scheduled_date;
+                    $f->save();
                     $lead->status = 'Closed';
                 }
                 $lead->save();
