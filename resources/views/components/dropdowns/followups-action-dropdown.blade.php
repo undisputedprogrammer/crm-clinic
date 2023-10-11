@@ -6,6 +6,7 @@
     && fp.lead.status != 'Closed'
     && fp.lead.status != 'Completed'
     && lead.status != 'Completed'
+    && fp.acutual_date == null
     " class="dropdown ">
     <label tabindex="0" class="btn btn-sm" ><span x-text="selected_action"></span><x-icons.down-arrow /></label>
     <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52"
@@ -49,4 +50,8 @@
         </li>
 
     </ul>
+</div>
+
+<div x-show="fp.actual_date != null" class=" text-warning font-medium text-sm w-full text-center">
+    The current Follow-up is finished, if you're seeing this, refresh the page!
 </div>

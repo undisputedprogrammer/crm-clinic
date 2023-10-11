@@ -12,7 +12,7 @@
               <th>Prospect name</th>
               <th>Prospect Contact No.</th>
               <th>Doctor</th>
-              {{-- <th></th> --}}
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -29,6 +29,7 @@
                     <td>{{$appointment->lead->name}}</td>
                     <td>{{$appointment->lead->phone}}</td>
                     <td>{{$appointment->doctor->name ?? 'Not specified'}}</td>
+                    <td class=" font-medium" x-text="{{$appointment->consulted_date}} != null ? 'Consulted' : 'Pending' " :class="{{$appointment->consulted_date}} != null ?' text-success' : ' text-warning' "></td>
                     {{-- <td>
                         <button @click.prevent.stop="$dispatch('appointmentedit', {id: {{$appointment->id}}, name: '{{$appointment->name}}', department: '{{$appointment->department}}'});" class="btn btn-ghost btn-xs text-warning" type="button">
                             <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>

@@ -54,9 +54,9 @@
 
                                 }
                                 if(page == null){
-                                    {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true}); --}}
+                                    $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true});
                                 }else{
-                                    $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups',fragment:'page-content',fresh: true, params: {page: page}});
+                                    $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true, params: {page: page}});
                                 }
                                 historyLoading = true;
                                 axios.get('/api/followup',{
