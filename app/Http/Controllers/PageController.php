@@ -105,4 +105,11 @@ class PageController extends SmartController
 
         return $this->buildResponse('pages.manage-questions', compact('questions'));
     }
+
+    public function showFollowup(Request $request, $id)
+    {
+        $data = $this->pageService->getSingleFollowupData($request->user(),$id);
+
+        return $this->buildResponse('pages.show-followup', $data);
+    }
 }

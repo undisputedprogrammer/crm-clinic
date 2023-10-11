@@ -53,11 +53,16 @@
                                     fp.remarks.push($event.detail.content.followup_remark);
 
                                 }
-                                if(page == null){
-                                    $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true});
+                                if(pageUrl != undefined && pageUrl != null){
+                                    $dispatch('linkaction',{link: pageUrl, route: pageRoute, fragment: 'page-content'});
                                 }else{
-                                    $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true, params: {page: page}});
+                                    if(page == null){
+                                        $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true});
+                                    }else{
+                                        $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fresh: true, params: {page: page}});
+                                    }
                                 }
+
                                 historyLoading = true;
                                 axios.get('/api/followup',{
                                     params: {

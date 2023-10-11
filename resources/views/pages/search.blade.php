@@ -298,7 +298,7 @@
                                 <template x-show="!historyLoading" x-for="item in history" >
                                     <div>
                                         <div x-show="item.actual_date != null" class=" mt-2">
-                                        <p class=" font-medium">Date : <span class=" text-primary" x-text="item.actual_date"></span></p>
+                                        <p class=" font-medium">Date : <span class=" text-primary" x-text="formatDate(item.actual_date)"></span></p>
                                         <p class="font-medium">Follow up remarks</p>
                                         <ul>
                                             <template x-if="item.remarks != undefined">
@@ -319,6 +319,17 @@
                                 <template x-if="fp.lead != undefined && fp.lead != null && fp.lead.appointment != null">
                                     <p x-show="!historyLoading" class=" text-success font-medium mt-1.5"><span>Appointment scheduled for : </span><span class="text-primary" x-text="fp.lead.appointment != null ? fp.lead.appointment.appointment_date : '' "></span></p>
                                 </template>
+
+                                <div class="w-full flex justify-center mt-2.5">
+                                    <button
+                                    @click.prevent.stop="$dispatch('linkaction',{
+                                        link: '{{route('followup.show',['id'=>'_X_'])}}'.replace('_X_',fp.lead.id),
+                                        route: 'followup.show',
+                                        fragment: 'page-content',
+                                        fresh: true
+                                    });"
+                                    class=" btn btn-outline btn-secondary btn-sm">More actions</button>
+                                </div>
                             </div>
 
 

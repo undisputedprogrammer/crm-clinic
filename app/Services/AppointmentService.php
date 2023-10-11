@@ -129,16 +129,35 @@ class AppointmentService implements ModelViewConnector
     }
 
     public function updateAppointment($request){
+
         $validate = $this->updateValidation($request);
         if($validate == false){
             return ['success'=>false, 'message'=>'Could not reschedule appointmet'];
         }
+
+        $appointment_date = Carbon::parse($request->appointment_date);
+        $followup_date = Carbon::parse($request->followup_date);
+
+        if($followup_date->isPast($appointment_date)){
+            if(!$followup_date->isSameAs('Y-m-j',$appointment_date)){
+                return ['success'=>false, 'message'=>'Invalid Follow-up date'];
+            }
+        }
+
         $appointment = Appointment::find($request->appointment_id);
+
+        if($appointment_date->isSameDay(Carbon::parse($appointment->appointment_date))){
+            return ['success'=>false, 'message'=>'Appointment already on the same date'];
+        }
+
+        if($appointment_date->isPast(Carbon::today())){
+            return ['success'=>false, 'message'=>'Appointment cannot be fixed to past date'];
+        }
+
         $appointment->doctor_id = $request->doctor;
         $appointment->appointment_date = $request->appointment_date;
         $appointment->save();
-        // info('appointment created');
-        // info('followup_id is '.$request->followup_id);
+
         if($request->followup_id){
             Remark::create([
                 'remarkable_type' => Followup::class,

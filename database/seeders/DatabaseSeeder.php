@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             DoctorSeeder::class,
             QuestionSeeder::class,
             LeadSeeder::class,
-            FollowupSeeder::class,
+            // FollowupSeeder::class,
             InternalChatSeeder::class,
             // RemarkSeeder::class,
             // AnswerSeeder::class,

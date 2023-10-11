@@ -506,6 +506,17 @@
                         <p class=" font-semibold text-base text-secondary-focus">This lead has completed all follow ups.</p>
                     </div>
 
+                    <div x-show="lead.status != 'Created'" class="w-full flex justify-center mt-4">
+                        <button
+                        @click.prevent.stop="$dispatch('linkaction',{
+                            link: '{{route('followup.show',['id'=>'_X_'])}}'.replace('_X_',lead.id),
+                            route: 'followup.show',
+                            fragment: 'page-content',
+                            fresh: true
+                        });"
+                        class=" btn btn-secondary btn-sm underline btn-ghost text-secondary">More action</button>
+                    </div>
+
                 </div>
                 {{-- Actions section ends --}}
 

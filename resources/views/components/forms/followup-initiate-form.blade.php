@@ -1,6 +1,6 @@
 <div x-show="selected_action == 'Initiate Followup'">
 
-    <template x-if="lead.followup_created != 0">
+    <template x-if="lead.status != 'Created'">
         <p class=" text-primary font-medium py-4">Follow up is initiated for this lead</p>
     </template>
 

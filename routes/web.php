@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/search', [PageController::class, 'searchIndex'])->name('search-index');
     Route::post('/search', [SearchController::class, 'index'])->name('get-results');
     Route::post('/followup/new', [FollowupController::class, 'next'])->name('next-followup');
+    Route::get('/followup/{id}',[PageController::class, 'showFollowup'])->name('followup.show');
     Route::post('/import/lead', [ImportController::class, 'importLead'])->name('import-leads');
     Route::get('/questions', [PageController::class, 'questionIndex'])->name('manage-questions');
     Route::post('/questions/store', [QuestionController::class, 'store'])->name('add-question');

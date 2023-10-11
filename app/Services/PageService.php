@@ -324,4 +324,22 @@ class PageService
 
         return compact('followups', 'doctors','messageTemplates','centers','selectedCenter');
     }
+
+    public function getSingleFollowupData($user, $id){
+        $followup = Followup::whereHas('lead',function ($query) use($id,$user){
+            return $query->where('hospital_id',$user->hospital_id)->where('id',$id)->when($user->hasRole('agent'), function ($qr) use ($user){
+                return $qr->where('assigned_to',$user->id);
+            });
+        })->with(['lead'=>function ($q){
+            return $q->with(['appointment'=> function($qry){
+                return $qry->with('doctor');
+            },'remarks']);
+        },'remarks'])->latest()->get()->first();
+
+        $doctors = Doctor::all();
+        $messageTemplates = Message::all();
+        $centers = Center::where('hospital_id',$user->hospital_id)->get();
+
+        return ['followup'=>$followup, 'doctors'=>$doctors, 'messageTemplates'=>$messageTemplates, 'centers'=>$centers];
+    }
 }

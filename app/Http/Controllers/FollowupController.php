@@ -93,4 +93,6 @@ class FollowupController extends SmartController
         $lead->save();
         return response()->json(['success' => true, 'message' => 'Lead converted to customer', 'followup' => $followup, 'lead' => $lead]);
     }
+
+
 }

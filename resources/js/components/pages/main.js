@@ -120,6 +120,19 @@ export default () => ({
         else{
             return null;
         }
+    },
+    formatDateOnly(inputDate) {
+        const date = new Date(inputDate);
+    if (isNaN(date.getTime())) {
+        return "Invalid Date";
+    }
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthAbbreviation = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    return `${monthAbbreviation} ${day} ${year}`;
     }
 });
 

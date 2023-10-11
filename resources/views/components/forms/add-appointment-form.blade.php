@@ -1,9 +1,7 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
 <div x-show="selected_action == 'Schedule Appointment'">
-{{-- <template x-if="lead.followup_created != 0">
-    <p class=" text-primary font-medium py-4">Follow up is initiated for this lead. You can only perform further actions in the followups page.</p>
-</template> --}}
+
 
 <template x-if="lead.status == 'Appointment Fixed' ">
     <p class=" text-primary font-medium py-4">Appointment is scheduled scheduled for this lead.</p>
