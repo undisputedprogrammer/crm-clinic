@@ -110,6 +110,16 @@ export default () => ({
         ];
 
         return `${day} ${months[parseInt(month) - 1]} ${year}`;
+    },
+    getPage(){
+        let currentUrl = window.location.href;
+        let pageUrl = new URL(currentUrl);
+        if(pageUrl.searchParams.has('page')){
+            return pageUrl.searchParams.get('page');
+        }
+        else{
+            return null;
+        }
     }
 });
 

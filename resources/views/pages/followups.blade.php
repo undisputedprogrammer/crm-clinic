@@ -16,13 +16,14 @@
             consult: false,
             appointment: null,
             showconsultform: false,
-
+            page: null
         }"
         x-init="
         selectedCenter = null;
         @isset($selectedCenter)
             selectedCenter = {{$selectedCenter}};
-        @endisset"
+        @endisset
+        page = getPage();"
 
         {{-- pagination event handler --}}
         @pageaction.window="
@@ -417,6 +418,7 @@
                             <x-forms.followup-add-appointment-form :doctors="$doctors"/>
 
                             <x-forms.lead-close-form/>
+
                             <x-forms.lead-complete-form/>
 
                             <x-forms.add-followup-form/>

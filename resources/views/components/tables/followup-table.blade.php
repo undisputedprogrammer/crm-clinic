@@ -1,6 +1,6 @@
 @props(['followups'])
 <div class=" w-[96%] lg:w-[40%]">
-    <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh]">
+    <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh] hide-scroll">
         @if ($followups != null && count($followups)>0)
         <table class="table ">
           <!-- head -->
