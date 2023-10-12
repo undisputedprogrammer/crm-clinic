@@ -1,12 +1,12 @@
 <div x-show="selected_action == 'Initiate Followup'">
 
-    <template x-if="lead.status != 'Created'">
+    <div x-show="lead.status != 'Created'">
         <p class=" text-primary font-medium py-4">Follow up is initiated for this lead</p>
-    </template>
+    </div>
 
-    <template x-if="lead.status == 'Closed'">
+    <div x-show="lead.status == 'Closed'">
         <p class=" text-error font-medium py-4 text-base">This lead is closed.</p>
-    </template>
+    </div>
 
     <form x-show="lead.followup_created == 0 && lead.status != 'Closed'" x-data="{
         doSubmit() {

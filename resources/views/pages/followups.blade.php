@@ -362,7 +362,8 @@
 
 
                             <div x-data="{
-                                    selected_action : '-- Select Action --'
+                                    selected_action : '-- Select Action --',
+                                    dropdown : document.getElementById('followup-action-dropdown')
                                 }"
                                 @resetaction.window="selected_action = '-- Select Action --';"
                                 class="pt-6"

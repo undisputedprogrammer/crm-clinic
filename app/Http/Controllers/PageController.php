@@ -112,4 +112,10 @@ class PageController extends SmartController
 
         return $this->buildResponse('pages.show-followup', $data);
     }
+
+    public function compose(Request $request, $id){
+        info('Viewing compose mail page');
+        $lead = Lead::find($id);
+        return $this->buildResponse('pages.compose-email',compact('lead'));
+    }
 }

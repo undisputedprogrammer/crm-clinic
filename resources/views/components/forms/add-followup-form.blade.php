@@ -1,4 +1,5 @@
 <div x-show= "selected_action == 'Add Followup'">
+    <h1 x-show="fp.actual_date != null" class=" font-medium text-warning">Current Follow-up is complete</h1>
     <form x-show="fp.next_followup_date == null" x-transition
         x-data ="
                             { doSubmit() {
