@@ -46,7 +46,7 @@
         class="bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
 
         <label for="scheduled-date" class="text-sm font-medium">Schedule a date for follow up</label>
-        <input id="scheduled-date" name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
+        <input id="scheduled-date" required name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
 
         <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Initiate follow up</button>
 

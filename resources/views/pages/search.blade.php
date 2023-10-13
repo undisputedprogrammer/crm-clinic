@@ -253,19 +253,27 @@
 
                         class=" w-1/2 border-r border-primary">
                         <h1 class=" font-medium text-base text-secondary">Lead details</h1>
-                            <p class="text-base font-medium">Name : <span x-text=" fp.lead != undefined ? fp.lead.name : '' "> </span></p>
-                            <p class="text-base font-medium">City : <span x-text="fp.lead != undefined ? fp.lead.city : '' "> </span></p>
-                            <p class="text-base font-medium">Phone : <span x-text=" fp.lead != undefined ? fp.lead.phone : '' "> </span></p>
-                            <p class="text-base font-medium">Email : <span x-text=" fp.lead != undefined ? fp.lead.email : '' "> </span></p>
+                            <p class=" font-medium">Name : <span x-text=" fp.lead != undefined ? fp.lead.name : '' "> </span></p>
+                            <p class=" font-medium">City : <span x-text="fp.lead != undefined ? fp.lead.city : '' "> </span></p>
+                            <p class=" font-medium">Phone : <span x-text=" fp.lead != undefined ? fp.lead.phone : '' "> </span></p>
+                            <p class=" font-medium flex space-x-1">Email : <span x-text=" fp.lead != undefined ? fp.lead.email : '' "> </span>
+                                <a class=" btn btn-xs btn-ghost"
+                                    @click.prevent.stop="$dispatch('linkaction',{
+                                        link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',fp.lead.id),
+                                        route: 'email.compose',
+                                        fragment: 'page-content'
+                                    })"><x-icons.envolope-icon/>
+                                </a>
+                            </p>
 
-                            <div class=" flex items-center space-x-2">
-                                <p class=" text-base font-medium">Is valid : </p>
+                            <div class=" flex items-center space-x-2 mt-3">
+                                <p class="  font-medium">Is valid : </p>
 
                                 <input  type="checkbox" name="is_valid"  :checked=" isValid == 1 ? true : false" class="checkbox checkbox-sm cursor-not-allowed pointer-events-none checkbox-success focus:ring-0" />
                             </div>
 
                             <div class=" flex items-center space-x-2  ">
-                                <p class=" text-base font-medium ">Is genuine : </p>
+                                <p class="  font-medium ">Is genuine : </p>
 
                                 <input  type="checkbox" name="is_genuine"  :checked=" isGenuine == 1 ? true : false " class="checkbox checkbox-sm cursor-not-allowed pointer-events-none checkbox-success focus:ring-0" />
                             </div>
@@ -328,7 +336,7 @@
                                         fragment: 'page-content',
                                         fresh: true
                                     });"
-                                    class=" btn btn-outline btn-secondary btn-sm">More actions</button>
+                                    class=" btn normal-case text-secondary btn-ghost btn-sm">More actions</button>
                                 </div>
                             </div>
 

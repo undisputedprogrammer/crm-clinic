@@ -115,19 +115,26 @@
                 "
                 class=" w-[40%] border-r border-primary">
                 <h1 class=" font-medium text-base text-secondary">Lead details</h1>
-                    <p class="text-base font-medium">Name : <span x-text=" fp.lead != undefined ? fp.lead.name : '' "> </span></p>
-                    <p class="text-base font-medium">City : <span x-text="fp.lead != undefined ? fp.lead.city : '' "> </span></p>
-                    <p class="text-base font-medium">Phone : <span x-text=" fp.lead != undefined ? fp.lead.phone : '' "> </span></p>
-                    <p class="text-base font-medium">Email : <span x-text=" fp.lead != undefined ? fp.lead.email : '' "> </span></p>
+                    <p class="font-medium">Name : <span x-text=" fp.lead != undefined ? fp.lead.name : '' "> </span></p>
+                    <p class="font-medium">City : <span x-text="fp.lead != undefined ? fp.lead.city : '' "> </span></p>
+                    <p class="font-medium">Phone : <span x-text=" fp.lead != undefined ? fp.lead.phone : '' "> </span></p>
+                    <p class="font-medium flex space-x-1"><span>Email : <span> <span x-text=" fp.lead != undefined ? fp.lead.email : '' "> </span>
+                        <a class=" btn btn-xs btn-ghost"
+                        @click.prevent.stop="$dispatch('linkaction',{
+                            link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),
+                            route: 'email.compose',
+                            fragment: 'page-content'
+                        })"><x-icons.envolope-icon/></a>
+                    </p>
 
                     <div class=" flex items-center space-x-2">
-                        <p class=" text-base font-medium">Is valid : </p>
+                        <p class=" font-medium">Is valid : </p>
 
                         <input  type="checkbox" name="is_valid"  :checked=" isValid == 1 ? true : false" class="checkbox checkbox-sm cursor-not-allowed pointer-events-none checkbox-success focus:ring-0" />
                     </div>
 
                     <div class=" flex items-center space-x-2  ">
-                        <p class=" text-base font-medium ">Is genuine : </p>
+                        <p class=" font-medium ">Is genuine : </p>
 
                         <input  type="checkbox" name="is_genuine"  :checked=" isGenuine == 1 ? true : false " class="checkbox checkbox-sm cursor-not-allowed pointer-events-none checkbox-success focus:ring-0" />
                     </div>
@@ -163,7 +170,7 @@
 
                         {{-- looping through history --}}
                         <template x-show="!historyLoading" x-for="item in history" >
-                            <div x-data="{agent: item.user}" x-show="item.actual_date != null" class=" mt-2">
+                            <div x-data="{agent: item.user}" x-show="item.actual_date != null" class=" mt-2 mr-1 bg-neutral p-2 rounded-lg">
                                 <p class=" font-medium">Date : <span class=" text-primary" x-text="formatDate(item.actual_date)"></span></p>
 
                                 {{-- <template x-if=""> --}}

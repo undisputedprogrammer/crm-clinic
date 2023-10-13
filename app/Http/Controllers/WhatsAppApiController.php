@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Followup;
 use Illuminate\Http\Request;
 use App\Jobs\SendBulkMessage;
+use App\Models\Center;
 use App\Models\UnreadMessages;
 use App\Services\WhatsAppApiService;
 use Illuminate\Support\Facades\Auth;
@@ -192,6 +193,21 @@ class WhatsAppApiController extends SmartController
                 $lead = Lead::where('phone', $phone)->get()->first();
             }
 
+            if($lead == null){
+                $lead = Lead::create([
+                'hospital_id' => 1,
+                'center_id' => Center::where('hospital_id', 1)->get()->random()->id,
+                'name' => 'unknown lead',
+                'phone' => $sender,
+                'city' => 'Not specified',
+                'email' => 'Not specified',
+                'is_valid' => false,
+                'is_genuine' => false,
+                'followup_created' => false,
+                'assigned_to' =>
+                    User::where('hospital_id', 1)->where('designation','!=',       'Administrator')->get()->random()->id
+            ]);
+            }
             // return response('lead is '.$lead->name);
 
             $lead_id = null;

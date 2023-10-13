@@ -1,11 +1,12 @@
 @props(['leads'])
 
 {{-- {{dd($leads[0])}} --}}
-
 <div x-data="{
         theLeads: []
     }" class=" w-[96%] mx-auto md:w-[45%] overflow-x-scroll hide-scroll">
     <div class="overflow-x-auto border border-primary rounded-xl overflow-y-scroll h-[65vh] hide-scroll">
+
+
         @if ($leads != null && count($leads) > 0)
 
             <table class="table table-sm">

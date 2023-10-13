@@ -10,6 +10,12 @@
         @endisset
         @isset($is_genuine)
             is_genuine = '{{$is_genuine}}';
+        @endisset
+        @isset($creation_date)
+            creation_date = '{{$creation_date}}';
+        @endisset
+        @isset($processed)
+            isProcessed = true;
         @endisset"
     >
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
@@ -19,11 +25,11 @@
       <x-sections.side-drawer/>
       {{-- page body --}}
 
-        <div class=" flex bg-base-200 items-center justify-between px-[3.3%]">
+        <div class=" flex bg-base-200 items-center justify-between px-[1.25%]">
 
             <div class=" flex space-x-3 items-center justify-start pt-1.5">
                 <h1 class=" text-primary text-xl font-semibold bg-base-200 ">Leads</h1>
-                <div class=" flex flex-col md:flex-row space-y-2 md:space-y-0 space-x-3">
+                <div class=" flex flex-col md:flex-row space-y-2 items-center md:space-y-0 space-x-3">
                     @can('is-admin')
                         @php
                         $route = "fresh-leads";
@@ -33,7 +39,7 @@
 
                     {{-- Search lead by name or phone number --}}
                     <div>
-                        <form @submit.prevent.stop="searchlead();" id="lead-search-form" class=" relative mx-auto text-base-content">
+                        <form @submit.prevent.stop="searchlead();" id="lead-search-form" class=" relative mx-auto text-base-content p-1 bg-neutral rounded-lg">
                             <input class="border border-primary bg-base-100 input input-sm  focus:outline-none focus:ring-0 focus-within:border-primary text-base-content"
                               type="text" name="search" placeholder="Search name or phone">
                             <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 ">
@@ -47,6 +53,10 @@
                         <x-forms.filter-lead-by-status :status="$status"/>
                     </div>
 
+                    <div>
+                        <x-forms.filter-lead-by-date/>
+                    </div>
+
                 </div>
 
             </div>
@@ -57,6 +67,23 @@
 
         <x-modals.template-select-modal :templates="$messageTemplates"/>
         <x-display.sending/>
+
+
+        <div class="w-full flex bg-base-200 px-[1.25%] pt-1.5">
+
+            <a x-show="!isProcessed" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            @click.prevent.stop="leadsProcessedToday();">Processed Today</a>
+
+            <a x-show="isProcessed" href="" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            @click.prevent.stop="$dispatch('linkaction',{
+                link: '{{route('fresh-leads')}}',
+                route: 'fresh-leads',
+                fragment: 'page-content',
+                fresh: true
+            })">Fresh leads</a>
+
+        </div>
+
 
       <div x-data="{
         convert: false
@@ -172,11 +199,9 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" md:h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full md:flex justify-evenly">
+       class=" md:h-[calc(100vh-5.875rem)] pt-2 pb-[2.8rem]  bg-base-200 w-full md:flex justify-evenly">
 
-
-        <x-tables.leads-table :leads="$leads"/>
-
+            <x-tables.leads-table :leads="$leads"/>
 
         <div x-data="{
                 show_remarks_form: false,
@@ -283,11 +308,24 @@
 
             {{-- Details section starts --}}
             <div class=" border-r border-primary pr-1.5 w-[46%]">
-                <div>
+                <h1 class=" text-secondary font-medium text-base flex space-x-1 items-center">
+                    <span>Lead Details</span>
+                    <button class=" btn btn-ghost btn-xs btn-warning text-warning">
+                        <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>
+                    </button>
+                </h1>
+                <div class=" mb-4">
                     <p class="text-sm font-medium">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-sm font-medium">City : <span x-text="lead.city"> </span></p>
                     <p class="text-sm font-medium">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-sm font-medium">Email : <span x-text="lead.email"> </span></p>
+                    <p class="text-sm font-medium flex space-x-1 items-center">Email : <span x-text="lead.email"> </span>
+                        <a class=" btn btn-xs btn-ghost"
+                        @click.prevent.stop="$dispatch('linkaction',{
+                            link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),
+                            route: 'email.compose',
+                            fragment: 'page-content'
+                        })"><x-icons.envolope-icon/></a>
+                    </p>
                 </div>
 
                 <div class=" flex items-center space-x-2">

@@ -20,14 +20,15 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->json('qnas')->nullable();
-            $table->boolean('is_valid');
-            $table->boolean('is_genuine');
-            $table->text('history');
+            $table->boolean('is_valid')->default(false);
+            $table->boolean('is_genuine')->default(false);
+            $table->text('history')->nullable();
             $table->text('q_visit')->nullable();
             $table->text('q_decide')->nullable();
             $table->enum('customer_segment',['hot','warm','cold'])->nullable();
             $table->enum('status', ['Created', 'Follow-up Started', 'Appointment Fixed', 'Consulted', 'Completed', 'Closed'])->default('Created')->nullable();
             $table->boolean('followup_created')->default(false);
+            $table->timestamp('followup_created_at')->nullable();
             $table->foreignId('assigned_to')->references('id')->on('users');
             $table->timestamps();
         });

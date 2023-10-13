@@ -25,6 +25,7 @@ class FollowupController extends SmartController
 
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
+            'followup_count' => 1,
             'scheduled_date' => $request->scheduled_date,
             'user_id' => $request->user()->id
         ]);
@@ -37,7 +38,7 @@ class FollowupController extends SmartController
 
         $lead->followup_created = true;
         $lead->status = "Follow-up Started";
-
+        $lead->followup_created_at = Carbon::now();
         $lead->save();
         return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
         // return response()->json(['success'=>true,'message'=>'converted '.$followup->converted]);
@@ -70,6 +71,7 @@ class FollowupController extends SmartController
 
         $next_followup = Followup::create([
             'lead_id' => $request->lead_id,
+            'followup_count' => $followup->followup_count + 1,
             'scheduled_date' => $request->next_followup_date,
             'user_id' => $request->user()->id
         ]);

@@ -1,5 +1,5 @@
 @props(['route','centers'])
-<form action="" class=" flex space-x-1 items-center" @submit.prevent.stop="
+<form action="" class=" flex space-x-1 items-center bg-neutral p-1 rounded-lg" @submit.prevent.stop="
 selected = !selected;
 filterByCenter($el,'{{route($route)}}');" id="filter-by-center-form">
     <select name="center" id="select-center" class=" select text-base-content select-sm text-xs focus:ring-0 focus:outline-none">
