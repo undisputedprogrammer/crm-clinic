@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
     Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
     Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
+    Route::post('/lead/update',[LeadController::class, 'update'])->name('lead.update');
     Route::post('/remark/store', [Remarkcontroller::class, 'store'])->name('add-remark');
     Route::get('/lead/change/segment', [LeadController::class, 'change'])->name('change-segment');
     Route::get('/lead/change/valid', [LeadController::class, 'changevalid'])->name('change-valid');

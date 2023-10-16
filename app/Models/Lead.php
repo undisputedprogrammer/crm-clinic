@@ -46,6 +46,10 @@ class Lead extends Model
         return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
 
+    public function center(){
+        return $this->belongsTo(Center::class, 'center_id', 'id');
+    }
+
     public function scopeForHospital($query, $hospitalId)
     {
         $query->where('hospital_id', $hospitalId);

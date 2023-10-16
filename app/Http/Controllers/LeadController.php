@@ -149,4 +149,19 @@ class LeadController extends SmartController
         }
         return response()->json(['success'=>true, 'message'=> $message]);
     }
+
+    public function update(Request $request)
+    {
+        $lead = Lead::find($request->lead_id);
+
+        if($lead != null){
+            $lead->name = $request->name;
+            $lead->city = $request->city;
+            $lead->email = $request->email;
+            $lead->save();
+            return response()->json(['success' => true, 'lead' => $lead, 'message' => 'Lead Updated Successfully']);
+        }else{
+            return response()->json(['success' => false, 'message' => 'Failed!, Could not update lead']);
+        }
+    }
 }

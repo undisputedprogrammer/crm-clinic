@@ -61,20 +61,20 @@
 
             </div>
 
-            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span>
+            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition x-cloak class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span>
             </button>
         </div>
 
         <x-modals.template-select-modal :templates="$messageTemplates"/>
         <x-display.sending/>
-
+        <x-modals.lead-edit-modal/>
 
         <div class="w-full flex bg-base-200 px-[1.25%] pt-1.5">
 
-            <a x-show="!isProcessed" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            <a x-show="!isProcessed" x-cloak class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
             @click.prevent.stop="leadsProcessedToday();">Processed Today</a>
 
-            <a x-show="isProcessed" href="" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            <a x-show="isProcessed" x-cloak href="" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
             @click.prevent.stop="$dispatch('linkaction',{
                 link: '{{route('fresh-leads')}}',
                 route: 'fresh-leads',
@@ -274,7 +274,7 @@
 
             class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
 
-            <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
+            <p x-show="!selected" x-cloak class=" font-semibold text-base text-center mt-4">Select a lead...</p>
 
             <div x-show="selected" x-transition
             @detailsupdate.window="
@@ -310,7 +310,7 @@
             <div class=" border-r border-primary pr-1.5 w-[46%]">
                 <h1 class=" text-secondary font-medium text-base flex space-x-1 items-center">
                     <span>Lead Details</span>
-                    <button class=" btn btn-ghost btn-xs btn-warning text-warning">
+                    <button @click.prevent.stop="editLead = true;" class=" btn btn-ghost btn-xs btn-warning text-warning">
                         <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>
                     </button>
                 </h1>
@@ -390,7 +390,7 @@
                 {{-- question decide within a week --}}
                 <div x-data="{
                     decide_dropdown : document.getElementById('decide-question-dropdown')
-                }" x-show="lead.q_visit == 'no'" class="flex items-center space-x-2 mt-1">
+                }" x-show="lead.q_visit == 'no'" x-cloak class="flex items-center space-x-2 mt-1">
                     <p class=" text-sm font-medium">Decide within a week ? : </p>
                     <div class="dropdown">
                         <label tabindex="0" class="btn btn-sm"

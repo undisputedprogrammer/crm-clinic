@@ -12,6 +12,7 @@ use App\Models\Followup;
 use Illuminate\Http\Request;
 use App\Jobs\SendBulkMessage;
 use App\Models\Center;
+use App\Models\Hospital;
 use App\Models\UnreadMessages;
 use App\Services\WhatsAppApiService;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +95,9 @@ class WhatsAppApiController extends SmartController
 
         // $recipient = $lead->phone;
 
+        $hospital = Hospital::find($lead->hospital_id);
+        $center = Center::find($lead->center_id);
+
         $payload = array(
 
 
@@ -107,7 +111,7 @@ class WhatsAppApiController extends SmartController
 
 
         $postfields = array(
-            "integrated_number" => "918075473813",
+            "integrated_number" => $center->phone,
             "lead_id" => $lead->id,
             "content_type" => "template",
             "type" => "template",
@@ -118,10 +122,9 @@ class WhatsAppApiController extends SmartController
         );
 
         $json_postfields = json_encode($postfields);
-
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v17.0/123563487508047/messages/',
+            CURLOPT_URL => 'https://graph.facebook.com/v17.0/'.$center->phone_number_id.'/'.'messages/',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -132,8 +135,8 @@ class WhatsAppApiController extends SmartController
             CURLOPT_POSTFIELDS => $json_postfields,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
+                'authkey: '.$hospital->authkey,
+                'Authorization: Bearer '.$hospital->bearer_token
             ),
         ));
         $response = curl_exec($curl);
@@ -177,6 +180,8 @@ class WhatsAppApiController extends SmartController
         // Storing inbound messages
         if (isset($request['entry'][0]['changes'][0]['value']['messages'][0]['from']))
          {
+            $reciever = $request->entry[0]['changes'][0]['value']['metadata']['display_phone_number'];
+
             $sender = $request['entry'][0]['changes'][0]['value']['messages'][0]['from'];
 
             $wamid = $request['entry'][0]['changes'][0]['value']['messages'][0]['id'];
@@ -186,17 +191,22 @@ class WhatsAppApiController extends SmartController
             $body = $request['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
 
             $lead = Lead::where('phone', $sender)
-                ->orWhere('phone', '91' . $sender)->orWhere('phone', '+' . $sender)->get()->first();
+                ->orWhere('phone', '91' . $sender)->orWhere('phone', '+' . $sender)->whereHas('center', function($query) use($reciever) {
+                    return $query->where('phone',$reciever);
+                })->get()->first();
 
             if ($lead == null) {
                 $phone = $sender - 910000000000;
-                $lead = Lead::where('phone', $phone)->get()->first();
+                $lead = Lead::where('phone', $phone)->whereHas('center', function($query) use($reciever) {
+                    return $query->where('phone',$reciever);
+                })->get()->first();
             }
 
             if($lead == null){
+                $center = Center::where('phone',$reciever)->get()->first();
                 $lead = Lead::create([
-                'hospital_id' => 1,
-                'center_id' => Center::where('hospital_id', 1)->get()->random()->id,
+                'hospital_id' => $center->hospital_id,
+                'center_id' => $center->id,
                 'name' => 'unknown lead',
                 'phone' => $sender,
                 'city' => 'Not specified',
@@ -205,7 +215,9 @@ class WhatsAppApiController extends SmartController
                 'is_genuine' => false,
                 'followup_created' => false,
                 'assigned_to' =>
-                    User::where('hospital_id', 1)->where('designation','!=',       'Administrator')->get()->random()->id
+                    User::where('hospital_id', $center->hospital_id)->whereHas('centers', function($q) use($reciever) {
+                        return $q->where('phone', $reciever);
+                    })->where('designation','!=','Administrator')->get()->random()->id
             ]);
             }
             // return response('lead is '.$lead->name);
@@ -317,14 +329,6 @@ class WhatsAppApiController extends SmartController
             $latest = Chat::find($request->latest);
             $msgsQuery->where('created_at', '>', $latest->created_at);
 
-            /**
-             * removed old logic to find messages for admin
-             */
-            // if ($user->hasRole('admin')) {
-            //     $new_messages = Chat::where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->get();
-            // } else {
-            //     $new_messages = Chat::whereIn('lead_id', $leadIDs)->where('direction','Inbound')->where('status','received')->where('created_at', '>', $latest->created_at)->with('lead')->latest()->get();
-            // }
         }
         $new_messages = $msgsQuery->latest()->get();
         $unread = [];
@@ -336,7 +340,7 @@ class WhatsAppApiController extends SmartController
         }
 
         $internalChats = $icService->getMessages($request->input('last_id'));
-        // return response($unread_messages);
+
         if ($new_messages != null && count($new_messages) > 0) {
             return response()->json(['status' => true, 'new_messages' => $new_messages, 'unread_messages' => $unread, 'internalChatsData' => $internalChats]);
         } else {
@@ -347,7 +351,7 @@ class WhatsAppApiController extends SmartController
     public function index(Request $request)
     {
         $user_ids = $request->user()->leads->pluck('id')->toArray();
-        // dd($user_ids);
+
         $q = Lead::has('chats')->with('chats')->where('hospital_id',$request->user()->hospital_id);
 
         if ($request->user()->hasRole('agent')) {
@@ -361,7 +365,7 @@ class WhatsAppApiController extends SmartController
 
         $leads = $q->get();
         $templates = Message::all();
-        // dd(['leads'=>$leads,'latest'=>$latest]);
+
         return $this->buildResponse('pages.messenger', compact('leads', 'templates', 'latest'));
     }
 
@@ -415,7 +419,7 @@ class WhatsAppApiController extends SmartController
             foreach($chats as $chat){
                 $chat->status='read';
                 $chat->save();
-                $this->connectorService->markasread($chat->wamid);
+                $this->connectorService->markasread($chat->wamid,  $request->lead_id);
             }
         }
 
