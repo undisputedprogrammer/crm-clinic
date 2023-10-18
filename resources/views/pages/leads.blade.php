@@ -318,7 +318,7 @@
                     <p class="text-sm font-medium">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-sm font-medium">City : <span x-text="lead.city"> </span></p>
                     <p class="text-sm font-medium">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-sm font-medium flex space-x-1 items-center">Email : <span x-text="lead.email"> </span>
+                    <p class="text-sm font-medium flex space-x-1 items-center"><span>Email : <span><span x-text="lead.email"> </span>
                         <a class=" btn btn-xs btn-ghost"
                         @click.prevent.stop="$dispatch('linkaction',{
                             link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),

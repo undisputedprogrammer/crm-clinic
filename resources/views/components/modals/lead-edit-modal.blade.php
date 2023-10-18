@@ -15,6 +15,8 @@
                 if(leads != null && leads != undefined){
                     leads[lead.id] = lead;
                 }
+                document.getElementById('name-'+lead.id).innerText = lead.name;
+                document.getElementById('city-'+lead.id).innerText = lead.city;
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
             } else if (typeof $event.detail.content.errors != undefined) {
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
