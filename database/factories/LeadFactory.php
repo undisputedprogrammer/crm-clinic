@@ -33,7 +33,7 @@ class LeadFactory extends Factory
         $isvalid = $check > 1;
         $isgenuine = $isvalid && $check > 2;
 
-        $ag = $agents[random_int(0, count($agents) - 1)];
+        $ag = count($agents) > 1 ? $agents[random_int(0, count($agents) - 1)] : 0;
         return [
             'hospital_id' => $hospital->id,
             'center_id' => $center->id,
