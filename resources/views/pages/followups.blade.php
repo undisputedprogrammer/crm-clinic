@@ -35,10 +35,9 @@
         })"
 
         >
-    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
+    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-200">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class=" flex justify-start items-center w-full bg-base-200 pt-1.5 pl-[3.3%] space-x-2">
@@ -91,6 +90,7 @@
                     fp.lead.remarks = leadremarks;
                     fps[fp.id] = fp;
                 }
+                console.log(fp.remarks);
                 fpselected = true;
                 isValid = fp.lead.is_valid;
                 isGenuine = fp.lead.is_genuine;
@@ -272,6 +272,19 @@
                 </div>
 
                     <div x-show="selected_section == 'new_follow_up'" class="pt-4">
+
+                        <div x-show="fp.lead != null && fp.lead.status == 'Appointment Fixed'">
+
+                            <template x-if="fp.lead != null && fp.lead.status == 'Appointment Fixed'">
+                                <div>
+                                    <h2 class="font-medium ">Follow-up Scheduled Date: <span x-text="formatDateOnly(fp.scheduled_date)" class="text-warning"></span></h2>
+
+                                    <h2 class="font-medium ">Appointment Scheduled Date:
+                                        <span x-text="formatDateOnly(fp.lead.appointment.appointment_date)" class="text-warning"></span>
+                                    </h2>
+                                </div>
+                            </template>
+                        </div>
 
                         <h3 class="text-sm font-medium text-secondary">Remarks:</h3>
                             <form

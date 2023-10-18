@@ -1,5 +1,5 @@
 <x-easyadmin::app-layout>
-    <x-display.header :hospital="$hospital" />
+
     <x-sections.side-drawer />
     <div class="py-8">
         <div x-data="{

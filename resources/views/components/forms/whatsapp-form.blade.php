@@ -23,7 +23,7 @@
 
         if($event.detail.content.status == 'success'){
             chats.push($event.detail.content.chat);
-            allChats[lead.id].push($event.detail.content.chat);
+            allChats[lead.id] = chats;
             $dispatch('showtoast', {message: 'Message sent successfully', mode: 'success'});
             $el.reset();
         }

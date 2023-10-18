@@ -17,8 +17,7 @@
 
         ">
 
-            <!-- Header -->
-            <x-display.header :hospital="$hospital" />
+
             <x-sections.side-drawer />
             {{-- page body --}}
 

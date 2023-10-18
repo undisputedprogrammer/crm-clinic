@@ -11,7 +11,7 @@
             center: null,
             doSubmit() {
                 $dispatch('linkaction', {link: '{{route('appointments.index')}}',
-                route: 'appointments.index', fresh: true, params: {from: this.from, to: this.to, center: this.center}});
+                route: 'appointments.index', fresh: true, fragment: 'page-content', params: {from: this.from, to: this.to, center: this.center}});
             }
         }"
         x-init="
@@ -29,8 +29,7 @@
         "
         class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class=" flex items-center space-x-2 py-4 px-12 bg-base-200">
@@ -137,6 +136,7 @@
                 <p class="text-base font-medium">City : <span x-text="lead != undefined ? lead.city : '' "> </span></p>
                 <p class="text-base font-medium">Phone : <span x-text=" lead != undefined ? lead.phone : '' "> </span></p>
                 <p class="text-base font-medium">Email : <span x-text=" lead != undefined ? lead.email : '' "> </span></p>
+                <p class="text-base font-medium ">Status : <span class="uppercase" x-text=" lead != undefined ? lead.status : '' " :class=" lead.status == 'Closed' ? ' text-error' : ' text-success' " > </span></p>
 
                 <div class="mt-2.5">
                     <p class=" text-base font-medium text-secondary">Lead remarks</p>

@@ -121,13 +121,16 @@ class AppointmentService implements ModelViewConnector
             $followup->save();
             $lead->status = 'Consulted';
             $lead->save();
-            $appointment = null;
+            $appointment = Appointment::find($lead->appointment->id);
+            $appointment->consulted_date = Carbon::now();
+            $appointment->save();
             $next_followup = Followup::create([
                 'lead_id' => $lead_id,
                 'scheduled_date' => $followup_date,
                 'converted' => true,
                 'user_id' => Auth::user()->id
             ]);
+
             return ['success'=>true, 'lead'=>$lead, 'followup'=>$followup, 'appointment'=>$appointment, 'next_followup' => $next_followup, 'message'=>'Consult is marked'];
         }
         return ['success'=>false, 'lead'=>$lead, 'message'=>'Appointment date has not reached'];

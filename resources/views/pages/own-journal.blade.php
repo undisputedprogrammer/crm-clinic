@@ -3,8 +3,7 @@
     <div>
         <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-200  text-black">
 
-            <!-- Header -->
-            <x-display.header :hospital="$hospital" />
+
             <x-sections.side-drawer />
             {{-- page body --}}
             <div class="w-full bg-base-200">
