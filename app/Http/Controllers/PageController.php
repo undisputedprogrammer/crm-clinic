@@ -49,7 +49,7 @@ class PageController extends SmartController
     public function leadIndex(Request $request)
     {
 
-        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center,$request->search, $request->status, $request->is_valid, $request->is_genuine);
+        $data = $this->pageService->getLeads($request->user(),$request->selectedLeads,$request->center,$request->search, $request->status, $request->is_valid, $request->is_genuine, $request->creation_date, $request->processed);
 
         return $this->buildResponse('pages.leads', $data);
 
@@ -111,5 +111,11 @@ class PageController extends SmartController
         $data = $this->pageService->getSingleFollowupData($request->user(),$id);
 
         return $this->buildResponse('pages.show-followup', $data);
+    }
+
+    public function compose(Request $request, $id){
+        info('Viewing compose mail page');
+        $lead = Lead::find($id);
+        return $this->buildResponse('pages.compose-email',compact('lead'));
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Center;
 use App\Models\Chat;
 use App\Models\Lead;
 use GuzzleHttp\Client;
 use App\Models\Followup;
-
-
+use App\Models\Hospital;
 
 class WhatsAppApiService
 {
@@ -15,16 +15,8 @@ class WhatsAppApiService
     {
         $message = $request->message;
         $client = new Client();
-
-        // $url = 'https://control.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/?integrated_number=918075473813&recipient_number=' . $recipient . '&content_type=text&text=' . $message;
-
-        // $response = $client->request('POST', $url, [
-        //     'headers' => [
-        //         'accept' => 'application/json',
-        //         'authkey' => '405736ABdKIenjmHR6501a01aP1',
-        //         'content-type' => 'application/json',
-        //     ],
-        // ]);
+        $hospital = Hospital::find($lead->hospital_id);
+        $center = Center::find($lead->center_id);
         $postfields = array(
             "messaging_product"=> "whatsapp",
             "recipient_type"=> "individual",
@@ -38,7 +30,7 @@ class WhatsAppApiService
         $json_postfields = json_encode($postfields);
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v18.0/123563487508047/messages',
+            CURLOPT_URL => 'https://graph.facebook.com/v18.0/'.$center->phone_number_id.'/messages',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -49,8 +41,8 @@ class WhatsAppApiService
             CURLOPT_POSTFIELDS => $json_postfields,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
+                'authkey: '.$hospital->authkey,
+                'Authorization: Bearer '.$hospital->bearer_token
             ),
         ));
         $response = curl_exec($curl);
@@ -142,7 +134,8 @@ class WhatsAppApiService
             $recipient = $lead->phone;
         }
 
-
+        $hospital = Hospital::find($lead->hospital_id);
+        $center = Center::find($lead->center_id);
 
         $params = json_decode($template->payload);
 
@@ -199,7 +192,7 @@ class WhatsAppApiService
 
 
         $postfields = array(
-            "integrated_number" => "918075473813",
+            "integrated_number" => $center->phone,
             "lead_id" => $lead->id,
             "content_type" => "template",
             "type" => "template",
@@ -213,7 +206,7 @@ class WhatsAppApiService
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v17.0/123563487508047/messages/',
+            CURLOPT_URL => 'https://graph.facebook.com/v17.0/'.$center->phone_number_id.'/'.'messages/',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -224,8 +217,8 @@ class WhatsAppApiService
             CURLOPT_POSTFIELDS => $json_postfields,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
+                'authkey: '.$hospital->authkey,
+                'Authorization: Bearer '.$hospital->bearer_token
             ),
         ));
         $response = curl_exec($curl);
@@ -259,7 +252,10 @@ class WhatsAppApiService
         return response(json_encode($data), 200);
     }
 
-    public function markasread($wamid){
+    public function markasread($wamid, $lead_id){
+        $lead = Lead::find($lead_id);
+        $hospital = Hospital::find($lead->hospital_id);
+        $center = Center::find($lead->center_id);
         $postfields = array(
             "messaging_product"=> "whatsapp",
             "status"=> "read",
@@ -268,7 +264,7 @@ class WhatsAppApiService
         $json_postfields = json_encode($postfields);
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v18.0/123563487508047/messages',
+            CURLOPT_URL => 'https://graph.facebook.com/v18.0/'.$center->phone_number_id.'/messages',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -279,8 +275,8 @@ class WhatsAppApiService
             CURLOPT_POSTFIELDS => $json_postfields,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'authkey: 405736ABdKIenjmHR6501a01aP1',
-                'Authorization: Bearer EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
+                'authkey: '.$hospital->authkey,
+                'Authorization: Bearer '.$hospital->bearer_token
             ),
         ));
         $response = curl_exec($curl);

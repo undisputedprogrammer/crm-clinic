@@ -27,7 +27,8 @@ class CenterFactory extends Factory
             'hospital_id'=>$hospital->id,
             'location'=>fake()->city(),
             'email'=>fake()->email(),
-            'phone'=>fake()->phoneNumber()
+            'phone'=> '918075473813',
+            'phone_number_id' => '123563487508047'
         ];
     }
 

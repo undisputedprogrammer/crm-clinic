@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 class PageService
 {
 
-    public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status, $is_valid, $is_genuine)
+    public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status, $is_valid, $is_genuine, $creation_date, $processed)
     {
         if($search != null){
             $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('name', 'like', '%' . $search . '%')
@@ -28,7 +28,29 @@ class PageService
                 return $query->where('assigned_to', $user->id);
             });
 
-            return $this->returnLeads($user,$selectedLeads,$selectedCenter,$leadsQuery,$status);
+            return $this->returnLeads($user,$selectedLeads,$selectedCenter,$leadsQuery,$status, $creation_date, $processed);
+        }
+
+        if($creation_date != null){
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('created_at',$creation_date);
+
+            $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
+                return $query->where('assigned_to', $user->id);
+            });
+
+            return $this->returnLeads($user,$selectedLeads,$selectedCenter,$leadsQuery,$status,$creation_date, $processed);
+        }
+
+        if($processed != null){
+            info('processed is present');
+            $today = Carbon::now()->toDateString();
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->whereDate('followup_created_at',$today);
+
+            $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
+                return $query->where('assigned_to', $user->id);
+            });
+
+            return $this->returnLeads($user,$selectedLeads,$selectedCenter,$leadsQuery,$status,$creation_date, $processed);
         }
 
 
@@ -86,6 +108,8 @@ class PageService
             }
         }
 
+
+
         $leads = $leadsQuery->paginate(30);
 
         $doctors = Doctor::all();
@@ -101,15 +125,22 @@ class PageService
 
     }
 
-    public function returnLeads($user, $selectedLeads, $selectedCenter, $leadsQuery, $status)
+    public function returnLeads($user, $selectedLeads, $selectedCenter, $leadsQuery, $status,$creation_date, $processed)
     {
-        $leads = $leadsQuery->paginate(10);
+        $leads = $leadsQuery->paginate(30);
         $doctors = Doctor::all();
         $messageTemplates = Message::all();
         $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
         if($selectedLeads != null){
             return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status');
+        }
+        elseif($creation_date != null){
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status','creation_date');
+        }
+        elseif($processed != null){
+            info('sending processed leads');
+            return compact('leads', 'doctors', 'messageTemplates','selectedLeads','centers','selectedCenter','status','processed');
         }
         else{
             return compact('leads', 'doctors', 'messageTemplates','centers','selectedCenter','status');

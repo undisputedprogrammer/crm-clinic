@@ -1,12 +1,12 @@
 <div x-show="selected_action == 'Initiate Followup'">
 
-    <template x-if="lead.status != 'Created'">
+    <div x-show="lead.status != 'Created'">
         <p class=" text-primary font-medium py-4">Follow up is initiated for this lead</p>
-    </template>
+    </div>
 
-    <template x-if="lead.status == 'Closed'">
+    <div x-show="lead.status == 'Closed'">
         <p class=" text-error font-medium py-4 text-base">This lead is closed.</p>
-    </template>
+    </div>
 
     <form x-show="lead.followup_created == 0 && lead.status != 'Closed'" x-data="{
         doSubmit() {
@@ -46,7 +46,7 @@
         class="bg-base-200 flex flex-col space-y-2 mt-2 p-3 rounded-xl w-full max-w-[408px]">
 
         <label for="scheduled-date" class="text-sm font-medium">Schedule a date for follow up</label>
-        <input id="scheduled-date" name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
+        <input id="scheduled-date" required name="scheduled_date" type="date" class=" rounded-lg input-info bg-base-100">
 
         <button type="submit" class="btn btn-primary btn-sm mt-1 self-start">Initiate follow up</button>
 

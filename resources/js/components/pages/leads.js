@@ -6,6 +6,9 @@ export default ()=>({
     theLink : null,
     is_genuine : null,
     is_valid : null,
+    creation_date : null,
+    isProcessed : false,
+    editLead : false,
     toggleTemplateModal(){
         this.showTemplateModal = !this.showTemplateModal;
     },
@@ -42,6 +45,33 @@ export default ()=>({
             params.center = selectedCenter;
         }
         this.$dispatch('linkaction',{link: this.theLink, route: 'fresh-leads', fragment: 'page-content', fresh: true, params: params});
-    }
+    },
+    filterByCreationDate(el){
+        let formdata = new FormData(el);
+        let creation_date = formdata.get('creation_date');
+        let params = {
+            creation_date : creation_date
+        };
 
+        this.$dispatch('linkaction',{link: this.theLink, route: 'fresh-leads', fragment: 'page-content', fresh: true, params: params});
+    },
+    leadsProcessedToday(){
+        let params = {
+            processed : true
+        };
+        this.$dispatch('linkaction',{link: this.theLink, route: 'fresh-leads', fragment: 'page-content', fresh: true, params: params});
+    },
+    setIsProcessed(){
+        let link = new URL(window.location.href);
+        let processed = url.searchParams.get('processed');
+        console.log(processed);
+        if(processed == true){
+            this.isProcessed = processed;
+        }
+    },
+    updateLead(el, lead_id, url){
+        let formdata = new FormData(el);
+        formdata.append('lead_id', lead_id);
+        this.$dispatch('formsubmit',{url: url, route: 'lead.update',fragment: 'page-content', formData: formdata, target: 'lead-edit-form'});
+    }
 });

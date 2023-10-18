@@ -70,10 +70,14 @@ class AppointmentService implements ModelViewConnector
 
             $followup = Followup::create([
                 'lead_id' => $request->lead_id,
+                'followup_count' => 1,
                 'scheduled_date' => $request->followup_date,
                 'converted' => true,
                 'user_id'=> Auth::user()->id
             ]);
+
+            $lead->followup_created_at = Carbon::now();
+            $lead->save();
 
             return ['success' => true, 'message' => 'Appointment fixed', 'converted' => true, 'lead' => $lead, 'appointment' => $appointment, 'followup'=>$followup];
 
@@ -95,6 +99,7 @@ class AppointmentService implements ModelViewConnector
 
             $next_followup = Followup::create([
                 'lead_id' => $request->lead_id,
+                'followup_count' => $followup->followup_count + 1,
                 'scheduled_date' => $request->followup_date,
                 'converted' => true,
                 'user_id' =>Auth::user()->id

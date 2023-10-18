@@ -10,6 +10,12 @@
         @endisset
         @isset($is_genuine)
             is_genuine = '{{$is_genuine}}';
+        @endisset
+        @isset($creation_date)
+            creation_date = '{{$creation_date}}';
+        @endisset
+        @isset($processed)
+            isProcessed = true;
         @endisset"
     >
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
@@ -19,11 +25,11 @@
       <x-sections.side-drawer/>
       {{-- page body --}}
 
-        <div class=" flex bg-base-200 items-center justify-between px-[3.3%]">
+        <div class=" flex bg-base-200 items-center justify-between px-[1.25%]">
 
             <div class=" flex space-x-3 items-center justify-start pt-1.5">
                 <h1 class=" text-primary text-xl font-semibold bg-base-200 ">Leads</h1>
-                <div class=" flex flex-col md:flex-row space-y-2 md:space-y-0 space-x-3">
+                <div class=" flex flex-col md:flex-row space-y-2 items-center md:space-y-0 space-x-3">
                     @can('is-admin')
                         @php
                         $route = "fresh-leads";
@@ -33,7 +39,7 @@
 
                     {{-- Search lead by name or phone number --}}
                     <div>
-                        <form @submit.prevent.stop="searchlead();" id="lead-search-form" class=" relative mx-auto text-base-content">
+                        <form @submit.prevent.stop="searchlead();" id="lead-search-form" class=" relative mx-auto text-base-content p-1 bg-neutral rounded-lg">
                             <input class="border border-primary bg-base-100 input input-sm  focus:outline-none focus:ring-0 focus-within:border-primary text-base-content"
                               type="text" name="search" placeholder="Search name or phone">
                             <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 ">
@@ -47,16 +53,37 @@
                         <x-forms.filter-lead-by-status :status="$status"/>
                     </div>
 
+                    <div>
+                        <x-forms.filter-lead-by-date/>
+                    </div>
+
                 </div>
 
             </div>
 
-            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span>
+            <button @click.prevent.stop="toggleTemplateModal()" x-show="Object.keys(selectedLeads).length != 0" x-transition x-cloak class="btn btn-success flex btn-sm self-end"><x-icons.whatsapp-icon/><span>Bulk message</span>
             </button>
         </div>
 
         <x-modals.template-select-modal :templates="$messageTemplates"/>
         <x-display.sending/>
+        <x-modals.lead-edit-modal/>
+
+        <div class="w-full flex bg-base-200 px-[1.25%] pt-1.5">
+
+            <a x-show="!isProcessed" x-cloak class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            @click.prevent.stop="leadsProcessedToday();">Processed Today</a>
+
+            <a x-show="isProcessed" x-cloak href="" class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
+            @click.prevent.stop="$dispatch('linkaction',{
+                link: '{{route('fresh-leads')}}',
+                route: 'fresh-leads',
+                fragment: 'page-content',
+                fresh: true
+            })">Fresh leads</a>
+
+        </div>
+
 
       <div x-data="{
         convert: false
@@ -172,11 +199,9 @@
             ajaxLoading = false;
             console.log(error);
         })"
-       class=" md:h-[calc(100vh-5.875rem)] pt-7 pb-[2.8rem]  bg-base-200 w-full md:flex justify-evenly">
+       class=" md:h-[calc(100vh-5.875rem)] pt-2 pb-[2.8rem]  bg-base-200 w-full md:flex justify-evenly">
 
-
-        <x-tables.leads-table :leads="$leads"/>
-
+            <x-tables.leads-table :leads="$leads"/>
 
         <div x-data="{
                 show_remarks_form: false,
@@ -249,7 +274,7 @@
 
             class="w-[96%] mx-auto mt-4 md:mt-0 md:w-[50%] min-h-[16rem] max-h-[100%] h-fit hide-scroll overflow-y-scroll  bg-base-100 text-base-content rounded-xl p-3 xl:px-6 py-3">
 
-            <p x-show="!selected" class=" font-semibold text-base text-center mt-4">Select a lead...</p>
+            <p x-show="!selected" x-cloak class=" font-semibold text-base text-center mt-4">Select a lead...</p>
 
             <div x-show="selected" x-transition
             @detailsupdate.window="
@@ -283,11 +308,24 @@
 
             {{-- Details section starts --}}
             <div class=" border-r border-primary pr-1.5 w-[46%]">
-                <div>
+                <h1 class=" text-secondary font-medium text-base flex space-x-1 items-center">
+                    <span>Lead Details</span>
+                    <button @click.prevent.stop="editLead = true;" class=" btn btn-ghost btn-xs btn-warning text-warning">
+                        <x-easyadmin::display.icon icon="easyadmin::icons.edit" height="h-4" width="w-4"/>
+                    </button>
+                </h1>
+                <div class=" mb-4">
                     <p class="text-sm font-medium">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-sm font-medium">City : <span x-text="lead.city"> </span></p>
                     <p class="text-sm font-medium">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-sm font-medium">Email : <span x-text="lead.email"> </span></p>
+                    <p class="text-sm font-medium flex space-x-1 items-center">Email : <span x-text="lead.email"> </span>
+                        <a class=" btn btn-xs btn-ghost"
+                        @click.prevent.stop="$dispatch('linkaction',{
+                            link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),
+                            route: 'email.compose',
+                            fragment: 'page-content'
+                        })"><x-icons.envolope-icon/></a>
+                    </p>
                 </div>
 
                 <div class=" flex items-center space-x-2">
@@ -311,66 +349,78 @@
                 {{-- Questions for lead segment --}}
 
                 {{-- question visit within a week --}}
-                <div class="flex items-center space-x-2">
+                <div x-data="{
+                    visit_dropdown : document.getElementById('visit-question-dropdown')
+                }" class="flex items-center space-x-2">
                     <p class=" text-sm font-medium">Visit within a week ? : </p>
                     <div class="dropdown">
-                        <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_visit == null || lead.q_visit == 'null' ? 'Not selected' : lead.q_visit " class=" text-secondary"></span><x-icons.down-arrow /></label>
+                        <label tabindex="0" class="btn btn-sm"
+                        @click.prevent.stop="visit_dropdown.style.visibility ='visible' "><span x-text="lead.q_visit == null || lead.q_visit == 'null' ? 'Not selected' : lead.q_visit " class=" text-secondary"></span><x-icons.down-arrow /></label>
 
-                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
+                        <ul id="visit-question-dropdown" tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_visit,
                                     q_answer : 'null',
                                     question : 'q_visit'
-                                });" class=" " :class="lead.q_visit == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
+                                });
+                                visit_dropdown.style.visibility ='hidden';" class=" " :class="lead.q_visit == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_visit,
                                     q_answer : 'yes',
                                     question : 'q_visit'
-                                });" class=" " :class="lead.q_visit == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
+                                });
+                                visit_dropdown.style.visibility ='hidden';" class=" " :class="lead.q_visit == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_visit,
                                     q_answer : 'no',
                                     question : 'q_visit'
-                                });" class="" :class="lead.q_visit == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
+                                });
+                                visit_dropdown.style.visibility ='hidden';" class="" :class="lead.q_visit == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
                         </ul>
 
                       </div>
                 </div>
 
                 {{-- question decide within a week --}}
-                <div x-show="lead.q_visit == 'no'" class="flex items-center space-x-2 mt-1">
+                <div x-data="{
+                    decide_dropdown : document.getElementById('decide-question-dropdown')
+                }" x-show="lead.q_visit == 'no'" x-cloak class="flex items-center space-x-2 mt-1">
                     <p class=" text-sm font-medium">Decide within a week ? : </p>
                     <div class="dropdown">
-                        <label tabindex="0" class="btn btn-sm" ><span x-text="lead.q_decide == null || lead.q_decide == 'null' ? 'Not selected' : lead.q_decide " class=" text-secondary"></span><x-icons.down-arrow /></label>
+                        <label tabindex="0" class="btn btn-sm"
+                        @click.prevent.stop="decide_dropdown.style.visibility ='visible';" ><span x-text="lead.q_decide == null || lead.q_decide == 'null' ? 'Not selected' : lead.q_decide " class=" text-secondary"></span><x-icons.down-arrow /></label>
 
-                        <ul tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
+                        <ul id="decide-question-dropdown" tabindex="0" class="dropdown-content z-[1] mt-1  menu p-2 shadow rounded-box w-52" :class="theme == 'light' ? ' bg-base-200' : 'bg-neutral' ">
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_decide,
                                     q_answer : 'null',
                                     question : 'q_decide'
-                                });" class=" " :class="lead.q_decide == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
+                                });
+                                decide_dropdown.style.visibility = 'hidden';" class=" " :class="lead.q_decide == null ? ' text-primary hover:text-primary' : '' ">Not selected</a></li>
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_decide,
                                     q_answer : 'yes',
                                     question : 'q_decide'
-                                });" class=" " :class="lead.q_decide == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
+                                });
+                                decide_dropdown.style.visibility = 'hidden';" class=" " :class="lead.q_decide == 'yes' ? ' text-primary hover:text-primary' : '' ">Yes</a></li>
                             <li><a @click.prevent.stop="
                                 $dispatch('changequestion',{
                                     link: '{{route('lead.answer')}}',
                                     current: lead.q_decide,
                                     q_answer : 'no',
                                     question : 'q_decide'
-                                });" class="" :class="lead.q_decide == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
+                                });
+                                decide_dropdown.style.visibility = 'hidden';" class="" :class="lead.q_decide == 'no' ? ' text-primary hover:text-primary' : '' ">No</a></li>
                         </ul>
 
                       </div>
@@ -485,7 +535,8 @@
 
                     </div>
                     <div x-data="{
-                            selected_action : 'Initiate Followup'
+                            selected_action : 'Initiate Followup',
+                            dropdown : document.getElementById('lead-action-dropdown')
                         }"
                         @resetactions.window=" console.log('captured reset')
                         selected_action = 'Initiate Followup';
@@ -514,7 +565,7 @@
                             fragment: 'page-content',
                             fresh: true
                         });"
-                        class=" btn btn-secondary btn-sm underline btn-ghost text-secondary">More action</button>
+                        class=" btn btn-secondary btn-sm underline btn-ghost normal-case text-secondary">More actions</button>
                     </div>
 
                 </div>
@@ -544,5 +595,6 @@
       </div>
     </div>
   </div>
+
   <x-footer/>
 </x-easyadmin::app-layout>

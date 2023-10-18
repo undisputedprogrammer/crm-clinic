@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Followup extends Model
 {
     use HasFactory;
-    protected $fillable = ['lead_id','scheduled_date','converted','actual_date','next_followup_date','user_id'];
+    protected $fillable = ['lead_id','followup_count','scheduled_date','converted','actual_date','next_followup_date','user_id'];
 
     protected $with = ['lead'];
 

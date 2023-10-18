@@ -171,7 +171,14 @@
                     <p class="text-base font-medium border border-base-content border-opacity-20 p-2 rounded-md">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-base font-medium border border-base-content border-opacity-20 p-2 rounded-md">City : <span x-text="lead.city"> </span></p>
                     <p class="text-base font-medium border border-base-content border-opacity-20 p-2 rounded-md">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-base font-medium border border-base-content border-opacity-20 p-2 rounded-md">Email : <span x-text="lead.email"> </span></p>
+                    <p class="text-base font-medium border border-base-content border-opacity-20 p-2 rounded-md flex space-x-1">Email : <span x-text="lead.email"> </span>
+                        <a class=" btn btn-xs btn-ghost"
+                        @click.prevent.stop="$dispatch('linkaction',{
+                            link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),
+                            route: 'email.compose',
+                            fragment: 'page-content'
+                        })"><x-icons.envolope-icon/></a>
+                    </p>
                 </div>
                 <div class="flex flex-row space-x-8">
                     <div class=" flex items-center space-x-2">

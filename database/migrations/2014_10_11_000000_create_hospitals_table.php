@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('ho_location');
             $table->string('email');
             $table->string('phone');
+            $table->string('authkey');
+            $table->text('bearer_token');
             $table->json('main_cols');
             $table->timestamps();
         });
