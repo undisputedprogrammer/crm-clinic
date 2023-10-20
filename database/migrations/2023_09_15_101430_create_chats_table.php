@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->text('message');
+            $table->enum('type', ['text','media'])->nullable();
             $table->string('direction');
             $table->foreignId('lead_id')->references('id')->on('leads')->nullable();
             $table->enum('status',['submitted','sent','delivered','read','received','viewed']);
