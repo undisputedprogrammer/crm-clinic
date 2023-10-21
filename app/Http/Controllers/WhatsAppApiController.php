@@ -140,7 +140,7 @@ class WhatsAppApiController extends SmartController
             CURLOPT_POSTFIELDS => $json_postfields,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'authkey: '.$hospital->authkey,
+                // 'authkey: '.$hospital->authkey,
                 'Authorization: Bearer '.$hospital->bearer_token
             ),
         ));
