@@ -20,8 +20,7 @@
     >
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
 
@@ -318,7 +317,7 @@
                     <p class="text-sm font-medium">Name : <span x-text="lead.name"> </span></p>
                     <p class="text-sm font-medium">City : <span x-text="lead.city"> </span></p>
                     <p class="text-sm font-medium">Phone : <span x-text="lead.phone"> </span></p>
-                    <p class="text-sm font-medium flex space-x-1 items-center">Email : <span x-text="lead.email"> </span>
+                    <p class="text-sm font-medium flex space-x-1 items-center"><span>Email : <span><span x-text="lead.email"> </span>
                         <a class=" btn btn-xs btn-ghost"
                         @click.prevent.stop="$dispatch('linkaction',{
                             link: '{{route('email.compose',['id'=>'_X_'])}}'.replace('_X_',lead.id),
@@ -436,11 +435,11 @@
 
                     <p x-show="lead.followup_created == 1" class=" font-medium ">
                         <span>Follow up scheduled : </span>
-                        <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].scheduled_date : '' "></span>
+                        <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].scheduled_date) : '---' "></span>
                     </p>
                     <p x-show="lead.followup_created == 1" class=" font-medium">
                         <span>Followed up date : </span>
-                        <span class="text-primary" x-text="lead.followup_created == 1 ? followups[0].actual_date : '---' " class="text-secondary"></span>
+                        <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].actual_date) : '---' " class="text-secondary"></span>
                     </p>
 
                     <p x-show="lead.status == 'Appointment Fixed' && lead.followup_created == 0"  class=" font-medium text-success my-1">Appointment Scheduled</p>

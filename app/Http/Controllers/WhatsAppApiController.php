@@ -42,6 +42,14 @@ class WhatsAppApiController extends SmartController
             $followup = Followup::where('id', $request->followup_id)->with(['lead'])->get()->first();
             $recipient = $followup->lead->phone;
         }
+
+        //checking for media
+        if ($request->hasFile('media')){
+            info('file found!');
+            $response = $this->connectorService->sendMedia($request, $recipient, $lead);
+            return response()->json($response);
+        }
+
         // Checking and sending non template message
         if ($request->template == 'custom' && $request->message != null) {
 
@@ -99,8 +107,6 @@ class WhatsAppApiController extends SmartController
         $center = Center::find($lead->center_id);
 
         $payload = array(
-
-
             "name" => $template->template,
             "language" => array(
                 "code" => "en",
@@ -108,7 +114,6 @@ class WhatsAppApiController extends SmartController
             ),
             "components" => json_encode($components),
         );
-
 
         $postfields = array(
             "integrated_number" => $center->phone,
@@ -156,6 +161,7 @@ class WhatsAppApiController extends SmartController
             info($rendered_message);
             $chat = Chat::create([
                 'message' => $rendered_message,
+                'type' => 'text',
                 'direction' => 'Outbound',
                 'lead_id' => $lead->id,
                 'status' => 'submitted',
@@ -188,7 +194,7 @@ class WhatsAppApiController extends SmartController
 
             $timestamp = $request['entry'][0]['changes'][0]['value']['messages'][0]['timestamp'];
 
-            $body = $request['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
+
 
             $lead = Lead::where('phone', $sender)
                 ->orWhere('phone', '91' . $sender)->orWhere('phone', '+' . $sender)->whereHas('center', function($query) use($reciever) {
@@ -221,6 +227,22 @@ class WhatsAppApiController extends SmartController
             ]);
             }
             // return response('lead is '.$lead->name);
+            $type = "text";
+            if(isset($request['entry'][0]['changes'][0]['value']['messages'][0]['text'])){
+                $body = $request['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
+            }elseif($request['entry'][0]['changes'][0]['value']['messages'][0]['type'] == "image"){
+                $type = "media";
+                $id = $request['entry'][0]['changes'][0]['value']['messages'][0]['image']['id'];
+
+                $result = $this->connectorService->downloadAndSave($lead, $id);
+
+                if($result['success']){
+                    $body = $result['path'];
+                }else{
+                    return response($result['message']);
+                }
+            }
+
 
             $lead_id = null;
             if ($lead != null) {
@@ -228,6 +250,7 @@ class WhatsAppApiController extends SmartController
             }
             $chat = Chat::create([
                 'message' => $body,
+                'type' => $type,
                 'direction' => 'Inbound',
                 'lead_id' => $lead_id,
                 'status' => 'received',
@@ -235,7 +258,6 @@ class WhatsAppApiController extends SmartController
                 'expiration_time' => $timestamp
             ]);
 
-            // return response($chat);
             // Adding new inbound message to the unread messages table
             if ($lead != null) {
                 $unread_message = UnreadMessages::where('lead_id', $lead->id)->latest()->get()->first();
@@ -301,7 +323,6 @@ class WhatsAppApiController extends SmartController
 
     public function unread(Request $request)
     {
-        // $user = User::where('id',$request->user_id)->with(['leads'])->get();
         $user = User::find($request->user_id);
         $leadIDs = $user->leads->pluck('id')->toArray();
         return response($leadIDs);

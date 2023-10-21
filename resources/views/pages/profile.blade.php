@@ -2,7 +2,7 @@
 
 
         <header class="bg-base-200 shadow">
-            <x-display.header :hospital="$hospital"/>
+
             <div class="max-w-7xl text-base-content text-lg uppercase font-semibold mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 {{ $user->name }}
             </div>

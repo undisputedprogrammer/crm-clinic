@@ -32,9 +32,9 @@
                             <th><input type="checkbox" :checked="selectedLeads[{{$lead->id}}] != null ? true : false " @click="selectLead($el,{{$lead}})" class="checkbox checkbox-secondary checkbox-sm individual-checkboxes"></th>
 
                             {{-- <th>{{ $lead->id }}</th> --}}
-                            <td>{{ $lead->name }}</td>
-                            <td>{{ $lead->city }}</td>
-                            <td>{{ $lead->phone }}</td>
+                            <td id="name-{{$lead->id}}">{{ $lead->name }}</td>
+                            <td id="city-{{$lead->id}}">{{ $lead->city }}</td>
+                            <td id="phone-{{$lead->id}}">{{ $lead->phone }}</td>
                             <td>
                                 <div id="lead-tick-{{$lead->id}}" class="flex justify-center items-center p-0 h-7 w-7 rounded-full bg-success text-base-100 hidden">
                                 <x-easyadmin::display.icon icon="easyadmin::icons.tick"

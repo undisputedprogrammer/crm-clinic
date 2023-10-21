@@ -17,8 +17,7 @@
 
         ">
 
-            <!-- Header -->
-            <x-display.header :hospital="$hospital" />
+
             <x-sections.side-drawer />
             {{-- page body --}}
 
@@ -30,6 +29,8 @@
                 chats: [],
                 loadingChats: false,
                 thelink: '',
+                expiration_time: null,
+                freehand_enabled: false,
                 showChat(lead) {
                     this.lead = lead;
                     console.log('loading chats of'+this.lead.name);
@@ -39,6 +40,8 @@
                     setTimeout(() => {
                         this.chats = allChats[lead.id];
                         this.loadingChats = false;
+                        this.expiration_time = this.getExpiry(this.chats);
+                        this.checkExpiry(this.expiration_time);
                       }, '1000');
 
                 },
@@ -65,6 +68,46 @@
                             console.log('Could not mark messages as read');
                         })
                     }
+                },
+                getExpiry(messages){
+                    let lastInboundMessage = null;
+
+                    for (let i = messages.length - 1; i >= 0; i--) {
+                        if (messages[i].direction == 'Inbound') {
+                            lastInboundMessage = messages[i];
+                            break;
+                        }
+                    }
+                    return lastInboundMessage.expiration_time;
+                },
+                checkExpiry(timestamp){
+                    if(timestamp == null){
+                        this.freehand_enabled = false;
+                    }
+                    else{
+                        const date = new Date(timestamp * 1000);
+                        const options = {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        timeZone: 'Asia/Kolkata',
+                        };
+
+                        const formattedDate = new Intl.DateTimeFormat('en-IN', options).format(date);
+                        console.log(formattedDate);
+                        const currentDate = new Date();
+                        const timeDifference = currentDate - date;
+                        const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
+                        if (timeDifference >= twentyFourHoursInMillis) {
+                            this.freehand_enabled = false;
+                        } else {
+                            this.freehand_enabled = true;
+                        }
+                    }
                 }
             }"
             @appendChat.window="console.log('event captured');"
@@ -78,8 +121,6 @@
 
                     <template x-for="l in theLeads()">
                         <div @click.prevent.stop="
-                        console.log('displaying lead');
-                        console.log(l.chats);
                         showChat(l);"
                             class=" flex items-start  cursor-pointer hover:bg-base-100 rounded-xl my-1.5 w-full"
                             :class = "selected == l.id ? ' bg-base-100' : '' "
@@ -102,7 +143,7 @@
                                     </p>
                                 </div>
                                 <div class="flex justify-between">
-                                    <p  class=" mt-1 text-sm line-clamp-1" x-text=" allChats[l.id][allChats[l.id].length - 1].message" >
+                                    <p  class=" mt-1 text-sm line-clamp-1" x-text=" allChats[l.id][allChats[l.id].length - 1].type == 'text' ?  allChats[l.id][allChats[l.id].length - 1].message : 'photo' " >
                                     </p>
                                     <span x-show="allChats[l.id].filter(chat => chat.status == 'received').length != 0" class=" rounded-full bg-green-600 text-base-content font-medium aspect-square h-6 text-center" x-text="allChats[l.id].filter(chat => chat.status == 'received').length"></span>
                                 </div>
@@ -129,9 +170,19 @@
                             <div class="overflow-auto w-full hide-scroll mb-[72px]">
                                 <template x-for="chat in chats">
                                     <div class="chat " :class="chat.direction == 'Inbound' ? ' chat-start' : ' chat-end'">
-                                        <div class="chat-bubble text-base-content font-medium" x-text="chat.message"
-                                            :class="chat.direction == 'Inbound' ? ' bg-base-100' : ' bg-[#128c7e] text-white'">
-                                        </div>
+                                        {{-- displaying text message --}}
+                                        <template x-if="chat.type == 'text' ">
+                                            <div class="chat-bubble text-base-content font-medium" x-text="chat.message"
+                                                :class="chat.direction == 'Inbound' ? ' bg-base-100' : ' bg-[#128c7e] text-white'">
+                                            </div>
+                                        </template>
+                                        {{-- displaying media message --}}
+                                        <template x-if="chat.type == 'media' ">
+                                            <div class="chat-bubble text-base-content font-medium"
+                                                :class="chat.direction == 'Inbound' ? ' bg-base-100' : ' bg-[#128c7e] text-white'">
+                                                <img :src="chat.message" alt="" class="w-52 h-fit rounded-lg">
+                                            </div>
+                                        </template>
                                     </div>
                                 </template>
                             </div>

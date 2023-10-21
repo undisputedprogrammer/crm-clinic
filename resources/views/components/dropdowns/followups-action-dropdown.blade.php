@@ -21,38 +21,38 @@
         <li x-show="lead.appointment != null && lead.status == 'Appointment Fixed'">
             <a @click.prevent.stop=" selected_action = 'Consulted';
             dropdown.style.visibility = 'hidden'; "
-                class="" :class="selected_action == 'Consulted' ? ' text-primary hover:text-primary' : ''">Mark as consulted
+                class="" :class="selected_action == 'Consulted' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Mark as consulted
             </a>
         </li>
         <li>
             <a @click.prevent.stop=" selected_action = 'Add Followup';
             dropdown.style.visibility = 'hidden'; "
-                class="" :class="selected_action == 'Add Followup' ? ' text-primary hover:text-primary' : ''">Add Followup
+                class="" :class="selected_action == 'Add Followup' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Add Followup
             </a>
         </li>
         <li x-show="lead.status == 'Created' || lead.status == 'Follow-up Started'">
             <a @click.prevent.stop="selected_action = 'Schedule Appointment';
             dropdown.style.visibility = 'hidden';"
-                class=" " :class="selected_action == 'Schedule Appointment' ? ' text-primary hover:text-primary' : ''">Schedule Appointment
+                class=" " :class="selected_action == 'Schedule Appointment' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Schedule Appointment
             </a>
         </li>
         <li x-show="lead.status != 'Closed' && lead.status != 'Consulted'">
             <a @click.prevent.stop=" selected_action = 'Close Lead';
             dropdown.style.visibility = 'hidden'; "
-                class="" :class="selected_action == 'Close Lead' ? ' text-primary hover:text-primary' : ''">Close Lead
+                class="" :class="selected_action == 'Close Lead' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Close Lead
             </a>
         </li>
         <li x-show="lead.status == 'Consulted'">
             <a @click.prevent.stop=" selected_action = 'Complete';
             dropdown.style.visibility = 'hidden'; "
-                class="" :class="selected_action == 'Complete' ? ' text-primary hover:text-primary' : ''">Mark as complete
+                class="" :class="selected_action == 'Complete' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Mark as complete
             </a>
         </li>
 
         <li x-show="lead.appointment != null && lead.status == 'Appointment Fixed'">
             <a @click.prevent.stop=" selected_action = 'Reschedule Appointment';
             dropdown.style.visibility = 'hidden'; "
-                class="" :class="selected_action == 'Reschedule Appointment' ? ' text-primary hover:text-primary' : ''">Reschedule Appointment
+                class="" :class="selected_action == 'Reschedule Appointment' ? ' text-primary hover:text-primary' : 'hover:text-neutral-content'">Reschedule Appointment
             </a>
         </li>
 

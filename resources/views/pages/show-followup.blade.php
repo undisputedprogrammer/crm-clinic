@@ -68,10 +68,9 @@
         })"
         >
         {{-- {{dd($followup)}} --}}
-    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
+    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class=" flex justify-start items-center w-full bg-base-200 pt-1.5 pl-[3.3%] space-x-2">
@@ -376,6 +375,7 @@
 
 
                             <div x-data="{
+                                    dropdown : document.getElementById('followup-action-dropdown'),
                                     selected_action : '-- Select Action --'
                                 }"
                                 @resetaction.window="selected_action = '-- Select Action --';"

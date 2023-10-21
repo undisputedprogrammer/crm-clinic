@@ -3,8 +3,7 @@
     <div x-data="x_emails" class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-200  text-black "
     x-init="lead = {{$lead}};">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class=" flex flex-col justify-evenly items-start w-full bg-base-200 pt-1.5 pl-[3.3%] space-x-2">

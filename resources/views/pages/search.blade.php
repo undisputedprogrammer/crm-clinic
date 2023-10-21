@@ -25,10 +25,9 @@
         console.log($event.detail);
         $dispatch('nextpage',{link: $event.detail.link, page:$event.detail.page});">
 
-    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
+    <div class="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <div class="min-h-[calc(100vh-3.5rem)] pt-7 pb-[2.8rem] bg-base-200 w-full ">
@@ -98,35 +97,6 @@
                     <label for="to-date" class=" text-sm text-primary font-medium">Select to date *</label>
                     <input id="to-date" type="date" :required = "searchtype == 'scheduled_date' || searchtype == 'actual_date' ? true : false " placeholder="to date" name="to_date" class="input input-bordered w-full max-w-xs text-base-content" x-model="toDate" :value="toDate" />
                 </div>
-
-                {{-- <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
-                    <label for="status" class=" text-sm text-primary font-medium">Select status</label>
-                    <select name="agent" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
-                        <option value="">Any</option>
-                        @foreach (config('appSettings.lead_statuses') as $s)
-                        <option value="{{$s}}">{{$s}}</option>
-                        @endforeach
-                    </select>
-                </div> --}}
-{{--
-                <select name="status" id="select-status" class=" select text-base-content select-sm text-xs focus:ring-0 focus:outline-none">
-                    <option value="none">Fresh Leads</option>
-                    <option value="all">All leads</option>
-
-                </select>
-
-                <select name="is_valid" id="is-valid" class="select text-base-content select-sm text-xs focus:ring-0 focus:outline-none">
-                    <option value="">Not Selected</option>
-                    <option :selected="is_valid == 'true'" value="true">Valid</option>
-                    <option :selected="is_valid == 'false'" value="false">Not Valid</option>
-                </select>
-
-                <select name="is_genuine" id="is-genuine" class="select text-base-content select-sm text-xs focus:ring-0 focus:outline-none">
-                    <option value="">Not Selected</option>
-                    <option :selected="is_genuine == 'true'" value="true">Genuine</option>
-                    <option :selected="is_genuine == 'false'" value="false">Not Genuine</option>
-                </select>
-                --}}
 
 
                 @can('is-admin')

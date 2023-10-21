@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html x-data="{theme: $persist('newdark'), href: '', currentpath: '{{url()->current()}}', currentroute: '{{ Route::currentRouteName() }}', compact: $persist(false)}"
-@themechange.window="theme = $event.detail.darktheme ? 'newdark' : 'light';" lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+@themechange.window="theme = $event.detail.darktheme ? 'newdark' : 'cmyk';" lang="{{ str_replace('_', '-', app()->getLocale()) }}"
 x-init="window.landingUrl = '{{url()->full()}}'; window.landingRoute = '{{ Route::currentRouteName() }}'; window.renderedpanel = 'pagecontent';"
 @pagechanged.window="
 currentpath=$event.detail.currentpath;
@@ -158,6 +158,9 @@ currentroute=$event.detail.currentroute;"
          class="min-h-screen bg-base-200 flex flex-col" >
 
             <main x-data="x_main" class="flex flex-col items-stretch  flex-grow w-full " x-init="isBreak = '{{Auth::user()->in_break}}';">
+                <!-- Header -->
+                <x-display.header :hospital="$hospital"/>
+
                 <div x-data="{show: true}" x-show="show"
                 @contentupdate.window="
                 if ($event.detail.target == 'renderedpanel') {

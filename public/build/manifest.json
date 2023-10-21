@@ -1,11 +1,15 @@
 {
   "resources/css/app.css": {
+<<<<<<< HEAD
     "file": "assets/app-dd58f745.css",
+=======
+    "file": "assets/app-4f3f771f.css",
+>>>>>>> ali
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-07b68d8c.js",
+    "file": "assets/app-1055beb6.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }

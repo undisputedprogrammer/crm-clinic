@@ -139,34 +139,25 @@ export default {
         themes: [
             {
                 light: {
-                    // ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-                    "primary": "#c379ff",
 
-                    "secondary": "#1aa897",
+                    "primary": "#63f289",
 
-                    "accent": "#ea9b67",
+                    "secondary": "#f4be8b",
 
-                    "neutral": "#18A594",
+                    "accent": "#e8af53",
 
-                    // "neutral-focus": "#bfd4ff",
+                    "neutral": "#272031",
 
-                    "neutral-content": "#f5f5f4",
+                    "base-100": "#f3eff6",
 
-                    "base-100": "#dfddee",
+                    "info": "#799edc",
 
-                    "base-200": " #E7F5F5",
+                    "success": "#13a094",
 
-                    "base-content": "#372464",
+                    "warning": "#f7ba64",
 
-                    "info": "#5371f3",
-
-                    "success": "#6deeba",
-
-                    "warning": "#8a610f",
-
-                    "error": "#e94e60",
-
-                },
+                    "error": "#ec796f",
+                             },
             },
             {
                 'newdark': {
@@ -189,6 +180,7 @@ export default {
                     "error": "#ea8a7b",
                 },
             },
+            "cmyk"
         ],
     },
 };

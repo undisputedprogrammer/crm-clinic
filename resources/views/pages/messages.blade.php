@@ -2,8 +2,7 @@
 <div >
     <div class=" flex flex-col flex-auto flex-shrink-0 antialiased bg-base-100  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <h2 class="py-4 px-12 text-lg font-semibold text-primary bg-base-200">Manage Messages</h2>

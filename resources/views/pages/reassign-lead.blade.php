@@ -5,8 +5,7 @@ center = '{{$selectedCenter}}';
 @endif">
     <div class=" flex flex-col h-screen flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
-      <!-- Header -->
-      <x-display.header :hospital="$hospital"/>
+
       <x-sections.side-drawer/>
       {{-- page body --}}
       <h2 class="pt-4 px-12 text-lg font-semibold text-primary bg-base-200">Re-assign leads</h2>
