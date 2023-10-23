@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         $craft = Hospital::where('name', 'Craft')->get()->first();
         $craftadmin = User::create([
             'name' => 'Craft Admin',
-            'email' => 'craftadmin@demo.com',
+            'email' => 'cmo@ivfcraft.com',
             'designation' => 'Administrator',
             'hospital_id'=> $craft->id,
             'email_verified_at' => now(),
@@ -34,33 +34,33 @@ class UserSeeder extends Seeder
             $craftadmin->centers()->save($c);
         }
 
-        $craftagent = User::create([
-            'name' => 'Craft Agent',
-            'email' => 'craftagent@demo.com',
-            'designation' => 'Customer Relations Executive',
-            'hospital_id' => $craft->id,
-            'email_verified_at' => now(),
-            'password' => Hash::make('abcd1234'),
-            'remember_token' => Str::random(10),
-        ]);
+        // $craftagent = User::create([
+        //     'name' => 'Craft Agent',
+        //     'email' => 'craftagent@demo.com',
+        //     'designation' => 'Customer Relations Executive',
+        //     'hospital_id' => $craft->id,
+        //     'email_verified_at' => now(),
+        //     'password' => Hash::make('abcd1234'),
+        //     'remember_token' => Str::random(10),
+        // ]);
 
-        $craftagent->assignRole('agent');
-        $craftcenter = Center::where('name', 'Caft_Kodungallur')->get()->first();
-        $craftagent->centers()->save($craftcenter);
+        // $craftagent->assignRole('agent');
+        // $craftcenter = Center::where('name', 'Caft_Kodungallur')->get()->first();
+        // $craftagent->centers()->save($craftcenter);
 
-        $craftusers = User::factory()->count(5)->create(
-            ['hospital_id' => $craft->id]
-        );
+        // $craftusers = User::factory()->count(5)->create(
+        //     ['hospital_id' => $craft->id]
+        // );
 
-        foreach($craftusers as $user){
-            $user->centers()->save($craft->centers->random());
-            $user->assignRole('agent');
-        }
+        // foreach($craftusers as $user){
+        //     $user->centers()->save($craft->centers->random());
+        //     $user->assignRole('agent');
+        // }
 
         $ar = Hospital::where('name', 'AR')->get()->first();
         $aradmin = User::create([
             'name' => 'AR Admin',
-            'email' => 'aradmin@demo.com',
+            'email' => 'admin@armedicentre.com',
             'designation' => 'Administrator',
             'hospital_id'=> $ar->id,
             'email_verified_at' => now(),
@@ -73,27 +73,27 @@ class UserSeeder extends Seeder
             $aradmin->centers()->save($c);
         }
 
-        $aragent = User::create([
-            'name' => 'AR Agent',
-            'email' => 'aragent@demo.com',
-            'designation' => 'Customer Relations Executive',
-            'hospital_id' => $ar->id,
-            'email_verified_at' => now(),
-            'password' => Hash::make('abcd1234'),
-            'remember_token' => Str::random(10),
-        ]);
+        // $aragent = User::create([
+        //     'name' => 'AR Agent',
+        //     'email' => 'aragent@demo.com',
+        //     'designation' => 'Customer Relations Executive',
+        //     'hospital_id' => $ar->id,
+        //     'email_verified_at' => now(),
+        //     'password' => Hash::make('abcd1234'),
+        //     'remember_token' => Str::random(10),
+        // ]);
 
-        $aragent->assignRole('agent');
-        $arcenter = Center::where('name', 'AR_Kodungallur')->get()->first();
-        $aragent->centers()->save($arcenter);
+        // $aragent->assignRole('agent');
+        // $arcenter = Center::where('name', 'AR_Kodungallur')->get()->first();
+        // $aragent->centers()->save($arcenter);
 
-        $arusers = User::factory()->count(5)->create(
-            ['hospital_id' => $craft->id]
-        );
+        // $arusers = User::factory()->count(5)->create(
+        //     ['hospital_id' => $craft->id]
+        // );
 
-        foreach($arusers as $user){
-            $user->centers()->save($ar->centers->random());
-            $user->assignRole('agent');
-        }
+        // foreach($arusers as $user){
+        //     $user->centers()->save($ar->centers->random());
+        //     $user->assignRole('agent');
+        // }
     }
 }
