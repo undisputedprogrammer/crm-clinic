@@ -27,7 +27,13 @@ class InternalChatService
         $messages = $lastid != null ? InternalChat::where('id', '>', $lastid)
             ->orderBy('created_at')
             ->get() : [];
-        $lastid = $lastid ?? InternalChat::orderBy('id', 'desc')->limit(10)->get()->first()->id;
+        // $lastid = $lastid ?? ->id;
+        if (!isset($lastid)) {
+            $lchat = InternalChat::orderBy('id', 'desc')->limit(10)->get()->first();
+            if ($lchat != null) {
+                $lastid = $lchat->id;
+            }
+        }
         return [
             'messages' => $messages,
             'lastid' => count($messages) > 0 ? $messages->last()->id : $lastid
