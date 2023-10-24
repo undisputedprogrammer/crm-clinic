@@ -29,6 +29,7 @@ class User extends Authenticatable implements MediaOwner
     protected $fillable = [
         'name',
         'email',
+        'designation',
         'hospital_id',
         'password',
     ];

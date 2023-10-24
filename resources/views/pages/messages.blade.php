@@ -51,7 +51,7 @@
                         @formresponse.window="
                         console.log($event.detail);
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Message Added!'});$dispatch('linkaction', {link: '{{route('messages.index')}}', route: 'messages.index'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Message Added!'});$dispatch('linkaction', {link: '{{route('messages.index')}}', route: 'messages.index', fragment: 'page-content'});
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to add message. Please make sure you have entered all details.'});
                             }

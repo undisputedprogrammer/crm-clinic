@@ -60,7 +60,7 @@
                         if($el.id == $event.detail.target){
                             console.log($event.detail);
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Agent Added!'});$dispatch('linkaction', {link: '{{route('agents.index')}}', route: 'agents.index'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Agent Added!'});$dispatch('linkaction', {link: '{{route('agents.index')}}', route: 'agents.index', fragment: 'page-content'});
                             } else {
                                 $dispatch('showtoast', {mode: 'error', message: $event.detail.content.message});
                             }
@@ -142,7 +142,7 @@
                                 let params = {
                                     page: page
                                 };
-                                $dispatch('linkaction', {link: '{{route('agents.index')}}', route: 'agents.index', params: params, fresh: true});
+                                $dispatch('linkaction', {link: '{{route('agents.index')}}', route: 'agents.index', params: params, fresh: true, fragment: 'page-content'});
                             } else {
                                 $dispatch('showtoast', {mode: 'error', message: 'Failed to update agent. Please make sure you have entered all details.'});
                             }

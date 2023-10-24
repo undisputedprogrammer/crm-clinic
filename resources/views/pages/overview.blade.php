@@ -160,7 +160,8 @@
                                             $dispatch('linkaction', {
                                                 link: '{{route('overview')}}',
                                                 route: 'overview',
-                                                fresh: true
+                                                fresh: true,
+                                                fragment: 'page-content'
                                             })
                                         } else if (typeof $event.detail.content.errors != undefined) {
                                             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});

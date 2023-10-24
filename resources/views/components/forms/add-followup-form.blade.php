@@ -20,7 +20,7 @@
                                 if ($event.detail.content.success) {
                                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
                                     $el.reset();
-                                    {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route:'followups', fragment:'page-content', fresh: true}); --}}
+
                                     if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
                                     {
 
