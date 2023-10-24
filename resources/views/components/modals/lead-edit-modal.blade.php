@@ -38,7 +38,7 @@
 
             <div class=" flex-col flex">
                 <label for="" class="font-medium text-base-content">Email :</label>
-                <input :readonly="lead.email != 'Not specified'" :value="lead.email" required :type="lead.email == 'Not specified' ? : 'text' : 'email' " name="email" class=" input input-bordered input-secondary md:w-96 focus:outline-none min-w-72">
+                <input :readonly="lead.email != 'Not specified'" :value="lead.email" required :type="lead.email == 'Not specified' ?  'text' : 'email' " name="email" class=" input input-bordered input-secondary md:w-96 focus:outline-none min-w-72">
             </div>
 
             <div class=" flex space-x-2 md:w-96">
