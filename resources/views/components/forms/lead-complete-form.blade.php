@@ -20,7 +20,7 @@
     @formresponse.window="
     if($event.detail.target == $el.id){
         if ($event.detail.content.success) {
-            {{-- $dispatch('linkaction',{link:'{{route('followups')}}',route: 'followups', fragment: 'page-content', fresh:true}); --}}
+
             lead.status = 'Completed';
             fp.lead.status = 'Completed';
             $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});

@@ -64,12 +64,13 @@
                         class="flex flex-col items-center"
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
-                        console.log($event.detail);
+                        if($event.detail.target == $el.id){
                             if ($event.detail.content.success) {
-                                $dispatch('showtoast', {mode: 'success', message: 'Doctor Added!'});$dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index'});
+                                $dispatch('showtoast', {mode: 'success', message: 'Doctor Added!'});$dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index', fragment: 'page-content'});
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to add doctor. Please make sure you have entered all details.'});
                             }
+                        }
                         "
                         >
                         <div class="form-control w-full max-w-xs">
@@ -138,15 +139,17 @@
                         class="flex flex-col items-center"
                         @submit.prevent.stop="doSubmit();"
                         @formresponse.window="
+                        if($event.detail.target == $el.id){
                             if ($event.detail.content.success) {
                                 $dispatch('showtoast', {mode: 'success', message: 'Doctor Updated!'});
                                 let params = {
                                     page: page
                                 };
-                                $dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index', params: params, fresh: true});
+                                $dispatch('linkaction', {link: '{{route('doctors.index')}}', route: 'doctors.index', params: params, fresh: true, fragment: 'page-content'});
                             } else {
                                 $dispatch('shownotice', {mode: 'error', message: 'Failed to add doctor. Please make sure you have entered all details.'});
                             }
+                        }
                         "
                         >
                         <div class="form-control w-full max-w-xs">

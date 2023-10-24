@@ -30,6 +30,7 @@ class AgentService implements ModelViewConnector
         $agent = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
+            'designation'=>'Executive',
             'hospital_id'=>$request->user()->hospital_id,
             'password'=>Hash::make($request->password)
         ]);
