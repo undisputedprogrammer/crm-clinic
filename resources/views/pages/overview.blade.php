@@ -234,7 +234,8 @@
                                     {
                                         link: '{{route('journals.fetch_own')}}',
                                         route: 'journals.fetch_own',
-                                        fresh: true
+                                        fresh: true,
+                                        fragment: 'page-content'
                                     })
                                 ">
                                 View Journals

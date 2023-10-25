@@ -64,12 +64,12 @@
                             "
         id="next-followup-form" action="" class=" mt-5">
 
-        <div>
+        <div class=" flex flex-col">
             <label x-show="fp.next_followup_date == null" for="next-followup-date" class="text-sm font-medium">Schedule
                 date for next follow up</label>
 
             <input x-show="fp.next_followup_date == null" id="next-followup-date" name="next_followup_date" required
-                type="date" class=" rounded-lg input-info bg-base-200 w-full">
+                type="date" class=" rounded-lg input-info bg-base-200 w-72">
         </div>
 
         <button :disabled="fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2"

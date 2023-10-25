@@ -164,4 +164,11 @@ class LeadController extends SmartController
             return response()->json(['success' => false, 'message' => 'Failed!, Could not update lead']);
         }
     }
+
+    public function setTreatmentStatus(Request $request){
+        $lead = Lead::find($request->lead_id);
+        $lead->treatment_status = $request->treatment_status;
+        $lead->save();
+        return response()->json(['success'=>true, 'treatment_status' => $lead->treatment_status]);
+    }
 }
