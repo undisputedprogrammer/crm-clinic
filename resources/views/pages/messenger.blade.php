@@ -117,7 +117,7 @@
 
                 {{-- body starts here --}}
 
-                <div class="  overflow-auto basis-[20%] my-2" x-init="">
+                <div class="  overflow-auto basis-[20%] hide-scroll my-2" x-init="">
 
                     <template x-for="l in theLeads()">
                         <div @click.prevent.stop="

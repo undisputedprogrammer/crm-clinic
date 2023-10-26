@@ -25,7 +25,7 @@
                 <tbody>
                     @foreach ($leads as $lead)
                         <tr x-data="{ questions: null }" class="text-base-content hover:bg-base-100 cursor-pointer"
-                            :class=" name == `{{ $lead->name }}` ? 'bg-base-100 font-medium' : ''"
+                            :class=" lead.id == `{{ $lead->id }}` ? 'bg-base-100 font-medium' : ''"
                             @click="
                                 $dispatch('detailsupdate',{lead : {{ json_encode($lead) }}, remarks: {{ json_encode($lead->remarks) }}, id: {{ $lead->id }}, followups: {{ $lead->followups }}, qnas: {{ json_encode($lead->qnas) }}})">
 
