@@ -544,7 +544,7 @@
                     </div>
 
                     {{-- mark failed attempts --}}
-                    <x-forms.update-callStatus-form/>
+                    {{-- <x-forms.update-callStatus-form/> --}}
 
 
                     <div x-data="{
