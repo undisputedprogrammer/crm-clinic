@@ -23,13 +23,13 @@ class LeadsImport implements ToArray, WithHeadingRow
     private $mainCols = [];
     private $totalCount = 0;
     private $importedCount = 0;
-    public function __construct(array $headings, $hospital, $center)
+    public function __construct(array $headings, $hospital, $center, $agents = null)
     {
         $this->headings = $headings;
         $this->hospital = $hospital;
         $this->center = $center;
         $this->mainCols = $hospital->main_cols;
-        $this->agents = $center->agents();
+        $this->agents = $agents ?? $center->agents();
         if (count($this->agents) > 1) {
             $this->x = random_int(0, count($this->agents) - 1);
         } else {
@@ -44,8 +44,8 @@ class LeadsImport implements ToArray, WithHeadingRow
 
     public function array(array $rows)
     {
-        // info('showing headings');
-        // info($this->headings);
+        info('showing headings');
+        info($this->headings);
         // $row = $row[0];
         foreach ($rows as $row) {
             if($row[$this->mainCols->name] == null || $row[$this->mainCols->phone] == null){
@@ -86,7 +86,8 @@ class LeadsImport implements ToArray, WithHeadingRow
                 'followup_created' => false,
                 'assigned_to' => $this->agents[$this->x]->id,
                 'hospital_id' => $this->hospital->id,
-                'center_id' => $this->center->id
+                'center_id' => $this->center->id,
+                'created_by' => auth()->user()->id
             ]);
 
 

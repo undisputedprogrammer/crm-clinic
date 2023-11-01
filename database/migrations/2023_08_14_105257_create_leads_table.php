@@ -31,6 +31,7 @@ return new class extends Migration
             $table->boolean('followup_created')->default(false);
             $table->timestamp('followup_created_at')->nullable();
             $table->foreignId('assigned_to')->references('id')->on('users');
+            $table->foreignId('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }
