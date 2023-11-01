@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/performance', [PageController::class, 'performance'])->name('performance');
     Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
     Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
+    Route::post('/leads/distribute/all', [LeadController::class, 'distribute'])->name('leads.distribute');
     Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
     Route::post('/lead/update',[LeadController::class, 'update'])->name('lead.update');
     Route::post('/remark/store', [Remarkcontroller::class, 'store'])->name('add-remark');

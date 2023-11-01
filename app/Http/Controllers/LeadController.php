@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Followup;
-use App\Models\Lead;
 use Carbon\Carbon;
+use App\Models\Lead;
+use App\Models\User;
+use App\Models\Followup;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Reader\Xls\RC4;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
@@ -185,5 +186,29 @@ class LeadController extends SmartController
         }
         $lead->save();
         return response()->json(['success'=>true, 'message'=>'Updated status','lead'=>$lead]);
+    }
+
+    public function distribute(Request $request){
+        if($request->agent){
+            $agent = User::find($request->agent);
+            $center = $agent->centers->first();
+            $center_agents = $center->users;
+            $center_agents = $center_agents->filter( function ($user) use($agent) {
+                return $user->designation != 'Administrator' && $user->id != $agent->id;
+            })->toArray();
+            $agents_count = count($center_agents);
+            $agent_leads = Lead::where('assigned_to',$agent->id)->whereNotIn('status',['Completed', 'Closed'])->get();
+
+            $index = 0;
+            foreach($agent_leads as $lead){
+                $lead->assigned_to = $center_agents[$index]['id'];
+                $lead->save();
+                if($index == $agents_count - 1 ){
+                    $index = 0;
+                }else{
+
+                }
+            }
+        }
     }
 }
