@@ -6,6 +6,7 @@ use App\Models\Followup;
 use App\Models\Lead;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Reader\Xls\RC4;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
 class LeadController extends SmartController
@@ -163,5 +164,26 @@ class LeadController extends SmartController
         }else{
             return response()->json(['success' => false, 'message' => 'Failed!, Could not update lead']);
         }
+    }
+
+    public function setTreatmentStatus(Request $request){
+        $lead = Lead::find($request->lead_id);
+        $lead->treatment_status = $request->treatment_status;
+        $lead->save();
+        return response()->json(['success'=>true, 'treatment_status' => $lead->treatment_status]);
+    }
+
+    public function setCallStatus(Request $request){
+        $lead = Lead::find($request->lead_id);
+        if($request->call_status){
+            $lead->call_status = $request->call_status;
+        }
+        if($request->failed_attempts){
+                $lead->failed_attempts = $request->failed_attempts;
+        }else{
+            $lead->failed_attempts = 0;
+        }
+        $lead->save();
+        return response()->json(['success'=>true, 'message'=>'Updated status','lead'=>$lead]);
     }
 }

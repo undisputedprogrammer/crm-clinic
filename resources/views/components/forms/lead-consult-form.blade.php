@@ -54,7 +54,7 @@
                             x-show="!fp.consulted && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
                                 <h1 class=" text-secondary font-medium text-base mb-1">Mark consultation</h1>
 
-                                <label for="followup-date-cons" class="font-medium">Follow up Date</label>
+                                <label for="followup-date-cons" class="font-medium">Post consultation follow-up date</label>
                                 <input id="followup-date-cons" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
 
                                 <div class=" flex space-x-2 mt-1">

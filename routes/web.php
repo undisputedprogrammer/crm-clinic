@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/consulted', [AppointmentController::class, 'consulted'])->name('consulted.mark');
     Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
+    Route::post('/treatment-status/update',[LeadController::class, 'setTreatmentStatus'])->name('treatmentStatus.update');
+    Route::post('/call-status/update', [LeadController::class, 'setCallStatus'])->name('callStatus.update');
     // Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
     // Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     // Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');

@@ -143,6 +143,8 @@
 
                     <p class="font-medium">Lead Status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.status != null ? fp.lead.status : '-' "></span></p>
 
+                    <p x-show="fp.lead.status == 'Consulted' " class="font-medium">Treatment status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.treatment_status != null ? fp.lead.treatment_status : '---' "></span></p>
+
                     <div class="mt-2.5">
                         <p class=" text-base font-medium text-secondary">Lead remarks</p>
 
@@ -351,12 +353,14 @@
 
                             id="followup-form" class=" mt-2 bg-base-100 rounded-xl flex flex-col space-y-1" action="">
 
-                            <ul class="">
+                            <ul class=" list-disc list-outside ml-2.5">
                                 <template x-if="fp.remarks != undefined || fp.remarks != null">
                                     <template x-for="remark in fp.remarks">
-                                        <li class="flex space-x-1">
-                                            <span x-text="remark.remark"></span>
-                                            <span x-text="'-'+formatDate(remark.created_at)"></span>
+                                        <li>
+                                            <p class="flex space-x-1">
+                                                <span x-text="remark.remark"></span>
+                                                <span class=" font-thin text-sm" x-text="'-'+formatDate(remark.created_at)"></span>
+                                            </p>
                                         </li>
                                     </template>
                                 </template>
@@ -402,6 +406,9 @@
                                 <div x-show="lead.status == 'Completed'" >
                                     <p class="font-semibold text-sm text-warning">Process completed!</p>
                                 </div>
+
+                                <x-forms.select-treatment-status-form/>
+
                                 <x-dropdowns.followups-action-dropdown/>
 
                                 <x-forms.followup-add-appointment-form :doctors="$doctors"/>

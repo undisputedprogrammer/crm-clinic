@@ -130,6 +130,8 @@ currentroute=$event.detail.currentroute;"
                             allChats[msg.lead_id].push(msg);
                         }
                         else{
+                            console.log('Message from unknown lead');
+                            console.log(msg);
                             allChats[msg.lead_id] = [];
                             allChats[msg.lead_id].push(msg);
                             if(allLeads != null){
