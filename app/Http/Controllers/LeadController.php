@@ -197,18 +197,26 @@ class LeadController extends SmartController
                 return $user->designation != 'Administrator' && $user->id != $agent->id;
             })->toArray();
             $agents_count = count($center_agents);
+            if($agents_count < 1){
+                return response()->json(['success'=>false, 'message'=>'Not enough agents to assign'], 400);
+            }
             $agent_leads = Lead::where('assigned_to',$agent->id)->whereNotIn('status',['Completed', 'Closed'])->get();
 
-            $index = 0;
+            $index = 1;
             foreach($agent_leads as $lead){
                 $lead->assigned_to = $center_agents[$index]['id'];
                 $lead->save();
-                if($index == $agents_count - 1 ){
-                    $index = 0;
+                if($index == $agents_count ){
+                    $index = 1;
                 }else{
-
+                    $index++;
                 }
             }
         }
+        else{
+            return response()->json(['success'=>true, 'message'=>"Could not find agent!"], 400);
+        }
+
+        return response()->json(['success'=>true, 'message'=>'Leads of '.$agent->name.' distributed to remaining agents']);
     }
 }

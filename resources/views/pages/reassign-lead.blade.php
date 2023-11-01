@@ -116,8 +116,9 @@ center = '{{$selectedCenter}}';
                     distribute(){
                         ajaxLoading = true;
                         axios.post('{{route('leads.distribute')}}',{
-                            agent: selectedAgent
+                            agent: '{{$selectedAgent}}'
                         }).then((r)=>{
+                            console.log(r);
                             $dispatch('showtoast',{mode:'success', message: 'Leads distributed'});
                             setTimeout(()=>{
                                 $dispatch('linkaction', {link: '{{route('leads.reassign')}}', route: 'leads.reassign', fragment: 'page-content', fresh: true});
