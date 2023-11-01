@@ -203,6 +203,7 @@
             <x-tables.leads-table :leads="$leads"/>
 
         <div x-data="{
+                detailsLoading: false,
                 show_remarks_form: false,
                 selected_section: 'actions',
                 messageLoading : false,
@@ -275,8 +276,13 @@
 
             <p x-show="!selected" x-cloak class=" font-semibold text-base text-center mt-4">Select a lead...</p>
 
-            <div x-show="selected" x-transition
+            <div x-show="detailsLoading" class=" w-full flex flex-col space-y-2 justify-center items-center py-8">
+                <span class="loading loading-bars loading-md "></span>
+            </div>
+
+            <div x-show="selected && !detailsLoading" x-transition
             @detailsupdate.window="
+            detailsLoading = true;
             selected_section = 'actions';
             selected = true;
             if(leads[$event.detail.id] == undefined){
@@ -302,6 +308,9 @@
             show_remarks_form =  !remarks || remarks.length == 0,
             convert = false;
             $dispatch('resetactions');
+            setTimeout(()=>{
+                detailsLoading = false;
+            },500);
 
             " class=" mt-2 flex flex-col lg:flex-row lg:justify-between min-h-96">
 
@@ -533,6 +542,11 @@
                         </form>
 
                     </div>
+
+                    {{-- mark failed attempts --}}
+                    <x-forms.update-callStatus-form/>
+
+
                     <div x-data="{
                             selected_action : 'Initiate Followup',
                             dropdown : document.getElementById('lead-action-dropdown')

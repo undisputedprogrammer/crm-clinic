@@ -1,5 +1,5 @@
 <x-easyadmin::app-layout>
-<div x-data="{center : null, agent : null}" x-init="
+<div x-data="{center : null, agent : null, assignRandom : false}" x-init="
 @if(isset($selectedCenter))
 center = '{{$selectedCenter}}';
 @endif">
@@ -67,7 +67,12 @@ center = '{{$selectedCenter}}';
                             console.log(err);
                         })
                     }
-                }"
+                }" x-init="
+                @if($selectedAgent != null)
+                assignRandom = true;
+                @else
+                assignRandom = false;
+                @endif"
                  class="flex flex-col space-y-3" id="filter-form" @submit.prevent.stop="doFilter()" >
 
                     <select name="center" @change="center = $el.value" required id="select_center" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
@@ -160,6 +165,8 @@ center = '{{$selectedCenter}}';
                 </div>
 
                     <button type="submit" :disabled="confirmed ? false : true " class="btn btn-primary">Assign</button>
+
+                    <button type="" class=" btn btn-primary" x-show="assignRandom">Random</button>
                 </form>
                </div>
         </div>
