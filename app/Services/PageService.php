@@ -32,7 +32,7 @@ class PageService
         }
 
         if($creation_date != null){
-            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('created_at',$creation_date);
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->whereDate('created_at',$creation_date);
 
             $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
                 return $query->where('assigned_to', $user->id);
@@ -372,5 +372,14 @@ class PageService
         $centers = Center::where('hospital_id',$user->hospital_id)->get();
 
         return ['followup'=>$followup, 'doctors'=>$doctors, 'messageTemplates'=>$messageTemplates, 'centers'=>$centers];
+    }
+
+    public function getAgents($centerId)
+    {
+        $center = Center::find($centerId);
+        $agents = $center->agents();
+        return [
+            'agents' => $agents
+        ];
     }
 }

@@ -27,13 +27,16 @@ class LeadFactory extends Factory
         // $customer_segment = ['hot','warm','cold'];
         // $status = ['Created'];
         $hospital = Hospital::all()->random();
+
+        $users = $hospital->users()->havingRoles(['admin'])->get();
+
         $center = $hospital->centers->random();
         $agents = $center->agents();
         $check = random_int(1,10);
         $isvalid = $check > 1;
         $isgenuine = $isvalid && $check > 2;
 
-        $ag = count($agents) > 1 ? $agents[random_int(0, count($agents) - 1)] : 0;
+        $ag = count($agents) > 1 ? $agents[random_int(0, count($agents) - 1)] : $agents[0];
         return [
             'hospital_id' => $hospital->id,
             'center_id' => $center->id,
@@ -48,6 +51,7 @@ class LeadFactory extends Factory
             'status'=> 'Created',
             'followup_created'=>false,
             'assigned_to'=> $ag->id,
+            'created_by'=> $users[0],
             'created_at' => Carbon::now()->startOfMonth()->format('Y-m-d')
         ];
     }

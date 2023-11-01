@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/password/reset', [AgentController::class, 'change'])->name('password.change');
 
 
+
     Route::get('/templates', [TemplateController::class, 'index'])->name('template.index');
     Route::post('/template', [TemplateController::class, 'store'])->name('template.store');
     Route::post('/leads/reassign', [TemplateController::class, 'assign'])->name('leads.assign');
@@ -115,6 +116,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/hospotal/centers', [
         HospitalController::class, 'centers'
     ])->name('hospital.centers');
+
+    Route::get('/center/agents',[PageController::class, 'getAgents'])->name('center.agents');
 
     Route::get('/break-in',[BreakController::class, 'breakIn'])->name('break.in');
 

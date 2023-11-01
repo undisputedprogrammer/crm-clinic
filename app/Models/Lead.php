@@ -16,7 +16,7 @@ class Lead extends Model
         'qnas' => 'array'
     ];
 
-    protected $fillable = ['hospital_id','center_id','name','phone','email','city', 'qnas', 'is_valid','is_genuine','history','customer_segment','status','followup_created','assigned_to'];
+    protected $guarded = [];
 
     public function remarks(){
         return $this->morphMany(Remark::class,'remarkable');
@@ -32,6 +32,10 @@ class Lead extends Model
 
     public function assigned(){
         return $this->hasOne(User::class,'id','assigned_to');
+    }
+
+    public function createdBy(){
+        return $this->hasOne(User::class,'id','created_by');
     }
 
     public function appointment(){

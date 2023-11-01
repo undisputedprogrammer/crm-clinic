@@ -34,6 +34,13 @@ class PageController extends SmartController
         return $this->buildResponse('pages.overview', $data);
     }
 
+    public function getAgents(Request $request)
+    {
+        return response()->json(
+            $this->pageService->getAgents($request->input('cid'))
+        );
+    }
+
 
     public function performance(Request $request)
     {
