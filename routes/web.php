@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/performance', [PageController::class, 'performance'])->name('performance');
     Route::get('/leads', [PageController::class, 'leadIndex'])->name('fresh-leads');
     Route::get('/leads/reassign', [TemplateController::class, 'reassign'])->name('leads.reassign');
+    Route::post('/leads/distribute/all', [LeadController::class, 'distribute'])->name('leads.distribute');
     Route::get('/leads/{id}', [LeadController::class, 'show'])->name('leads.show');
     Route::post('/lead/update',[LeadController::class, 'update'])->name('lead.update');
     Route::post('/remark/store', [Remarkcontroller::class, 'store'])->name('add-remark');
@@ -69,6 +70,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/consulted', [AppointmentController::class, 'consulted'])->name('consulted.mark');
     Route::post('/message/sent', [MessageController::class, 'message'])->name('message.sent');
+    Route::post('/treatment-status/update',[LeadController::class, 'setTreatmentStatus'])->name('treatmentStatus.update');
+    Route::post('/call-status/update', [LeadController::class, 'setCallStatus'])->name('callStatus.update');
     // Route::get('/messages',[MessageController::class, 'index'])->name('messages.index');
     // Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     // Route::post('/messages/{id}', [MessageController::class, 'update'])->name('messages.update');

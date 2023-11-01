@@ -1,5 +1,5 @@
 <x-easyadmin::app-layout>
-<div x-data="{center : null, agent : null}" x-init="
+<div x-data="{center : null, agent : null, distributeAll : false}" x-init="
 @if(isset($selectedCenter))
 center = '{{$selectedCenter}}';
 @endif">
@@ -67,7 +67,12 @@ center = '{{$selectedCenter}}';
                             console.log(err);
                         })
                     }
-                }"
+                }" x-init="
+                @if($selectedAgent != null)
+                distributeAll = true;
+                @else
+                distributeAll = false;
+                @endif"
                  class="flex flex-col space-y-3" id="filter-form" @submit.prevent.stop="doFilter()" >
 
                     <select name="center" @change="center = $el.value" required id="select_center" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
@@ -107,6 +112,20 @@ center = '{{$selectedCenter}}';
                         let fd = new FormData(form);
                         fd.append('selectedLeads', selected);
                         $dispatch('formsubmit', {url: '{{route('leads.assign')}}', formData: fd, target: 'leads-reassign-form'});
+                    },
+                    distribute(){
+                        ajaxLoading = true;
+                        axios.post('{{route('leads.distribute')}}',{
+                            agent: selectedAgent
+                        }).then((r)=>{
+                            $dispatch('showtoast',{mode:'success', message: 'Leads distributed'});
+                            setTimeout(()=>{
+                                $dispatch('linkaction', {link: '{{route('leads.reassign')}}', route: 'leads.reassign', fragment: 'page-content', fresh: true});
+                            },1000);
+                        }).catch((e)=>{
+                            console.log(e);
+                            $dispatch('showtoast',{mode:'success', message: 'Could not distribute leads'});
+                        })
                     }
                 }"
                 @formresponse.window="
@@ -160,6 +179,8 @@ center = '{{$selectedCenter}}';
                 </div>
 
                     <button type="submit" :disabled="confirmed ? false : true " class="btn btn-primary">Assign</button>
+
+                    <button type="button" @click.prevent.stop="distribute();" class=" btn btn-primary" x-show="distributeAll">Distribute all</button>
                 </form>
                </div>
         </div>

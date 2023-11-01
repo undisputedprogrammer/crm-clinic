@@ -32,7 +32,8 @@ class PageService
         }
 
         if($creation_date != null){
-            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('created_at',$creation_date);
+            info('searching using creation date');
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->whereDate('created_at',$creation_date);
 
             $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
                 return $query->where('assigned_to', $user->id);

@@ -99,8 +99,8 @@
 
                     <div class="flex flex-col md:flex-row md:flex-wrap space-x-2">
                     {{-- import leads form --}}
-                    @can('import-lead')
-                        <div class=" bg-base-200 p-3 rounded-xl w-fit">
+                    {{-- @can('import-lead') --}}
+                        <div class=" bg-base-200 p-3 rounded-xl w-fit border border-secondary">
                             <h1 class="font-semibold mb-2.5 text-primary text-center">Import leads</h1>
                             <form
                                 x-data="{
@@ -205,7 +205,7 @@
                                 </div>
                             </form>
                         </div>
-                    @endcan
+                    {{-- @endcan --}}
 
 
                     @can('is-agent')
@@ -234,7 +234,8 @@
                                     {
                                         link: '{{route('journals.fetch_own')}}',
                                         route: 'journals.fetch_own',
-                                        fresh: true
+                                        fresh: true,
+                                        fragment: 'page-content'
                                     })
                                 ">
                                 View Journals
