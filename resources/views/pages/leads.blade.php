@@ -446,7 +446,7 @@
                         <span>Follow up scheduled : </span>
                         <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].scheduled_date) : '---' "></span>
                     </p>
-                    <p x-show="lead.followup_created == 1" class=" font-medium">
+                    <p x-show="lead.status != 'Created' " class=" font-medium">
                         <span>Followed up date : </span>
                         <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].actual_date) : '---' " class="text-secondary"></span>
                     </p>

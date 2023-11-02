@@ -189,34 +189,38 @@ class LeadController extends SmartController
     }
 
     public function distribute(Request $request){
+        if($request->selected_agents){
+            $agent_ids = explode(",",$request->selected_agents);
+        }else{
+            return response()->json(['success'=>false, 'message'=>"No agents to distribute"]);
+        }
+
         if($request->agent){
             $agent = User::find($request->agent);
-            $center = $agent->centers->first();
-            $center_agents = $center->users;
-            $center_agents = $center_agents->filter( function ($user) use($agent) {
-                return $user->designation != 'Administrator' && $user->id != $agent->id;
-            })->toArray();
-            $agents_count = count($center_agents);
+            info('agent fecthed');
+            $selected_agents = User::whereIn('id', $agent_ids)->get()->toArray();
+            info('selected agents fetched');
+            $agents_count = count($selected_agents);
             if($agents_count < 1){
                 return response()->json(['success'=>false, 'message'=>'Not enough agents to assign'], 400);
             }
             $agent_leads = Lead::where('assigned_to',$agent->id)->whereNotIn('status',['Completed', 'Closed'])->get();
 
-            $index = 1;
+            $index = 0;
             foreach($agent_leads as $lead){
-                $lead->assigned_to = $center_agents[$index]['id'];
+                $lead->assigned_to = $selected_agents[$index]['id'];
                 $lead->save();
-                if($index == $agents_count ){
-                    $index = 1;
+                if($index == $agents_count - 1 ){
+                    $index = 0;
                 }else{
                     $index++;
                 }
             }
         }
         else{
-            return response()->json(['success'=>true, 'message'=>"Could not find agent!"], 400);
+            return response()->json(['success'=>false, 'message'=>"Could not find agent!"], 400);
         }
 
-        return response()->json(['success'=>true, 'message'=>'Leads of '.$agent->name.' distributed to remaining agents']);
+        return response()->json(['success'=>true, 'message'=>'Leads of '.$agent->name.' distributed to '.$agents_count.' agents']);
     }
 }

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PageService
 {
-
     public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status, $is_valid, $is_genuine, $creation_date, $processed)
     {
         if($search != null){
@@ -75,7 +74,7 @@ class PageService
 
         }
         else{
-            $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '=', 'Created')->with([
+            $leadsQuery = Lead::with(['followups'])->where('hospital_id', $user->hospital_id)->where('status', '=', 'Created')->with([
                 'remarks' => function ($q) {
                     return $q->orderBy('created_at', 'desc');
                 },
