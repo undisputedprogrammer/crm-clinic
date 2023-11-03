@@ -62,17 +62,17 @@ class FollowupController extends SmartController
 
         $followup = Followup::find($request->followup_id);
         $followup->actual_date = Carbon::now();
-        $followup->next_followup_date = Carbon::createFromFormat('Y-m-d', $request->input('next_followup_date'))->format('Y-m-d H:i:s');
+        $followup->next_followup_date = $request->next_followup_date;
         $followup->user_id = Auth::user()->id;
         $followup->save();
         $converted = null;
 
-        $followup->refresh();
+
 
         $next_followup = Followup::create([
             'lead_id' => $request->lead_id,
             'followup_count' => $followup->followup_count + 1,
-            'scheduled_date' => $followup->next_followup_date,
+            'scheduled_date' => $request->next_followup_date,
             'user_id' => $request->user()->id
         ]);
 
