@@ -62,9 +62,9 @@ class TemplateController extends SmartController
             $leadQuery->where('center_id',$request->center);
         }
 
-        if ($request->filter != null && $request->filter != 'all') {
-            info('agent selected is '.$request->filter);
-            $leadQuery->where('assigned_to', $request->filter);
+        if ($request->agent != null && $request->agent != 'all') {
+            info('agent selected is '.$request->agent);
+            $leadQuery->where('assigned_to', $request->agent);
         }
 
         $leads = $leadQuery->paginate(10);
@@ -75,8 +75,8 @@ class TemplateController extends SmartController
 
         $centers = Center::where('hospital_id',$request->user()->hospital_id)->get();
 
-        $selectedCenter = $request->center;
-        $selectedAgent = $request->filter ? $request->filter : null;
+        $selectedCenter = $request->center ? $request->center : null;
+        $selectedAgent = $request->agent ? $request->agent : null;
         return $this->buildResponse('pages.reassign-lead', compact('leads', 'agents', 'centers', 'selectedCenter','selectedAgent'));
     }
 

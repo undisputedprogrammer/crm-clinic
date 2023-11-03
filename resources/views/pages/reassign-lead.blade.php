@@ -1,8 +1,15 @@
 <x-easyadmin::app-layout>
 <div x-data="{center : null, agent : null, assignRandom : false}" x-init="
-@if(isset($selectedCenter))
+@if($selectedCenter != null)
 center = '{{$selectedCenter}}';
-@endif">
+@else
+center = null;
+@endif
+@if($selectedAgent != null)
+agent = '{{$selectedAgent}}';
+@else
+agent = null;
+@endif ">
     <div class=" flex flex-col h-screen flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
 
@@ -22,10 +29,21 @@ center = '{{$selectedCenter}}';
         {{-- pagination event handler --}}
         @pageaction.window="
             page = $event.detail.page;
+            let params = {};
+
+            if(agent != null || center != null){
+                if(center != null){
+                    params.center = center;
+                }
+                if(agent != null){
+                    params.agent = agent;
+                }
+            }
             $dispatch('linkaction',{
                 link: $event.detail.link,
                 route: currentroute,
                 fragment: 'page-content',
+                params: params
             })"
 
        class="  pt-7 pb-12 lg:pb-0  bg-base-200 w-full flex flex-col lg:flex-row space-y-4 lg:space-y-0 items-center lg:items-start justify-evenly">
@@ -45,27 +63,21 @@ center = '{{$selectedCenter}}';
                 x-data="{
                     selectedCenter : center,
                     doFilter(){
-                        ajaxLoading = true;
-                        axios.get('/leads/reassign',{
-                            params : {
-                                filter : document.getElementById('select-filter').value,
-                                center : document.getElementById('select_center').value
-                            },
-                            headers: {
-                                'X-Fr' : 'page-content'
+                        let selected_agent = document.getElementById('select-filter').value;
+                        let selected_center = document.getElementById('select_center').value;
+                        let params = {};
+                        if (selected_center != 'all' || selected_agent != 'all'){
+                            if (selected_center != 'all'){
+                                params.center = selected_center;
                             }
-                        }).then((res)=>{
-                            showPage = false;
-                            setTimeout(
-                            () => {
-                            ajaxLoading = false;
-                            showPage = true;
-                            this.$dispatch('contentupdate', {content: res.data.html, target: 'renderedpanel'});
-                            }, 100);
-                        }).catch((err)=>{
-                            ajaxLoading = false;
-                            console.log(err);
-                        })
+                            if (selected_agent != 'all'){
+                                params.agent = selected_agent;
+                            }
+
+                            $dispatch('linkaction',{link: '{{route('leads.reassign')}}', route: 'leads.reassign', fragment: 'page-content', params: params});
+                        }else{
+                            $dispatch('linkaction',{link: '{{route('leads.reassign')}}', route: 'leads.reassign', fragment: 'page-content'});
+                        }
                     }
                 }" x-init="
                 @if($selectedAgent != null)
@@ -82,8 +94,8 @@ center = '{{$selectedCenter}}';
                         @endforeach
                     </select>
 
-                    <select @change="searchFilter = $el.value" name="filter" id="select-filter" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
-                        <option value="" disabled selected >Select Agent</option>
+                    <select @change="searchFilter = $el.value" name="agent" id="select-filter" class="select select-primary text-base-content select-bordered border-primary w-full  max-w-xs">
+                        {{-- <option value="" disabled selected >Select Agent</option> --}}
                         <option value="all">All agents</option>
                         @if ($agents != null && count($agents) > 0)
                            @foreach ($agents as $agent)
