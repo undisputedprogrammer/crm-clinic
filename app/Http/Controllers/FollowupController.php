@@ -72,7 +72,7 @@ class FollowupController extends SmartController
         $next_followup = Followup::create([
             'lead_id' => $request->lead_id,
             'followup_count' => $followup->followup_count + 1,
-            'scheduled_date' => $request->next_followup_date,
+            'scheduled_date' => $followup->next_followup_date,
             'user_id' => $request->user()->id
         ]);
 
