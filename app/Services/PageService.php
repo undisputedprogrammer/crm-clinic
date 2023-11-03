@@ -333,7 +333,7 @@ class PageService
                 return $qr->with('doctor');
             }]);
         }, 'remarks'])
-            ->where('scheduled_date', '<=', date('Y-m-d'))
+            ->whereDate('scheduled_date', '<=', date('Y-m-d'))
             ->where('actual_date', null);
 
         if ($user->hasRole('agent')) {
