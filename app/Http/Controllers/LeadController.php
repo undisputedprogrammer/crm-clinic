@@ -7,6 +7,8 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Followup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Reader\Xls\RC4;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -222,5 +224,59 @@ class LeadController extends SmartController
         }
 
         return response()->json(['success'=>true, 'message'=>'Leads of '.$agent->name.' distributed to '.$agents_count.' agents']);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|min:3',
+            'city' => 'required|min:3',
+            'phone' => 'required|min:10',
+            'email' => 'required|email'
+        ]);
+
+        $assigned_to = $request->assign_to ? $request->assign_to : Auth::user()->id;
+        info('going to create lead');
+        $lead = Lead::create([
+            'hospital_id' => Auth::user()->hospital_id,
+            'center_id' => $request->center ? $request->center : User::find(Auth::user()->id)->centers()->first()->id,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'city' => $request->city,
+            'assigned_to' => $assigned_to,
+            'created_by' => Auth::user()->id
+        ]);
+
+        $followup_created = $this->createFollowup($lead);
+
+        if($followup_created){
+            $lead->followup_created = true;
+            $lead->save();
+        }else{
+            $lead->delete();
+            return response()->json([
+                'success' => false,
+                'message' => 'Could not create lead !'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "New lead created !",
+            'lead' => $lead
+        ], 200);
+    }
+
+    public function createFollowup($lead)
+    {
+        $followup = $followup = Followup::create([
+            'lead_id' => $lead->id,
+            'followup_count' => 1,
+            'scheduled_date' => Carbon::today(),
+            'user_id' => $lead->user_id
+        ]);
+
+        return true;
     }
 }

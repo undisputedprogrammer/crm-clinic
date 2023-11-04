@@ -72,6 +72,19 @@
                 type="date" class=" rounded-lg input-info bg-base-200 w-72">
         </div>
 
+        <div class=" flex flex-col space-y-1 my-2.5">
+            <p for="call_status" class=" font-medium ">How was the call ?</p>
+                <div class=" flex space-x-1 items-center">
+                    <input type="radio" name="call_status" id="responsive" value="Responsive" required>
+                    <label for="responsive">Responsive</label>
+                </div>
+
+                <div class=" flex space-x-1 items-center">
+                    <input type="radio" name="call_status" id="non-responsive" value="Not responsive">
+                    <label for="non-resposive">Not responsive</label>
+                </div>
+        </div>
+
         <button :disabled="fp.remarks && fp.remarks.length == 0 ? true : false" class=" btn btn-xs btn-primary mt-2"
             type="submit">Schedule next follow up</button>
 

@@ -11,7 +11,7 @@
             fpremarks : [],
             leadremarks: [],
             historyLoading: true,
-            history: [],
+            fphistory: [],
             convert: false,
             consult: false,
             appointment: null,
@@ -102,7 +102,7 @@
 
                     }
                   }).then(function (response) {
-                    history = response.data.followup;
+                    fphistory = response.data.followup;
                     console.log(response.data.followup);
                     historyLoading = false;
 
@@ -143,9 +143,9 @@
 
                     <p class="font-medium">Lead Status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.status != null ? fp.lead.status : '-' "></span></p>
 
-                    <p x-show="fp.lead.status == 'Consulted' " class="font-medium">Treatment status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.treatment_status != null ? fp.lead.treatment_status : '---' "></span></p>
+                    <p x-show=" fp.lead != undefined && fp.lead.status == 'Consulted' " class="font-medium">Treatment status: <span class=" uppercase !text-warning" x-text="fp.lead != undefined && fp.lead.treatment_status != null ? fp.lead.treatment_status : '---' "></span></p>
 
-                    <div class="mt-2.5">
+                    <div x-show="leadremarks.length != 0" class="mt-2.5">
                         <p class=" text-base font-medium text-secondary">Lead remarks</p>
 
                         <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal">
@@ -162,38 +162,7 @@
                         </ul>
                     </div>
 
-                    <div class=" mt-2.5">
-                        <p class="text-base font-medium text-secondary">Follow up history</p>
-
-                        {{-- loading --}}
-                        <div x-cloak x-show="historyLoading" class=" w-full flex justify-center">
-                            <span class="loading loading-bars loading-xs text-center my-4 text-primary"></span>
-                        </div>
-
-                        {{-- looping through history --}}
-                        <template x-show="!historyLoading" x-for="item in history" >
-                            <div x-data="{agent: item.user}" x-show="item.actual_date != null" class=" mt-2 mr-1 bg-neutral p-2 rounded-lg">
-                                <p class=" font-medium">Date : <span class=" text-primary" x-text="formatDate(item.actual_date)"></span></p>
-
-                                {{-- <template x-if=""> --}}
-                                    <p  class=" font-medium">Agent : <span class=" text-primary" x-text="agent != null ? agent.name : '' "></span></p>
-                                {{-- </template> --}}
-
-                                <p class="font-medium">Follow up remarks</p>
-                                <ul>
-                                    <template x-if="item.remarks != undefined">
-                                        <template x-for="remark in item.remarks">
-                                            <li x-text="remark.remark"></li>
-                                        </template>
-                                    </template>
-                                </ul>
-                            </div>
-                        </template>
-
-                        <p x-show="!historyLoading" class=" text-error" x-text=" history.length == 1 && fp.actual_date == null ? 'No follow ups completed yet' : '' "></p>
-
-
-                    </div>
+                    <x-sections.followup-history/>
 
                 </div>
 

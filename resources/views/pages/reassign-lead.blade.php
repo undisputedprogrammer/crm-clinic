@@ -2,7 +2,14 @@
 <div x-data="{center : null, agent : null, assignRandom : false}" x-init="
 @if($selectedCenter != null)
 center = '{{$selectedCenter}}';
-@endif">
+@else
+center = null;
+@endif
+@if($selectedAgent != null)
+agent = '{{$selectedAgent}}';
+@else
+agent = null;
+@endif ">
     <div class=" flex flex-col h-screen flex-auto flex-shrink-0 antialiased bg-base-200  text-black ">
 
 
@@ -74,9 +81,9 @@ center = '{{$selectedCenter}}';
                     }
                 }" x-init="
                 @if($selectedAgent != null)
-                distributeAll = true;
+                assignRandom = true;
                 @else
-                distributeAll = false;
+                assignRandom = false;
                 @endif"
                  class="flex flex-col space-y-3" id="filter-form" @submit.prevent.stop="doFilter()" >
 
@@ -170,55 +177,8 @@ center = '{{$selectedCenter}}';
                 </div>
 
                     <button type="submit" :disabled="confirmed ? false : true " class="btn btn-primary">Assign</button>
-                </form>
-               </div>
 
-               {{-- distribute all leads to --}}
-               <div  x-show="distributeAll" class= "rounded-xl bg-base-100  px-3 py-2 mt-5">
-                <h2 class=" font-medium text-lg text-base-content">Distribute all leads to</h2>
-
-                <form x-data="{
-                    agents: [],
-                    distribute(){
-                        let form = document.getElementById('distribute-lead-form');
-                        let formdata = new FormData(form);
-                        formdata.append('selected_agents',this.agents);
-                        formdata.append('agent', agent);
-                        $dispatch('formsubmit', {url: '{{route('leads.distribute')}}', route: 'leads.distribute', formData: formdata, target: 'distribute-lead-form'});
-                    }
-                   }"
-                   @formresponse.window="
-                   if($event.detail.target == $el.id){
-                    console.log($event.detail.content)
-                    if($event.detail.content.success){
-                        $dispatch('showtoast',{mode:'success', message: $event.detail.content.message});
-                        setTimeout(()=>{
-                            $dispatch('linkaction',{link: '{{route('leads.reassign')}}', route: 'leads.reassign', fragment: 'page-content', fresh: true});
-                        }, 1000);
-                    }
-                    else if(typeof $event.detail.content.success != undefined){
-                        $dispatch('showtoast',{mode:'error', message: $event.detail.content.message});
-                    }
-                    else{
-                        $dispatch('formerrors',{errors:$event.detail.content.errors});
-                    }
-                   }
-                   "
-                   id="distribute-lead-form" @submit.prevent.stop="distribute();" action="" class="flex flex-col space-y-3">
-                    <div class="form-control w-full max-w-xs">
-                        <label class="label">
-                            <span class="label-text font-medium">Choose Agents</span>
-                        </label>
-                        <select name="agents[]" x-model="agents" multiple class="select select-bordered font-medium text-base-content hide-scroll">
-                            @foreach ($agents as $agent)
-                                <template x-if=" '{{$agent->centers[0]->id}}' == center && {{$agent->id}} != agent">
-                                    <option value="{{$agent->id}}">{{$agent->name}}</option>
-                                </template>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <button type="submit" class=" btn btn-sm btn-primary self-start">Distribute to selected leads</button>
+                    <button type="" class=" btn btn-primary" x-show="assignRandom">Random</button>
                 </form>
                </div>
         </div>

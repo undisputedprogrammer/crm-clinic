@@ -1,14 +1,17 @@
 import axios from "axios";
 export default ()=>({
+    followup_remarks : [],
     selected : false,
     showTemplateModal : false,
     selectedCenter : null,
+    selectedStatus : null,
     theLink : null,
     is_genuine : null,
     is_valid : null,
     creation_date : null,
     isProcessed : false,
     editLead : false,
+    createLead : false,
     toggleTemplateModal(){
         this.showTemplateModal = !this.showTemplateModal;
     },
@@ -73,5 +76,9 @@ export default ()=>({
         let formdata = new FormData(el);
         formdata.append('lead_id', lead_id);
         this.$dispatch('formsubmit',{url: url, route: 'lead.update',fragment: 'page-content', formData: formdata, target: 'lead-edit-form'});
+    },
+    storeLead(el, url){
+        let formdata = new FormData(el);
+        this.$dispatch('formsubmit', {url: url, route: 'lead.store', fragment: 'page-content', formData: formdata, target: 'create-lead-form'});
     }
 });

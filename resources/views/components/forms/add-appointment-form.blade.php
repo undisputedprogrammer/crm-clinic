@@ -11,7 +11,7 @@
     <p class=" text-error text-base font-medium py-4">This lead is closed!</p>
 </template>
 
-<form x-show=" lead.status != 'Appointment Fixed' && lead.followup_created == false && lead.status != 'Closed'" x-cloak x-transition
+<form x-show=" lead.status != 'Appointment Fixed' && lead.status != 'Closed'" x-cloak x-transition
 x-data ="
 { doSubmit() {
     let form = document.getElementById('appointment-form');

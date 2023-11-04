@@ -23,18 +23,19 @@ class FollowupController extends SmartController
         $lead = Lead::find($request->lead_id);
         $converted = null;
 
+        $current_followup = Followup::where('lead_id',$lead->id)->where('actual_date', null)->get()->first();
+        $current_followup->actual_date = Carbon::now();
+        $current_followup->next_followup_date = $request->scheduled_date;
+        $current_followup->user_id = Auth::user()->id;
+        $current_followup->call_status = $request->call_status;
+        $current_followup->save();
+
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
-            'followup_count' => 1,
+            'followup_count' => $current_followup->followup_count + 1,
             'scheduled_date' => $request->scheduled_date,
             'user_id' => $request->user()->id
         ]);
-
-        if($lead->status == "Appointment Fixed"){
-
-            $followup->converted = true;
-            $followup->save();
-        }
 
         $lead->followup_created = true;
         $lead->status = "Follow-up Started";
@@ -64,6 +65,7 @@ class FollowupController extends SmartController
         $followup->actual_date = Carbon::now();
         $followup->next_followup_date = $request->next_followup_date;
         $followup->user_id = Auth::user()->id;
+        $followup->call_status = $request->call_status;
         $followup->save();
         $converted = null;
 
