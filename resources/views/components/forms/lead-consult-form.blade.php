@@ -1,4 +1,4 @@
-<div x-show= "selected_action == 'Consulted'">
+<div x-show= "selected_action == 'Consulted'" class=" lg:w-fit bg-base-200 rounded-lg p-3 mt-3">
 
     {{-- <template x-if="lead.status == 'Closed'">
         <p class=" font-medium text-error py-4 text-base">This lead is closed</p>
@@ -51,13 +51,14 @@
                                         $dispatch('formerrors', {errors: $event.detail.content.errors});
                                     }
                                 }"
-                            x-show="!fp.consulted && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" mt-1 rounded-xl">
-                                <h1 class=" text-secondary font-medium text-base mb-1">Mark consultation</h1>
+                            x-show="!fp.consulted && lead.status=='Appointment Fixed'" x-cloak x-transition id="mark-consulted-form" action="" class=" rounded-xl lg:w-fit">
+
+                                <h1 class=" text-secondary font-medium text-base mb-1 w-fit">Mark consultation</h1>
 
                                 <label for="followup-date-cons" class="font-medium">Post consultation follow-up date</label>
-                                <input id="followup-date-cons" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
+                                <input id="followup-date-cons" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full lg:w-72 mt-1.5">
 
-                                <div class=" flex space-x-2 mt-1">
+                                <div class=" flex space-x-2 mt-1 w-fit">
                                     <button type="submit" class="btn btn-primary btn-xs ">Proceed</button>
                                 </div>
                             </form>

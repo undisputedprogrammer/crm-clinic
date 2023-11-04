@@ -359,7 +359,7 @@
                                     dropdown : document.getElementById('followup-action-dropdown')
                                 }"
                                 @resetaction.window="selected_action = '-- Select Action --';"
-                                class="pt-6"
+                                class="pt-6 px-1"
                                 x-show="fp.remarks && fp.remarks.length > 0"
                                 >
                                 <h3 class="text-sm font-medium text-secondary">Actions:</h3>

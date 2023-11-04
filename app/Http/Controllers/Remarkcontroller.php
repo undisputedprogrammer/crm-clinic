@@ -41,7 +41,7 @@ class Remarkcontroller extends SmartController
 
     public function followup(Request $request)
     {
-        $followups = Followup::where('lead_id',$request->lead_id)->with(['remarks','user'])->orderBy('created_at','desc')->get();
+        $followups = Followup::where('lead_id',$request->lead_id)->with(['remarks','user','lead'])->orderBy('created_at','desc')->get();
         return response()->json(['followup'=>$followups]);
     }
 }

@@ -1,4 +1,4 @@
-<div x-show= "selected_action == 'Complete' && lead.status != 'Completed'">
+<div x-show= "selected_action == 'Complete' && lead.status != 'Completed'" class=" bg-base-200 p-3 rounded-lg lg:w-fit mt-3">
 
     <template x-if="lead.status == 'Closed'">
         <p class=" font-medium text-error py-4 text-base">This lead is closed</p>

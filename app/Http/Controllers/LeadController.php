@@ -145,6 +145,7 @@ class LeadController extends SmartController
         $followup = Followup::where('lead_id',$lead->id)->where('actual_date',null)->latest()->get()->first();
         if($followup != null){
             $followup->actual_date = Carbon::now();
+            $followup->call_status = 'Responsive';
             $followup->save();
         }
         $message = 'Lead closed successfully';
@@ -252,6 +253,7 @@ class LeadController extends SmartController
 
         if($followup_created){
             $lead->followup_created = true;
+            $lead->followup_created_at = Carbon::now();
             $lead->save();
         }else{
             $lead->delete();

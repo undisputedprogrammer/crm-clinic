@@ -23,6 +23,7 @@
                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
                     $el.reset();
 
+                    followups[0].actual_date = $event.detail.content.completed_followup.actual_date;
                     followups.push($event.detail.content.followup);
                     leads[lead.id].followups = followups;
 

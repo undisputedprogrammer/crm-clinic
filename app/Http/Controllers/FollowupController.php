@@ -25,7 +25,7 @@ class FollowupController extends SmartController
 
         $current_followup = Followup::where('lead_id',$lead->id)->where('actual_date', null)->get()->first();
         $current_followup->actual_date = Carbon::now();
-        $current_followup->next_followup_date = $request->scheduled_date;
+        $current_followup->next_followup_date = Carbon::createFromFormat('Y-m-d',$request->scheduled_date);
         $current_followup->user_id = Auth::user()->id;
         $current_followup->call_status = $request->call_status;
         $current_followup->save();
@@ -33,7 +33,7 @@ class FollowupController extends SmartController
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
             'followup_count' => $current_followup->followup_count + 1,
-            'scheduled_date' => $request->scheduled_date,
+            'scheduled_date' => $current_followup->next_followup_date,
             'user_id' => $request->user()->id
         ]);
 
@@ -41,7 +41,7 @@ class FollowupController extends SmartController
         $lead->status = "Follow-up Started";
         $lead->followup_created_at = Carbon::now();
         $lead->save();
-        return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
+        return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup, 'completed_followup' => $current_followup]);
         // return response()->json(['success'=>true,'message'=>'converted '.$followup->converted]);
     }
 
@@ -75,13 +75,15 @@ class FollowupController extends SmartController
             'lead_id' => $request->lead_id,
             'followup_count' => $followup->followup_count + 1,
             'scheduled_date' => $followup->next_followup_date,
+            'converted' => $followup->converted,
+            'consulted' => $followup->consulted,
             'user_id' => $request->user()->id
         ]);
 
-        if($request->converted == true){
-            $next_followup->converted = true;
-            $next_followup->save();
-        }
+        // if($request->converted == true){
+        //     $next_followup->converted = true;
+        //     $next_followup->save();
+        // }
 
         return response()->json(['success' => true, 'message' => 'Next follow up scheduled', 'followup' => $followup, 'next_followup' => $next_followup, 'remarks' => $followup->remarks]);
     }

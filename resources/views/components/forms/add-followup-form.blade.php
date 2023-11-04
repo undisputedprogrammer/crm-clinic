@@ -1,4 +1,4 @@
-<div x-show= "selected_action == 'Add Followup'">
+<div x-show= "selected_action == 'Add Followup'" class=" bg-base-200 lg:w-fit rounded-lg p-3 mt-3">
     <h1 x-show="fp.actual_date != null" class=" font-medium text-warning">Current Follow-up is complete</h1>
     <form x-show="fp.next_followup_date == null" x-transition
         x-data ="
@@ -62,14 +62,14 @@
                                 }
                             }
                             "
-        id="next-followup-form" action="" class=" mt-5">
+        id="next-followup-form" action="" class=" ">
 
         <div class=" flex flex-col">
             <label x-show="fp.next_followup_date == null" for="next-followup-date" class="text-sm font-medium">Schedule
                 date for next follow up</label>
 
             <input x-show="fp.next_followup_date == null" id="next-followup-date" name="next_followup_date" required
-                type="date" class=" rounded-lg input-info bg-base-200 w-72">
+                type="date" class=" rounded-lg input-info bg-base-200 w-72 mt-0.5">
         </div>
 
         <div class=" flex flex-col space-y-1 my-2.5">
