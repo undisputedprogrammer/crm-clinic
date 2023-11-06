@@ -4,9 +4,6 @@
         @isset($selectedCenter)
             selectedCenter = '{{$selectedCenter}}';
         @endisset
-        @isset($status)
-            selectedStatus = '{{$status}}';
-        @endisset
         theLink = '{{route('fresh-leads')}}';
         @isset($is_valid)
             is_valid = '{{$is_valid}}';
@@ -70,9 +67,8 @@
         <x-modals.template-select-modal :templates="$messageTemplates"/>
         <x-display.sending/>
         <x-modals.lead-edit-modal/>
-        <x-modals.create-lead-modal :centers="$centers"/>
 
-        <div class="w-full flex bg-base-200 px-[1.25%] pt-1.5 space-x-2">
+        <div class="w-full flex bg-base-200 px-[1.25%] pt-1.5">
 
             <a x-show="!isProcessed" x-cloak class=" btn btn-outline normal-case text-primary btn-sm hover:bg-primary hover:text-black"
             @click.prevent.stop="leadsProcessedToday();">Processed Today</a>
@@ -85,10 +81,6 @@
                 fresh: true
             })">Fresh leads</a>
 
-            <a @click.prevent.stop="createLead = true;" href="" class=" btn btn-sm btn-outline btn-success">
-                New lead
-            </a>
-
         </div>
 
 
@@ -99,31 +91,12 @@
 
         {{-- pagination event handler --}}
         @pageaction.window="
-        params = {};
-        selectedCenter !== null && (params.center = selectedCenter);
-        if(selectedStatus != null && selectedStatus != 'none'){
-            params.status = selectedStatus;
-        }
-        is_valid !== null && (params.is_valid = is_valid);
-        is_genuine !== null && (params.is_genuine = is_genuine);
-
-        if(Object.keys(params).length > 0){
-            details = {
-                link: $event.detail.link,
-                route: currentroute,
-                fragment: 'page-content',
-                params: params
-            };
-        }else{
-            details = {
-                link: $event.detail.link,
-                route: currentroute,
-                fragment: 'page-content'
-            };
-        }
-
-        $dispatch('linkaction', details);
-        "
+        console.log($event.detail);
+        $dispatch('linkaction',{
+            link: $event.detail.link,
+            route: currentroute,
+            fragment: 'page-content'
+        })"
 
         {{-- Event handler to handle the change cutomer segment event --}}
         @changesegment.window="
@@ -315,29 +288,30 @@
             if(leads[$event.detail.id] == undefined){
                 leads[$event.detail.id] = {};
                 lead = $event.detail.lead;
+                remarks = $event.detail.remarks;
                 followups = $event.detail.followups;
-                followup_remarks = followups[0].remarks;
                 qnas = $event.detail.qnas;
                 name = lead.name;
                 leads[lead.id] = lead;
                 leads[lead.id].remarks = remarks;
                 leads[lead.id].followups = followups;
                 leads[lead.id].qnas = qnas;
+
             }
             else{
                 lead = leads[$event.detail.id];
-                followup_remarks = leads[$event.detail.id].followups[0].remarks;
+                remarks = leads[$event.detail.id].remarks;
                 followups = leads[$event.detail.id].followups;
                 name = lead.name;
                 qnas = lead.qnas;
             }
-            show_remarks_form =  !followup_remarks || followup_remarks.length == 0,
+            show_remarks_form =  !remarks || remarks.length == 0,
             convert = false;
             $dispatch('resetactions');
             setTimeout(()=>{
                 detailsLoading = false;
             },500);
-            console.log(followups[0].remarks);
+
             " class=" mt-2 flex flex-col lg:flex-row lg:justify-between min-h-96">
 
             {{-- Details section starts --}}
@@ -472,7 +446,7 @@
                         <span>Follow up scheduled : </span>
                         <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].scheduled_date) : '---' "></span>
                     </p>
-                    <p x-show="lead.status != 'Created' " class=" font-medium">
+                    <p x-show="lead.followup_created == 1" class=" font-medium">
                         <span>Followed up date : </span>
                         <span class="text-primary" x-text="lead.followup_created == 1 ? formatDateOnly(followups[0].actual_date) : '---' " class="text-secondary"></span>
                     </p>
@@ -503,7 +477,7 @@
                         <p class=" text-sm font-medium text-secondary">Remarks</p>
 
                         <ul class=" list-disc text-sm list-outside flex flex-col space-y-2 font-normal ml-1.5">
-                            <template x-for="remark in followup_remarks">
+                            <template x-for="remark in remarks">
 
                                 <li class="">
                                     <span x-text="remark.remark"></span>
@@ -516,16 +490,14 @@
                             </template>
                         </ul>
 
-
-                        {{-- bookmark --}}
-                        <form x-show="lead.status == 'Created' "
+                        <form
                             x-data = "
                             {
                                 doSubmit() {
                                     let form = document.getElementById('add-remark-form');
                                     let formdata = new FormData(form);
-                                    formdata.append('remarkable_id',followups[0].id);
-                                    formdata.append('remarkable_type','followup');
+                                    formdata.append('remarkable_id',lead.id);
+                                    formdata.append('remarkable_type','lead');
                                     $dispatch('formsubmit',{url:'{{route('add-remark')}}', route: 'add-remark',fragment: 'page-content', formData: formdata, target: 'add-remark-form'});
                                     show_remarks_form = false;
                                 }
@@ -537,10 +509,20 @@
                             if ($event.detail.target == $el.id) {
                                 if ($event.detail.content.success) {
                                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});
-                                    followup_remarks.push($event.detail.content.remark);
-                                    leads[lead.id].followups.remarks = followup_remarks;
-                                    $el.reset();
+                                    axios.get('/api/get/remarks',{
+                                        params: {
+                                        remarkable_id: lead.id,
+                                        remarkable_type: 'App\Models\Lead'
+                                        }
+                                      }).then(function (response) {
 
+                                        remarks = response.data.remarks;
+                                        leads[lead.id].remarks = remarks;
+                                        document.getElementById('add-remark-form').reset();
+                                      }).catch(function (error){
+                                        console.log(error);
+                                      });
+                                    $dispatch('formerrors', {errors: []});
                                 } else if (typeof $event.detail.content.errors != undefined) {
                                     $dispatch('showtoast', {message: $event.detail.content.message, mode: 'error'});
 
@@ -549,7 +531,7 @@
                                 }
                             }"
                         action="" id="add-remark-form" class="mt-2 rounded-xl w-full max-w-[408px]">
-                            <div x-show="!followup_remarks || followup_remarks.length == 0 || show_remarks_form" class="flex flex-col space-y-2 bg-base-200 p-3 rounded-xl">
+                            <div x-show="!lead.remarks || lead.remarks.length == 0 || show_remarks_form" class="flex flex-col space-y-2 bg-base-200 p-3 rounded-xl">
                                 <textarea placeholder="Remark" name="remark" required class="textarea textarea-bordered textarea-xs text-sm w-full max-w-sm" rows="2"></textarea>
 
                                 <button type="submit" class="btn btn-primary btn-xs self-end">Save Remark</button>
@@ -572,7 +554,7 @@
                         @resetactions.window=" console.log('captured reset')
                         selected_action = 'Initiate Followup';
                         "
-                        x-show="lead.status != 'Completed' && followup_remarks.length > 0" class="pt-2.5">
+                        x-show="lead.status != 'Completed' && remarks.length > 0" class="pt-2.5">
                         <h3 class="text-sm font-medium text-secondary">Actions:</h3>
                         <x-dropdowns.leads-action-dropdown/>
 

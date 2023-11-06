@@ -17,14 +17,14 @@ class Remarkcontroller extends SmartController
 
     public function store(Request $request)
     {
-        $remark = Remark::create([
-            'remarkable_type'=>Followup::class,
+        Remark::create([
+            'remarkable_type'=>Lead::class,
             'remarkable_id'=>$request->remarkable_id,
             'remark'=>$request->remark,
             'user_id'=>$request->user()->id
         ]);
 
-        return response()->json(['success'=>true,'message'=>'New remark has been added', 'remark'=>$remark]);
+        return response()->json(['success'=>true,'message'=>'New remark has been added']);
     }
 
     public function getRemarks(Request $request)
@@ -41,7 +41,7 @@ class Remarkcontroller extends SmartController
 
     public function followup(Request $request)
     {
-        $followups = Followup::where('lead_id',$request->lead_id)->with(['remarks','user','lead'])->orderBy('created_at','desc')->get();
+        $followups = Followup::where('lead_id',$request->lead_id)->with(['remarks','user'])->orderBy('created_at','desc')->get();
         return response()->json(['followup'=>$followups]);
     }
 }

@@ -15,7 +15,7 @@ class HospitalSeeder extends Seeder
             'name' => 'Craft',
             'code' => 'craft',
             'ho_location' => 'Kodungalloor',
-            'email' => 'info@craftivf.com',
+            'email' => 'info@craft.com',
             'phone' => '1234512345',
             'main_cols' => [
                 'name' => 'full_name',
@@ -25,15 +25,16 @@ class HospitalSeeder extends Seeder
                 'access_token' => 'EAAMk25QApioBO6SvBdiMsr5HQPmivzZA5r50OwmoQqdEGVegEk4pgNIZAWJZAWg05WM1ZCqbod3TIuI3zUrXFVykJg2BkM5UVGha67SpVkDdeCz1vF9yg6Mb6JvFtY9GzsKtZBpKmMMMtZBo0otRnc5mlzszAHYtCUtfw21vwz086LuR1YaJdVYwthNTZBCgkFpp2ZA8R2I2TgX9'
             ],
             'centers' => [
-                'Craft_Kodungallur',
-                'Craft_Kochi'
+                'Caft_Kodungallur',
+                'Malappuram',
+                'Vyttila'
             ]
         ],
         [
             'name' => 'AR',
             'code' => 'ar',
             'ho_location' => 'Kodungalloor',
-            'email' => 'info@armedicentre.com',
+            'email' => 'info@ar.com',
             'phone' => '1234512345',
             'main_cols' => [
                 'name' => 'name',

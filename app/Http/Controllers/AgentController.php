@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Center;
 use Illuminate\Http\Request;
 use App\Services\AgentService;
-use Illuminate\Support\Facades\Auth;
 use Ynotz\EasyAdmin\Traits\HasMVConnector;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -65,11 +64,5 @@ class AgentController extends SmartController
         return response()->json($result);
     }
 
-    public function fetchAgents(Request $request){
-        $agents = User::where('hospital_id', Auth::user()->hospital_id)->whereHas('roles', function ($q) {
-            return $q->where('name','agent');
-        })->with(['centers'])->get();
 
-        return ['agents' => $agents];
-    }
 }

@@ -24,12 +24,12 @@ class Appointment extends Model
         return $this->belongsTo(Doctor::class, 'doctor_id', 'id');
     }
 
-    // public function appointmentDate(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: function($val) {
-    //             return Carbon::createFromFormat('Y-m-d', $val)->format('d-m-Y');
-    //         }
-    //     );
-    // }
+    public function appointmentDate(): Attribute
+    {
+        return Attribute::make(
+            get: function($val) {
+                return Carbon::createFromFormat('Y-m-d', $val)->format('d-m-Y');
+            }
+        );
+    }
 }

@@ -1,4 +1,4 @@
-<div x-show= "selected_action == 'Close Lead'" class=" bg-base-200 lg:w-fit rounded-lg p-3 mt-3">
+<div x-show= "selected_action == 'Close Lead'">
 
     <template x-if="lead.status == 'Closed'">
         <p class=" font-medium text-error py-4 text-base">This lead is closed</p>
@@ -33,7 +33,7 @@
         }
     }
     ">
-        <div class="  flex flex-col space-y-2">
+        <div class=" mt-3 flex flex-col space-y-2">
             <p class=" font-medium text-error">Are you sure you want to close this lead ? </p>
             <label class="cursor-pointer label justify-start p-0 space-x-2">
                 <span class="label-text">Yes</span>

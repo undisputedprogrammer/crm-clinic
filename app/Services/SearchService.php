@@ -27,15 +27,14 @@ class SearchService
         ->where($request->search_type, '<=', $request->to_date)
         ->with(['lead' => function ($q) {
             return $q->with(['appointment','assigned']);
-        }, 'remarks', 'user']);
+        }, 'remarks']);
 
         $filters = [
             'is_valid' => 'is_valid',
             'is_genuine' => 'is_genuine',
             'lead_status' => 'status',
             'agent' => 'assigned_to',
-            'center' => 'center_id',
-            'call_status' => 'call_status'
+            'center' => 'center_id'
         ];
 
         foreach ($filters as $param => $column) {

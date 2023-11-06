@@ -15,7 +15,6 @@
                 if(leads != null && leads != undefined){
                     leads[lead.id] = lead;
                 }
-                {{-- to change the lead name and city in the table row --}}
                 document.getElementById('name-'+lead.id).innerText = lead.name;
                 document.getElementById('city-'+lead.id).innerText = lead.city;
                 $dispatch('showtoast', {message: $event.detail.content.message, mode: 'success'});

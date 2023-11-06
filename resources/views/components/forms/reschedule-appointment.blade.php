@@ -1,8 +1,7 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
 <template x-if="lead.appointment != null">
-<div x-show="selected_action == 'Reschedule Appointment' && !lead.rescheduled" class=" bg-base-200 p-3 rounded-lg mt-3 lg:w-fit">
-
+<div x-show="selected_action == 'Reschedule Appointment' && !lead.rescheduled">
 <template x-if="fp.next_followup_date != null">
     <p class=" text-primary font-medium py-4">
         <span>Next follow up scheduled for </span>
@@ -38,8 +37,7 @@
 
                                 if($event.detail.content.followup != null && $event.detail.content.followup != undefined)
                                 {
-                                fp.scheduled_date = $event.detail.content.next_followup.scheduled_date;
-                                fp.lead.appointment.appointment_date = $event.detail.content.appointment.appointment_date;
+
                                 fp.lead.status = $event.detail.content.followup.lead.status;
                                 fp.actual_date = $event.detail.content.followup.actual_date;
                                 fp.converted = $event.detail.content.followup.converted;
@@ -88,7 +86,7 @@
                         id="edit-appointment-form"
                           action="" class=" mt-1.5">
 
-                            <div class=" flex flex-col">
+                            <div>
                                 <h2 class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
 
                                 <template x-if="lead.appointment != null">
@@ -99,7 +97,7 @@
                                 </template>
 
                                 <label for="doctor" class="font-medium">Select Doctor</label>
-                                <select class="select select-bordered w-full lg:w-72 bg-base-200 text-base-content" name="doctor" id="doctor">
+                                <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor" id="doctor">
                                     <option disabled>Choose Doctor</option>
                                     @foreach ($doctors as $doctor)
                                     <template x-if="lead.center_id == '{{$doctor->center_id}}' ">
@@ -110,13 +108,13 @@
                                 </select>
 
                                 <label for="new-appointment-date" class="font-medium">Appointment Date</label>
-                                <input id="new-appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full lg:w-72 mt-1.5">
+                                <input id="new-appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
 
                                 <label for="new-followup-date" class="font-medium">Follow up Date</label>
-                                <input id="new-followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full lg:w-72 mt-1.5">
+                                <input id="new-followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
                             </div>
 
-                            <button class=" btn btn-xs btn-primary mt-2 w-fit self-start" type="submit">Reschedule appointment</button>
+                            <button class=" btn btn-xs btn-primary mt-2" type="submit">Reschedule appointment</button>
 
                         </form>
 

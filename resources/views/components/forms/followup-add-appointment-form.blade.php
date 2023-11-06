@@ -1,13 +1,13 @@
 @props(['doctors'])
 {{-- schedule appointment form --}}
-<div x-show="selected_action == 'Schedule Appointment'" class=" bg-base-200 lg:w-fit rounded-lg p-2.5 mt-3">
+<div x-show="selected_action == 'Schedule Appointment'">
 <template x-if="lead.status == 'Appointment Fixed' ">
-    <p class=" text-warning font-medium py-2"><span>Appointment scheduled for this lead on </span><span x-text="formatDateOnly(lead.appointment.appointment_date);" class="text-base-content"></span></p>
+    <p class=" text-warning font-medium py-2"><span>Appointment scheduled for this lead on </span><span x-text="getDateWithoutTime(lead.appointment.appointment_date);"></span></p>
 </template>
 <template x-if="fp.next_followup_date != null">
     <p class=" text-warning font-medium py-2">
         <span>Next follow up scheduled for </span>
-        <span x-text="formatDateOnly(fp.next_followup_date);" class="text-base-content"></span>
+        <span x-text="getDateWithoutTime(fp.next_followup_date);"></span>
     </p>
 </template>
 
@@ -83,13 +83,13 @@
                         }
                         "
                         id="appointment-form"
-                         x-show="lead.status != 'Appointment Fixed' && fp.next_followup_date == null" action="" class=" mt-1.5 flex flex-col">
+                         x-show="lead.status != 'Appointment Fixed' && fp.next_followup_date == null" action="" class=" mt-1.5">
 
-                            <div class=" flex flex-col">
+                            <div>
                                 <h2 x-show="fp.next_followup_date == null && fp.converted == null" class="text-sm font-medium text-secondary mb-1">Schedule appointment</h2>
 
                                 <label for="select-doctor" class="font-medium">Select Doctor</label>
-                                <select class="select select-bordered w-full lg:w-72 bg-base-200 text-base-content" name="doctor" id="select-doctor">
+                                <select class="select select-bordered w-full bg-base-200 text-base-content" name="doctor" id="select-doctor">
                                     <option disabled>Choose Doctor</option>
                                     @foreach ($doctors as $doctor)
                                     <template x-if="lead.center_id == '{{$doctor->center_id}}' ">
@@ -100,13 +100,13 @@
                                 </select>
 
                                 <label for="appointment-date" class="font-medium">Appointment Date</label>
-                                <input id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full lg:w-72 mt-1.5">
+                                <input id="appointment-date" name="appointment_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
 
                                 <label for="followup-date" class="font-medium">Follow up Date</label>
-                                <input id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full lg:w-72 mt-1.5">
+                                <input id="followup-date" name="followup_date" required type="date" class=" rounded-lg input-info bg-base-200 w-full mt-1.5">
                             </div>
 
-                            <button :disabled=" fp.converted == true ? true : false" class=" btn btn-xs btn-primary mt-2 w-fit self-start" type="submit">Schedule appointment</button>
+                            <button :disabled=" fp.converted == true ? true : false" class=" btn btn-xs btn-primary mt-2" type="submit">Schedule appointment</button>
 
                         </form>
 

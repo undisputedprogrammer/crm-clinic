@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\Lead;
-use App\Models\User;
 use App\Models\Followup;
+use App\Models\Lead;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Reader\Xls\RC4;
 use Ynotz\SmartPages\Http\Controllers\SmartController;
 
@@ -145,7 +142,6 @@ class LeadController extends SmartController
         $followup = Followup::where('lead_id',$lead->id)->where('actual_date',null)->latest()->get()->first();
         if($followup != null){
             $followup->actual_date = Carbon::now();
-            $followup->call_status = 'Responsive';
             $followup->save();
         }
         $message = 'Lead closed successfully';
@@ -189,96 +185,5 @@ class LeadController extends SmartController
         }
         $lead->save();
         return response()->json(['success'=>true, 'message'=>'Updated status','lead'=>$lead]);
-    }
-
-    public function distribute(Request $request){
-        if($request->selected_agents){
-            $agent_ids = explode(",",$request->selected_agents);
-        }else{
-            return response()->json(['success'=>false, 'message'=>"No agents to distribute"]);
-        }
-
-        if($request->agent){
-            $agent = User::find($request->agent);
-            info('agent fecthed');
-            $selected_agents = User::whereIn('id', $agent_ids)->get()->toArray();
-            info('selected agents fetched');
-            $agents_count = count($selected_agents);
-            if($agents_count < 1){
-                return response()->json(['success'=>false, 'message'=>'Not enough agents to assign'], 400);
-            }
-            $agent_leads = Lead::where('assigned_to',$agent->id)->whereNotIn('status',['Completed', 'Closed'])->get();
-
-            $index = 0;
-            foreach($agent_leads as $lead){
-                $lead->assigned_to = $selected_agents[$index]['id'];
-                $lead->save();
-                if($index == $agents_count - 1 ){
-                    $index = 0;
-                }else{
-                    $index++;
-                }
-            }
-        }
-        else{
-            return response()->json(['success'=>false, 'message'=>"Could not find agent!"], 400);
-        }
-
-        return response()->json(['success'=>true, 'message'=>'Leads of '.$agent->name.' distributed to '.$agents_count.' agents']);
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|min:3',
-            'city' => 'required|min:3',
-            'phone' => 'required|min:10',
-            'email' => 'required|email'
-        ]);
-
-        $assigned_to = $request->assign_to ? $request->assign_to : Auth::user()->id;
-        info('going to create lead');
-        $lead = Lead::create([
-            'hospital_id' => Auth::user()->hospital_id,
-            'center_id' => $request->center ? $request->center : User::find(Auth::user()->id)->centers()->first()->id,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'city' => $request->city,
-            'assigned_to' => $assigned_to,
-            'created_by' => Auth::user()->id
-        ]);
-
-        $followup_created = $this->createFollowup($lead);
-
-        if($followup_created){
-            $lead->followup_created = true;
-            $lead->followup_created_at = Carbon::now();
-            $lead->save();
-        }else{
-            $lead->delete();
-            return response()->json([
-                'success' => false,
-                'message' => 'Could not create lead !'
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => "New lead created !",
-            'lead' => $lead
-        ], 200);
-    }
-
-    public function createFollowup($lead)
-    {
-        $followup = $followup = Followup::create([
-            'lead_id' => $lead->id,
-            'followup_count' => 1,
-            'scheduled_date' => Carbon::today(),
-            'user_id' => $lead->user_id
-        ]);
-
-        return true;
     }
 }

@@ -5,9 +5,7 @@ namespace App\Imports;
 use App\Models\Lead;
 use App\Models\User;
 use App\Models\Answer;
-use App\Models\Followup;
 use App\Models\Question;
-use Carbon\Carbon;
 use Hamcrest\Type\IsNumeric;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -92,7 +90,7 @@ class LeadsImport implements ToArray, WithHeadingRow
                 'created_by' => auth()->user()->id
             ]);
 
-            $this->createFollowup($lead);
+
 
             $this->x++;
             if ($this->x == count($this->agents)) {
@@ -111,21 +109,6 @@ class LeadsImport implements ToArray, WithHeadingRow
             $this->importedCount ++;
             // return $lead;
         }
-    }
-
-    public function createFollowup($lead){
-        Followup::create([
-            'lead_id' => $lead->id,
-            'followup_count' => 1,
-            'scheduled_date' => Carbon::today(),
-            'user_id' => $lead->assigned_to
-        ]);
-
-        $lead->followup_created = true;
-        $lead->followup_created_at = Carbon::now();
-        $lead->save();
-
-        return null;
     }
 
     private function getQuestionHeaders()

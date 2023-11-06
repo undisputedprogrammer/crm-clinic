@@ -23,25 +23,24 @@ class FollowupController extends SmartController
         $lead = Lead::find($request->lead_id);
         $converted = null;
 
-        $current_followup = Followup::where('lead_id',$lead->id)->where('actual_date', null)->get()->first();
-        $current_followup->actual_date = Carbon::now();
-        $current_followup->next_followup_date = Carbon::createFromFormat('Y-m-d',$request->scheduled_date);
-        $current_followup->user_id = Auth::user()->id;
-        $current_followup->call_status = $request->call_status;
-        $current_followup->save();
-
         $followup = Followup::create([
             'lead_id' => $request->lead_id,
-            'followup_count' => $current_followup->followup_count + 1,
-            'scheduled_date' => $current_followup->next_followup_date,
+            'followup_count' => 1,
+            'scheduled_date' => $request->scheduled_date,
             'user_id' => $request->user()->id
         ]);
+
+        if($lead->status == "Appointment Fixed"){
+
+            $followup->converted = true;
+            $followup->save();
+        }
 
         $lead->followup_created = true;
         $lead->status = "Follow-up Started";
         $lead->followup_created_at = Carbon::now();
         $lead->save();
-        return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup, 'completed_followup' => $current_followup]);
+        return response()->json(['success' => true, 'message' => 'Follow up has been initiated for this lead', 'followup' => $followup]);
         // return response()->json(['success'=>true,'message'=>'converted '.$followup->converted]);
     }
 
@@ -65,7 +64,6 @@ class FollowupController extends SmartController
         $followup->actual_date = Carbon::now();
         $followup->next_followup_date = Carbon::createFromFormat('Y-m-d', $request->next_followup_date)->format('Y-m-d H:i:s');
         $followup->user_id = Auth::user()->id;
-        $followup->call_status = $request->call_status;
         $followup->save();
         $converted = null;
 
@@ -75,15 +73,13 @@ class FollowupController extends SmartController
             'lead_id' => $request->lead_id,
             'followup_count' => $followup->followup_count + 1,
             'scheduled_date' => $followup->next_followup_date,
-            'converted' => $followup->converted,
-            'consulted' => $followup->consulted,
             'user_id' => $request->user()->id
         ]);
 
-        // if($request->converted == true){
-        //     $next_followup->converted = true;
-        //     $next_followup->save();
-        // }
+        if($request->converted == true){
+            $next_followup->converted = true;
+            $next_followup->save();
+        }
 
         return response()->json(['success' => true, 'message' => 'Next follow up scheduled', 'followup' => $followup, 'next_followup' => $next_followup, 'remarks' => $followup->remarks]);
     }

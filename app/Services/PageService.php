@@ -17,12 +17,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PageService
 {
+
     public function getLeads($user, $selectedLeads, $selectedCenter, $search, $status, $is_valid, $is_genuine, $creation_date, $processed)
     {
         if($search != null){
-            $leadsQuery = Lead::with(['followups' => function ($qr) {
-                return $qr->with(['remarks']);
-            }, 'appointment'])->where('hospital_id', $user->hospital_id)->where('name', 'like', '%' . $search . '%')
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('name', 'like', '%' . $search . '%')
             ->orWhere('phone', 'like', '%' . $search . '%');
 
             $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
@@ -33,9 +32,7 @@ class PageService
         }
 
         if($creation_date != null){
-            $leadsQuery = Lead::with(['followups' => function ($qr) {
-                return $qr->with(['remarks']);
-            }, 'appointment'])->where('hospital_id', $user->hospital_id)->whereDate('created_at',$creation_date);
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->whereDate('created_at',$creation_date);
 
             $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
                 return $query->where('assigned_to', $user->id);
@@ -47,9 +44,7 @@ class PageService
         if($processed != null){
             info('processed is present');
             $today = Carbon::now()->toDateString();
-            $leadsQuery = Lead::with(['followups' => function ($qr) {
-                return $qr->with(['remarks']);
-            }, 'appointment'])->where('hospital_id', $user->hospital_id)->whereDate('followup_created_at',$today);
+            $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->whereDate('followup_created_at',$today);
 
             $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
                 return $query->where('assigned_to', $user->id);
@@ -62,21 +57,30 @@ class PageService
         if($status != null && $status != 'none')
         {
             if($status == 'all'){
-                $leadsQuery = Lead::with(['followups' => function ($qr) {
-                    return $qr->with(['remarks']);
-                }, 'appointment'])->where('hospital_id', $user->hospital_id);
+                $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->with([
+                    'remarks' => function ($q) {
+                        return $q->orderBy('created_at', 'desc');
+                    },
+                    'appointment'
+                ]);
             }
             else{
-                $leadsQuery = Lead::with(['followups' => function ($qr) {
-                    return $qr->with(['remarks']);
-                }, 'appointment'])->where('hospital_id', $user->hospital_id)->where('status', $status);
+                $leadsQuery = Lead::where('hospital_id', $user->hospital_id)->where('status', $status)->with([
+                    'remarks' => function ($q) {
+                        return $q->orderBy('created_at', 'desc');
+                    },
+                    'appointment'
+                ]);
             }
 
         }
         else{
-            $leadsQuery = Lead::with(['followups' => function ($qr) {
-                return $qr->with(['remarks']);
-            },'appointment'])->where('hospital_id', $user->hospital_id)->where('status', '=', 'Created');
+            $leadsQuery = Lead::where('followup_created', false)->where('hospital_id', $user->hospital_id)->where('status', '=', 'Created')->with([
+                'remarks' => function ($q) {
+                    return $q->orderBy('created_at', 'desc');
+                },
+                'appointment'
+            ]);
         }
 
         $leadsQuery->when($user->hasRole('agent'), function ($query) use ($user) {
@@ -323,7 +327,7 @@ class PageService
     {
 
         $followupsQuery = Followup::whereHas('lead', function ($qr) use ($user) {
-            return $qr->where('hospital_id',$user->hospital_id)->where('status','!=','Created');
+            return $qr->where('hospital_id',$user->hospital_id);
         })->with(['lead'=>function($q) use($user){
             return $q->with(['appointment'=>function($qr){
                 return $qr->with('doctor');

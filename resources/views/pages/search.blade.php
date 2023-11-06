@@ -35,7 +35,6 @@
 
             <form
             x-data = "{ doSubmit() {
-                fpselected = false;
                 let form = document.getElementById('search-form');
                 let formdata = new FormData(form);
                 formdata.append('search_type',searchtype);
@@ -129,17 +128,6 @@
                     </select>
                 </div>
                 @endcan
-
-                <div class=" w-full flex flex-col items-center lg:items-start sm:w-[45%] lg:w-1/4 px-1 mt-1.5">
-                    <label for="" class=" text-sm text-primary font-medium">Select Call Status</label>
-                    <select name="call_status" @change="searchFormState.call_status = $el.value" class="select  select-bordered w-full max-w-xs bg-base-100 text-base-content">
-                        <option value="null" :disabled="searchFormState.call_status == null ? true : false " :selected="searchFormState.call_status == null ? true : false " >--Not selected--</option>
-
-                        <option :selected="searchFormState.call_status != null && searchFormState.call_status == 'Responsive' ? true : false " value="Responsive">Responsive</option>
-
-                        <option :selected="searchFormState.call_status != null && searchFormState.call_status == 'Not responsive' ? true : false " value="Not responsive">Not responsive</option>
-                    </select>
-                </div>
 
                 <button :disabled = " searchtype == '' ? true : false " class=" btn btn-primary mt-2 lg:mt-2" type="submit">Search</button>
 
@@ -262,7 +250,7 @@
 
                             <p class=" text-base font-medium">Lead Segment : <span class=" uppercase text-secondary" x-text="fp.lead != undefined ? fp.lead.customer_segment : '' "></span></p>
 
-                            <div class="mt-2.5" x-show="leadremarks.length > 0">
+                            <div class="mt-2.5">
                                 <p class=" text-base font-medium text-secondary">Lead remarks</p>
 
                                 <ul class=" list-disc text-sm list-outside font-normal">
@@ -287,13 +275,8 @@
                                 {{-- looping through history --}}
                                 <template x-show="!historyLoading" x-for="item in history" >
                                     <div>
-                                        <div x-show="item.actual_date != null" class=" mt-2 bg-neutral p-1.5 rounded-lg">
+                                        <div x-show="item.actual_date != null" class=" mt-2">
                                         <p class=" font-medium">Date : <span class=" text-primary" x-text="formatDate(item.actual_date)"></span></p>
-
-                                        <p class=" font-medium">Agent : <span class=" text-primary" x-text="item.user.name"></span></p>
-
-                                        <p class=" font-medium">Call status : <span class=" text-primary" x-text="item.call_status" :class="item.call_status == 'Responsive' ? 'text-success' : 'text-error' "></span></p>
-
                                         <p class="font-medium">Follow up remarks</p>
                                         <ul>
                                             <template x-if="item.remarks != undefined">
@@ -304,7 +287,7 @@
                                         </ul>
                                         </div>
 
-                                        <p x-show="item.actual_date == null" class="font-medium">Next follow up date : <span class=" text-error" x-text="formatDateOnly(item.scheduled_date)"></span></p>
+                                        <p x-show="item.actual_date == null" class="font-medium">Next follow up date : <span class=" text-error" x-text="item.scheduled_date"></span></p>
 
                                     </div>
                                 </template>
@@ -312,7 +295,7 @@
                                 <p x-show="!historyLoading" class=" text-error" x-text=" history.length == 1 ? 'No follow ups completed yet' : '' "></p>
 
                                 <template x-if="fp.lead != undefined && fp.lead != null && fp.lead.appointment != null">
-                                    <p x-show="!historyLoading" class=" text-success font-medium mt-1.5"><span>Appointment scheduled for : </span><span class="text-primary" x-text="fp.lead.appointment != null ? formatDateOnly(fp.lead.appointment.appointment_date) : '' "></span></p>
+                                    <p x-show="!historyLoading" class=" text-success font-medium mt-1.5"><span>Appointment scheduled for : </span><span class="text-primary" x-text="fp.lead.appointment != null ? fp.lead.appointment.appointment_date : '' "></span></p>
                                 </template>
 
                                 <div class="w-full flex justify-center mt-2.5">

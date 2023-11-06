@@ -1,4 +1,4 @@
-<div x-show=" lead.status == 'Consulted' && fp.next_followup_date == null " class=" my-3">
+<div x-show=" lead.status == 'Consulted' " class=" my-3">
 <form x-show=" fp.actual_date == null "
 x-data="{
     doSubmit(){
