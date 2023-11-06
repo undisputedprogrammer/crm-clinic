@@ -21,6 +21,7 @@ use App\Http\Controllers\WhatsAppApiController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\BreakController;
+use App\Http\Controllers\CreateFollowupController;
 use App\Http\Controllers\InternalChatController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\MailController;
@@ -143,6 +144,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-chat-room', [InternalChatController::class, 'getChatRoom'])->name('internal_chat.get_chat_room');
     Route::get('/get-older-chats', [InternalChatController::class, 'olderMessages'])->name('internal_chat.older_messages');
     Route::post('/post-internal-message', [InternalChatController::class, 'postMessage'])->name('internal_chat.post_message');
+
+    Route::get('create/followups',[CreateFollowupController::class, 'createFollowup']);
 
 });
 
