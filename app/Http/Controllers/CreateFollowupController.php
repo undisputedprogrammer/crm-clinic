@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class CreateFollowupController extends Controller
 {
     public function createFollowup(Request $request){
-        $leads = Lead::where('status', 'Created')->where('hospital_id', Auth::user()->hospital_id)->get();
+        $leads = Lead::where('status', 'Created')
+            // ->where('hospital_id', Auth::user()->hospital_id)
+            ->get();
         foreach ($leads as $lead){
             Followup::create([
                 'lead_id' => $lead->id,
